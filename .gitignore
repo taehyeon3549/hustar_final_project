@@ -8,3 +8,4 @@
 *.ppk
 
 .usr1/
+usr1/src/linux-headers-4.15.0-1051-aws/include/soc/arc/aux.h
