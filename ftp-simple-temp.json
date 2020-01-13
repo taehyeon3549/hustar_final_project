@@ -1,0 +1,14 @@
+[
+	{
+		"name": "Hustar_final_project",
+		"host": "ec2-54-180-159-207.ap-northeast-2.compute.amazonaws.com",
+		"port": 22,
+		"type": "sftp",
+		"username": "ubuntu",
+		"password": "",
+		"path": "/",
+		"autosave": true,
+		"confirm": true,
+		"privateKey": "C:/hustar_final_project/aws_key/hustar_final_project.pem"
+	}
+]

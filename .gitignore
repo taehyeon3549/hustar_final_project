@@ -4,3 +4,5 @@
 .aws_key/hustar_final_project.pem
 .aws_key/hustar_final_project.ppk
 
+*.pem
+*.ppk
