@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="major">
+        <item>경북 로봇</item>
+        <item>경북 미래형 자동차</item>
+        <item>경북 바이오</item>
+        <item>경북 ICT</item>
+        <item>대구 로봇</item>
+        <item>대구 미래형 자동차</item>
+        <item>대구 의료</item>
+        <item>대구 ICT</item>
+    </string-array>
+</resources>
