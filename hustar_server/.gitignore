@@ -2,5 +2,3 @@ vendor/
 log/*
 cache/*
 app/src/models/
-coex_server.zip
-hustar_server.zip
