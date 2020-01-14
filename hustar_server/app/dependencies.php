@@ -28,6 +28,17 @@ $container['flash'] = function ($c) {
 // Service factories
 // -----------------------------------------------------------------------------
 
+// PDO database library 
+$container['db'] = function ($c) {
+    $db = $c['settings']['dbSettings']['db'];
+    $pdo = new PDO("mysql:host=" . $db['host'] . ";dbname=" . $db['dbname'],
+        $db['user'], $db['pass']);
+        
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+    return $pdo;
+};
+
 // doctrine EntityManager
 $container['em'] = function ($c) {
     $settings = $c->get('settings');
