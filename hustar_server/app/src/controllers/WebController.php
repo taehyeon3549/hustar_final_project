@@ -89,7 +89,9 @@ final class WebController extends BaseController
         return $response;
     }
 
-    //register_email(Before the sign_up page)
+/************************************
+ * 회원가입 1단계 계정 확인
+**************************************/
 	public function register_email(Request $request, Response $response, $args)
     {
         $this->logger->info("register_email page action dispatched");
@@ -111,7 +113,9 @@ final class WebController extends BaseController
         return $response;
     }
 
-    //register_email_message
+/************************************
+ * 회원가입 2단계 인증 메일 전송 완료
+**************************************/
 	public function register_email_message(Request $request, Response $response, $args)
     {
         $this->logger->info("register_email_message page action dispatched");

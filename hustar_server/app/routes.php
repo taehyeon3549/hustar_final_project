@@ -10,28 +10,28 @@
 $app->get('/index', 'App\Controller\WebController:index')
     ->setName('index');
 
-// Login page
+// 로그인 페이지 
 $app->get('/', 'App\Controller\WebController:dispatch')
     ->setName('sign_in');
 
-// main page
+// 메인 페이지
 $app->get('/main', 'App\Controller\WebController:main')
     ->setName('main');
 
-// register_email
-$app->get('/register_email', 'App\Controller\WebController:register_email')
+// 회원가입 1단계 회원가입 페이지
+$app->get('/signup/email', 'App\Controller\WebController:register_email')
     ->setName('register_email');
 
 //forgotten_password page
 $app->get('/forgot-password', 'App\Controller\WebController:forgotten_password')
     ->setName('forgot-password');
 
-// Sign_up
+// 회원가입 3단계 정보 입력 페이지
 $app->get('/verify/sign_up/{code}', 'App\Controller\WebController:sign_up')
     ->setName('sign_up');  
 
-// register_email_message
-$app->get('/register_email_message', 'App\Controller\WebController:register_email_message')
+// 회원가입 2단계 인증 메일 전송 완료 페이지
+$app->get('/signup/message', 'App\Controller\WebController:register_email_message')
     ->setName('register_email_message'); 
 
 // myaccount

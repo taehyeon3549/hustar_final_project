@@ -22,9 +22,9 @@ final class UserManagementModel extends BaseModel
 		return $val;
 	}
 	
-	/**********************
-	 * 이메일 중복 체크
-	 **********************/
+/**********************
+ * 이메일 중복 체크
+ **********************/
 	public function duplicateEmail($email){
 		$sql = "SELECT * FROM USER WHERE USER_EMAIL = ?";
 		$sth = $this->db->prepare($sql);
@@ -43,10 +43,9 @@ final class UserManagementModel extends BaseModel
 		}
 	}
 
-	/*********************
-	 *  DB 삽입
-	 *********************/
-	//Insert User 여기
+/*********************
+ *  DB 삽입
+ *********************/
     public function addUser($user) {        
 		$sql = "INSERT into USER (USER_USN, USER_PASSWORD, USER_EMAIL, USER_PHONE, USER_NAME, USER_GENDER, USER_BIRTH ,USER_ADMIN, USER_CLASS) 
 				values (?, ?, ?, ?, ? , ?, ?, ?, ? )";
