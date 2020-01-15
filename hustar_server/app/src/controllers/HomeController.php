@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controller;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -33,14 +34,21 @@ final class HomeController extends BaseController
         return $response;
     }
 
-    public function test(Request $request, Response $response, $args)
+// sign_up
+	public function sign_in(Request $request, Response $response, $args)
     {
-        $result = [];
-        $result['header'] = "TEST";
-        $result['message'] = "0";	
-        
-        return $response->withStatus(200)
-		->withHeader('Content-Type', 'application/json')
-		->write(json_encode($result, JSON_NUMERIC_CHECK));
+        $this->logger->info("View post using Doctrine with Slim 3");
+
+        $messages = $this->flash->getMessage('info');
+
+        try {
+            $post = $this->em->find('App\Model\Post', intval($args['id']));
+        } catch (\Exception $e) {
+            echo $e->getMessage();
+            die;
+        }
+
+        $this->view->render($response, 'post.twig', ['post' => $post, 'flash' => $messages]);
+        return $response;
     }
 }

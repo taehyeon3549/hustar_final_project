@@ -18,6 +18,19 @@ final class UserManagementController extends BaseController
 		$this->UserManagementModel = $UserManagementModel;
 		$this->view = $view;
 	}
+	
+	public function test(Request $request, Response $response, $args){
+		$test_db = $args['data'];
+
+		if($this->UserManagementModel->test_insert($test_db) == 1){
+			$result['header'] = "insert success";
+			$result['message'] = $test_db + " inserted ";
+		}
+
+		return $response->withStatus(200)
+		->withHeader('Content-Type', 'application/json')
+		->write(json_encode($result, JSON_NUMERIC_CHECK));
+	}
 
 //Send email
 // return value : true, false

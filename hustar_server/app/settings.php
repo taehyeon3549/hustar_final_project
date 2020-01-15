@@ -16,7 +16,7 @@ if ($_SERVER['HTTP_HOST'] == '54.180.159.207') {
         'dbname' => 'hustar_final'
     );
 }
-
+    
 return [
     'settings' => [
         // comment this line when deploy to production environment
@@ -30,12 +30,13 @@ return [
                 'auto_reload' => true,
             ],
         ],
-        
+
         // Database connection settings
         'dbSettings' => array(
             'db' => $db_array,
         ),
 
+/*
         // doctrine settings
         'doctrine' => [
             'meta' => [
@@ -55,7 +56,7 @@ return [
                 'password' => 'root',
             ]
         ],
-
+*/
         // monolog settings
         'logger' => [
             'name' => 'app',

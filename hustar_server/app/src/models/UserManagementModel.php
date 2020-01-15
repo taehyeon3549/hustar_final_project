@@ -3,6 +3,25 @@ namespace App\Model;
 
 final class UserManagementModel extends BaseModel
 {
+	/**********************
+	 * TEST
+	 * ********************/	
+	public function test_insert($data){
+		$sql = "INSERT INTO HUSTAR (`HUSTAR_NAME`, `HUSTAR_ADDRESS`, `HUSTAR_TELL`, `HUSTAR_CHARGE`, `HUSTAR_SUB_CLASS_NO`) 
+				VALUES ('testerrrrrr', 'testttttt', '00000', ?, '1')";
+
+		$val = 0;
+
+		$sth = $this->db->prepare($sql);
+		if($sth->execute(array($data))){
+			$val = 1;	
+		}else{
+			$val = 0;
+		}
+
+		return $val;
+	}
+	
 	//Check Duplicate of email
 	public function duplicateEmail($email){
 		$sql = "SELECT * FROM User WHERE email = ?";

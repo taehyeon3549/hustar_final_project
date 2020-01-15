@@ -17,6 +17,18 @@ final class WebController extends BaseController
 		$this->view = $view;
     }
     
+    public function index(Request $request, Response $response, $args)
+    {
+        $this->logger->info("Home page action dispatched");
+
+        //$this->flash->addMessage('info', 'Sample flash message');
+
+        $this->view->render($response, '404.html');
+        //$this->view->render($response, 'register_email.html');
+        
+        return $response;
+    }
+
     public function dispatch(Request $request, Response $response, $args)
     {
         $this->logger->info("Home page action dispatched");

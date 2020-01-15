@@ -27,4 +27,9 @@ require __DIR__ . '/../app/middleware.php';
 require __DIR__ . '/../app/routes.php';
 
 // Run!
+
+error_reporting(E_ALL & ~E_NOTICE);
+ini_set("display_errors", 1);
+
+
 $app->run();
