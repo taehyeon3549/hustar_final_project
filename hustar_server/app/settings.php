@@ -1,4 +1,22 @@
 <?php
+
+// set database parameters based on server
+if ($_SERVER['HTTP_HOST'] == '54.180.159.207') {
+    $db_array = array(
+        'host' => '127.0.0.1',
+        'user' => 'root',
+        'pass' => '1234',
+        'dbname' => 'hustar_final'
+    );
+} else {
+    $db_array = array(
+        'host' => '127.0.0.1',
+        'user' => 'root',
+        'pass' => '1234',
+        'dbname' => 'hustar_final'
+    );
+}
+    
 return [
     'settings' => [
         // comment this line when deploy to production environment
@@ -13,6 +31,12 @@ return [
             ],
         ],
 
+        // Database connection settings
+        'dbSettings' => array(
+            'db' => $db_array,
+        ),
+
+/*
         // doctrine settings
         'doctrine' => [
             'meta' => [
@@ -32,7 +56,7 @@ return [
                 'password' => 'root',
             ]
         ],
-
+*/
         // monolog settings
         'logger' => [
             'name' => 'app',

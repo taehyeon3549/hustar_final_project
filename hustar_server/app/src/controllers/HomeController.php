@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controller;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -17,6 +18,24 @@ final class HomeController extends BaseController
     }
 
     public function viewPost(Request $request, Response $response, $args)
+    {
+        $this->logger->info("View post using Doctrine with Slim 3");
+
+        $messages = $this->flash->getMessage('info');
+
+        try {
+            $post = $this->em->find('App\Model\Post', intval($args['id']));
+        } catch (\Exception $e) {
+            echo $e->getMessage();
+            die;
+        }
+
+        $this->view->render($response, 'post.twig', ['post' => $post, 'flash' => $messages]);
+        return $response;
+    }
+
+// sign_up
+	public function sign_in(Request $request, Response $response, $args)
     {
         $this->logger->info("View post using Doctrine with Slim 3");
 

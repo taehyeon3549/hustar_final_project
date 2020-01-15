@@ -1,4 +1,5 @@
 <?php
+
 // DIC configuration
 
 $container = $app->getContainer();
@@ -6,6 +7,22 @@ $container = $app->getContainer();
 // -----------------------------------------------------------------------------
 // Service providers
 // -----------------------------------------------------------------------------
+
+/* mike's
+// Register component on container
+$container['view'] = function ($container) {
+    return new \Slim\Views\PhpRenderer(__DIR__ . '/templates/');
+};
+*/
+
+//Register component on container
+$container['view'] = function($container){
+	$settings = $container->get('settings');
+    $view = new \Slim\Views\PhpRenderer(__DIR__ . '/templates/');
+
+	 return $view;
+};
+
 
 // Twig
 $container['view'] = function ($c) {
@@ -19,6 +36,7 @@ $container['view'] = function ($c) {
     return $view;
 };
 
+
 // Flash messages
 $container['flash'] = function ($c) {
     return new \Slim\Flash\Messages;
@@ -27,6 +45,18 @@ $container['flash'] = function ($c) {
 // -----------------------------------------------------------------------------
 // Service factories
 // -----------------------------------------------------------------------------
+
+// PDO database library 
+$container['db'] = function ($c) {
+    $db = $c['settings']['dbSettings']['db'];
+    $pdo = new PDO("mysql:host=" . $db['host'] . ";dbname=" . $db['dbname'],
+        $db['user'], $db['pass']);
+        
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+    return $pdo;
+};
+
 
 // doctrine EntityManager
 $container['em'] = function ($c) {
@@ -56,4 +86,62 @@ $container['logger'] = function ($c) {
 
 $container['App\Controller\HomeController'] = function ($c) {
     return new App\Controller\HomeController($c);
+};
+
+//Web controller
+$container['App\Controller\WebController'] = function ($container) {
+	$logger = $container->get('logger');
+	$webModel = $container->get('webModel');
+	$view = $container->get('view');
+
+    return new App\Controller\WebController($logger, $webModel, $view);
+};
+
+//Backend controller
+$container['App\Controller\BackendController'] = function ($container) {
+	$logger = $container->get('logger');
+	$backendModel = $container->get('backendModel');
+	$view = $container->get('view');
+
+    return new App\Controller\BackendController($logger, $backendModel, $view);
+};
+
+//UserManagement controller
+$container['App\Controller\UserManagementController'] = function ($container) {
+	$logger = $container->get('logger');
+	$userManagementModel = $container->get('userManagementModel');
+	$view = $container->get('view');
+
+    return new App\Controller\UserManagementController($logger, $userManagementModel, $view);
+};
+
+//-----------------------------------------------------------------------------
+// Model factories
+// -----------------------------------------------------------------------------
+$container['webModel'] = function ($container) {
+    $settings = $container->get('settings');
+    $webModel = new App\Model\WebModel($container->get('db'));
+	
+    return $webModel;
+};
+
+$container['backendModel'] = function ($container) {
+    $settings = $container->get('settings');
+    $backendModel = new App\Model\BackendModel($container->get('db'));
+	
+    return $backendModel;
+};
+
+$container['userManagementModel'] = function ($container) {
+    $settings = $container->get('settings');
+    $userManagementModel = new App\Model\UserManagementModel($container->get('db'));
+	
+    return $userManagementModel;
+};
+
+$container['sensorManagementModel'] = function ($container) {
+    $settings = $container->get('settings');
+    $sensorManagementModel = new App\Model\SensorManagementModel($container->get('db'));
+	
+    return $sensorManagementModel;
 };
