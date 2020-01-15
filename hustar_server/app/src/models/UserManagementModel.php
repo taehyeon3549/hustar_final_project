@@ -79,9 +79,11 @@ final class UserManagementModel extends BaseModel
 		return $num;
 	}
 
-	//Check user login
-	public function login($email) {  
-		$sql = "SELECT hashed FROM User WHERE email = ?";
+/************************
+ * Email로 USER 검색
+ *************************/
+	public function getUserByEmail($email) {  
+		$sql = "SELECT * FROM USER WHERE USER_EMAIL = ?";
 		$sth = $this->db->prepare($sql);
 
 		$sth->execute(array($email));
@@ -90,20 +92,11 @@ final class UserManagementModel extends BaseModel
 		return $result[0];		
 	}
 
-	//Get Certification table info
-	public function checkCertifi($email) {  
-		$sql = "SELECT * FROM Certification WHERE certi_email = ?";
-		$sth = $this->db->prepare($sql);
-
-		$sth->execute(array($email));
-		$result = $sth->fetchAll();
-
-		return $result[0];
-	}	
-
-	//Get User's info in User table by email
-	public function getUserInfo_email($email) {  
-		$sql = "SELECT * FROM User WHERE email = ?";
+/*********************************
+ * CERTIFICATION 의 정보 가져오기(Email)
+ *********************************/
+	public function getCertifiByEmail($email) {  
+		$sql = "SELECT * FROM CERTIFICATION WHERE CERTIFICATION_EMAIL = ?";
 		$sth = $this->db->prepare($sql);
 
 		$sth->execute(array($email));
@@ -121,30 +114,6 @@ final class UserManagementModel extends BaseModel
 		$result = $sth->fetchAll();
 
 		return $result[0];
-	}
-
-	//Change the signin_state in User table to 0
-	public function changeSignin($email) {  
-		$sql = "UPDATE User SET sign_state = '0' WHERE email = ?";
-		$sth = $this->db->prepare($sql);
-
-		if($sth->execute(array($email))){
-			return TRUE;
-		}else{
-			return FALSE;
-		}
-	}
-
-	//Change the signin_state in User table to 1
-	public function changeSignout($usn) {  
-		$sql = "UPDATE User SET sign_state = '1' WHERE USN = ?";
-		$sth = $this->db->prepare($sql);
-
-		if($sth->execute(array($usn))){
-			return TRUE;
-		}else{
-			return FALSE;
-		}
 	}
 
 	//Check User is exsit

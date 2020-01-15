@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="kr">
 
 <head>
 
@@ -9,7 +9,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>TeamC_Main Page</title>
+  <title>Hustar Main Page</title>
 
   <!-- Custom fonts for this template-->
   <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -18,266 +18,8 @@
   <link href="vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
 
   <!-- Custom styles for this template-->
-  <link href="css/sb-admin.css" rel="stylesheet">
-
-  <script>
-    
-    var today = new Date();
-      today.setDate(today.getDate() - 1);
-
-      today = today.toISOString().slice(0, 10);
-      var tomorrow = new Date().toISOString().slice(0, 10);
-
-    sessionStorage['today'] = today;
-    sessionStorage['tomorrow'] = tomorrow;
-     
-  </script>
-
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-  <script type="text/javascript">
-    // Set a global variable for map
-    var map;
-
-    var activeInfoWindow;
-
-    function initMap() {
-      var options = {
-        //Center : QI(Calit2)
-        center: { lat: 32.8826247, lng: -117.2367698 },
-        zoom: 15,
-        mapTypeId: google.maps.MapTypeId.TERRAIN
-      }     
-
-      map = new google.maps.Map(document.getElementById("map_canvas"), options);
-
-      // Create markers into DOM
-      var json = null;
-      
-      /*
-      $.ajax({
-        'async': false,
-        'global': false,
-        //롱디 레티 들고오는 링크
-        'url': "/getGPS",
-        'dataType': "json",
-        'success': function (data) {
-          console.log(data);
-          createMarkers(data);
-        }
-      });
-      */      
-
-      $.ajax({
-        method: "POST",
-        url: "/location",
-        data: {
-            usn : usn,
-            date : "2019-08-11",
-            tomorrow : "2019-08-13"          
-        }
-      }).done(function( msg ) {
-          createMarkers(msg);
-          drawStuff(msg);
-          console.log(msg);
-      }).fail((msg) => {
-          console.log(msg);
-      });      
-    };
-    // Instantiate markers in the background and pass it back to the json object
-    function createMarkers(markerJson) {
-      var length = Object.keys(markerJson).length;
-
-      var contentString = [];
-      var infowindow = [];
-      var marker = [];
-
-      for (let i = 0; i < length; i++) {
-        var sensormark = markerJson[i];
-        //sensormark = JSON.parse(`{${sensormark}}`);
-        //sensormark = JSON.parse(sensormark);
-
-        
-        contentString[i] = 
-        '<div id="content">' +
-          '<div id="showupAQI">' +
-          '</div>' +
-          '<h4 id="firstHeading" class="firstHeading">' + 'location' + '</h4>'+
-          '<h2 id="firstHeading" class="firstHeading">'+'('+sensormark['latitude']+','+sensormark['longitude']+')'+'</h2>' +
-          '<div id="bodyContent">' +
-          '<p>' +
-          '<div>' +
-          '<table class = "mytable" width="100%" cellspacing="0">' +
-          '<thead>' +
-          '<tr>' +
-          '<th>Element</th>' +
-          '<th>Value</th>' +
-          '<th>AQI</th>' +
-          '</tr>' +
-          '</thead>' +
-          '<tbody>' +
-          '<tr>' +
-          '<th> O3 </th>' +
-          '<th>'+sensormark['O3']+'</th>' +
-          '<th id = "aq">'+sensormark['AQ_O3']+'</th>' +
-          '</tr>' +
-          '<tr>' +
-          '<th> CO </th>' +
-          '<th>'+sensormark['CO']+'</th>' +
-          '<th id = "aq">'+sensormark['AQ_CO']+'</th>' + 
-          '</tr>' +
-          '<tr>' +
-          '<th> NO2 </th>' +
-          '<th>'+sensormark['NO2']+'</th>' +
-          '<th id = "aq">'+sensormark['AQ_NO2']+'</th>' +
-          '</tr>' +
-          '<tr>' +
-          '<th> SO2 </th>' +
-          '<th>'+sensormark['SO2']+'</th>' +
-          '<th id = "aq">'+sensormark['AQ_SO2']+'</th>' +
-          '</tr>' +
-          '<tr>' +
-          '<th> PM2.5 </th>' +
-          '<th>'+sensormark['PM2_5']+'</th>' +
-          '<th id = "aq">'+sensormark['AQ_PM2_5']+'</th>' +
-          '</tr>' +
-          '<tr>' +
-          '<th> Temperature </th>' +
-          '<th>'+sensormark['Temperature']+'</th>' +
-          '<th>-</th>' +
-          '</tr>' +
-          '</tbody>' +
-          '</table>' +
-          '</div>' +
-          '</p>' +
-          '</div>';
-
-
-        
-        
-        infowindow[i] = new google.maps.InfoWindow({
-          content: contentString[i]
-        });
-
-        marker[i] = new google.maps.Circle({
-          strokeColor: '#FF0000',
-          strokeOpacity: 0.8,
-          strokeWeight: 2,
-          fillColor: '#FF0000',
-          fillOpacity: 0.35,
-          map: map,
-          position: { lat: sensormark['latitude'], lng: sensormark['longitude'] },
-          center: { lat: sensormark['latitude'], lng: sensormark['longitude'] },
-          radius: 100
-          //html: "<span class='pogo_name'>" + sensormark.name + "</a></span><br />" + sensormark.location[0] + "<br />"
-        });
-
-
-      
-        marker[i].addListener('click', function () {
-          //나머지 색상 원래대로 - 이전 창 자동으로 닫는거 안
-          for(var k = 0; k< length; k++){              
-              marker[k].setOptions({
-              strokeColor: '#FF0000',
-              fillColor: '#FF0000',
-            });
-          }
-          //열고
-          infowindow[i].open(map, marker[i]);        
-          //색상 바꾸고
-          marker[i].setOptions({
-            strokeColor: '#000000',
-            fillColor: '#000000',
-          });          
-        });   
-      }
-    }
-
-    //달력 값이 변경 되면
-    function mapchange(object){
-      var today = new Date(object.value).toISOString().slice(0, 10);
-
-      var tomorrow = new Date(object.value);
-      tomorrow.setDate(tomorrow.getDate() + 1);
-      tomorrow = tomorrow.toISOString().slice(0, 10);
-
-      $.ajax({
-        method: "POST",
-        url: "/location",
-        data: {
-            usn : usn,
-            date : today,
-            tomorrow : tomorrow          
-        }
-      }).done(function( msg ) {
-          createMarkers(msg);
-          console.log(msg);
-          console.log("변경");
-      }).fail((msg) => {
-          console.log(msg);
-      }); 
-
-      console.log(object.value);
-
-
-    }
-  </script>
-
-  <!-- Google Chart-->
-  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-  <script type="text/javascript">
-    google.charts.load('current', { 'packages': ['bar'] });
-    google.charts.setOnLoadCallback(drawStuff);
-
-    //밑에 배열부분에 AQI 값만 오른쪽에 넣고 나머지 요소들은 왼쪽에 다 집어넣으면 됨
-    function drawStuff(markerJson) {
-      //var sensormark = markerJson[0];
-      
-      var test ;
-
-
-
-      var data = new google.visualization.arrayToDataTable([
-      ['Air Elements', 'Row Data', 'AQI'],
-            ['PM2.5', 2, 0],
-            ['O3', 49, 0],
-            ['CO', 0.49, 0],
-            ['NO2', 5.8, 0],
-            ['SO2', 0.93, 0],
-            ['temperature', 21, 0],
-            ['AQI PM2.5', 0, 19],
-            ['AQI O3', 0, 43],
-            ['AQI CO', 0, 4],
-            ['AQI NO2', 0, 4],
-            ['AQI SO2', 0, 1]
-      ]);
-
-     
-
-
-      var options = {
-        width: 800,
-        chart: {
-          title: 'Real-time Air Quality',
-          subtitle: 'distance on the left, brightness on the right'
-        },
-        bars: 'horizontal', // Required for Material Bar Charts.
-        series: {
-          0: { axis: 'distance' }, // Bind series 0 to an axis named 'distance'.
-          1: { axis: 'brightness' } // Bind series 1 to an axis named 'brightness'.
-        },
-        axes: {
-          x: {
-            distance: { label: 'parsecs' }, // Bottom x-axis.
-            brightness: { side: 'top', label: 'apparent magnitude' } // Top x-axis.
-          }
-        }
-      };
-
-
-      var chart = new google.charts.Bar(document.getElementById('dual_x_div'));
-      chart.draw(data, options);
-    };
-  </script>
+  <link href="css/sb-admin.css" rel="stylesheet">  
+  
   <!-- 팝업 테이블 css -->
   <style>
     .mytable {
@@ -291,15 +33,15 @@
   </style>
 </head>
 
-<body id="page-top">
-  <!--IF user not login go to login page-->
+<body id="page-top">  
   <script>
+    // 로그인 SESSION이 없으면 로그인 페이지로 이동
     if (sessionStorage.getItem('usn') == null) {
       location.href = "/";
     }
   </script>
   <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
-      <img src="http://teamc-iot.calit2.net/mail_iconn.png" style="height: 48px; width:100px;background-color: #01dea5;">
+      <img src="http://54.180.159.207/mail_iconn.png" style="height: 48px; width:100px;background-color: #01dea5;">
     <a class="navbar-brand mr-1" href="/main">Farm-ing</a>
     <button class="btn btn-link btn-sm text-white order-1 order-sm-0" id="sidebarToggle" href="#">
       <i class="fas fa-bars"></i>
@@ -324,14 +66,15 @@
 
         <!-- 회원 아이콘-->
         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
-          <a>Hi,
+          <a style="padding-left: 24px; padding-right: 24px; padding-top: 4px; padding-bottom: 4px;">
+            Hustar,
             <script>
               var name = sessionStorage.getItem('name');
               document.write(name);
             </script>
           </a>
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" data-toggle="modal" data-target="#logoutModal">Logout</a>
+          <a class="dropdown-item" data-toggle="modal" data-target="#logoutModal">로그아웃</a>
         </div>
       </li>
     </ul>
@@ -353,10 +96,10 @@
           <span>Information</span>
         </a>
         <div class="dropdown-menu" aria-labelledby="pagesDropdown">
-          <a class="dropdown-item" id="myaccountb" href="/myaccount">My Account</a>
-          <a class="dropdown-item" href="/change_password">Change Password</a>
-          <a class="dropdown-item" id="signoutb" href="#" data-toggle="modal" data-target="#logoutModal">Log Out</a>
-          <a class="dropdown-item" href="/change_idcancellation">ID Cancellation</a>
+          <a class="dropdown-item" id="myaccountb" href="/myaccount">내 계정</a>
+          <a class="dropdown-item" href="/change_password">비밀번호 변경</a>
+          <a class="dropdown-item" id="signoutb" href="#" data-toggle="modal" data-target="#logoutModal">로그아웃</a>
+          <a class="dropdown-item" href="/change_idcancellation">회원 탈퇴</a>
         </div>
       </li>
       <li class="nav-item">
@@ -376,7 +119,7 @@
         <!-- Breadcrumbs-->
         <ol class="breadcrumb">
           <li class="breadcrumb-item">
-            <a href="#">Farm-ing</a>
+            <a href="#">Hustar</a>
           </li>
           <li class="breadcrumb-item active">Overview</li>
         </ol>
@@ -471,7 +214,7 @@
       <footer class="sticky-footer">
         <div class="container my-auto">
           <div class="copyright text-center my-auto">
-            <span>Copyright © Your Website 2019</span>
+            <span>Hustar</span>
           </div>
         </div>
       </footer>
@@ -493,15 +236,15 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+          <h5 class="modal-title" id="exampleModalLabel">로그아웃</h5>
           <button class="close" type="button" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">×</span>
           </button>
         </div>
-        <div class="modal-body">Do you want to quit our 'Farming'?</div>
+        <div class="modal-body">로그아웃 하실래요?</div>
         <div class="modal-footer">
-          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-          <a class="btn btn-primary" id="logoutb">Logout</a>
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">닫기</button>
+          <a class="btn btn-primary" id="logoutb">로그아웃</a>
           <!-- LogOut btn action -->
           <script type="text/javascript">
             document.getElementById("logoutb").addEventListener('click', function () {
@@ -510,9 +253,9 @@
               //send json
               $.ajax({
                 method: "POST",
-                url: "/signout_proc",
+                url: "/signout",
                 data: {
-                  "usn": usn
+                  "USN": usn
                 }
               }).done(function (msg) {
                 if (msg.message == 0) {
@@ -522,7 +265,7 @@
                   location.href = "/";
                 }
                 if (msg.message == 1) {
-                  alert("Please, try logout again.");
+                  alert("로그아웃 다시해주세요");
                 }
               });
             });
@@ -577,5 +320,4 @@
   <script src="js/demo/chart-area-demo.js"></script> -->
 
 </body>
-
 </html>

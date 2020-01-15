@@ -75,8 +75,8 @@ $app->get('/maps', 'App\Controller\WebController:maps')
     $app->post('/verify/{where}', 'App\Controller\UserManagementController:EmailVerify')
     ->setName('verify');
 
-    //certification check(click next button)
-    $app->post('/check_certification', 'App\Controller\UserManagementController:check_certification')
+    // EMAIL로 인증 유무 확인 (APP)    
+    $app->get('/verify/check', 'App\Controller\UserManagementController:checkCertification')
     ->setName('check_certification');
 
     // CERTIFICATION_STATE 변경 (WEB)    
@@ -87,13 +87,13 @@ $app->get('/maps', 'App\Controller\WebController:maps')
     $app->get('/verify/app/{code}', 'App\Controller\UserManagementController:change_certification_app')
     ->setName('change_certification');
 
-    //sign_in
-    $app->post('/signin_proc', 'App\Controller\UserManagementController:signin_proc')
-    ->setName('signin_proc');
+    // 로그인
+    $app->post('/signin', 'App\Controller\UserManagementController:signIn')
+    ->setName('signIn');
 
-    //sign_out
-    $app->post('/signout_proc', 'App\Controller\UserManagementController:signout_proc')
-    ->setName('signout_proc');
+    // 로그아웃
+    $app->post('/signout', 'App\Controller\UserManagementController:signOut')
+    ->setName('signOut');
 
     //forgot_password check- user are exsit
     $app->post('/forgot_password_check', 'App\Controller\UserManagementController:forgot_password_check')

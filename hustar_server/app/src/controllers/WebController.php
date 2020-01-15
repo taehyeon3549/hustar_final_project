@@ -76,7 +76,9 @@ final class WebController extends BaseController
         return $response;
     }
 
-    //Main page
+/*************************
+ * 메인 페이지
+ *************************/
 	public function main(Request $request, Response $response, $args)
     {
         $this->logger->info("main page action dispatched");

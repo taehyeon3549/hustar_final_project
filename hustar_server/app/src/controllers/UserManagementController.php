@@ -220,7 +220,7 @@ final class UserManagementController extends BaseController
 		$userInfo['USER_NAME'] = $request->getParsedBody()['NAME'];
 		$userInfo['USER_PHONE'] = $request->getParsedBody()['PHONE'];		
 		$userInfo['USER_GENDER'] = $request->getParsedBody()['GENDER'];
-		$userInfo['USER_BIRTH'] = $request->getParsedBody()['BIRTH'];				
+		$userInfo['USER_BIRTH'] = $request->getParsedBody()['BIRTH'];		
 
 		/* 이메일 중복 체크 */
 		if($this->UserManagementModel->duplicateEmail($userInfo['USER_EMAIL']) == 0){
@@ -258,54 +258,46 @@ final class UserManagementController extends BaseController
 		->write(json_encode($result, JSON_NUMERIC_CHECK));
 	}
 
-//Sign_in
-//0 : login success, 1: wrong password, 2: account not exsit, 3: not certificated
-	public function signin_proc(Request $request, Response $response, $args)
+/*****************************************
+ * 로그인
+ * 
+ * return
+ * 0 : 로그인 성공, 1: 패스워드 틀림, 
+ * 2 : 회원 없음, 3: 미인증 회원
+ ****************************************/
+	public function signIn(Request $request, Response $response, $args)
 	{
-    	//Get the User's info in sign_in page(id, password)
-		$info = [];
-		$info['email'] = $request->getParsedBody()['id'];
-		$info['pw'] = $request->getParsedBody()['pw'];
-
-		//Array of put the result
+		$Loinginfo = [];
+		$Loinginfo['EMAIL'] = $request->getParsedBody()['EMAIL'];
+		$Loinginfo['PASSWORD'] = $request->getParsedBody()['PASSWORD'];
+		
 		$result = [];
-		$temp = $this->UserManagementModel->login($info['email']);
+		$searchedUserInfo = $this->UserManagementModel->getUserByEmail($Loinginfo['EMAIL']);
 
-		//Insert the user's info in DB and Check, is success
-		if(!$temp['hashed']){
+		// 찾는 유저가 없으면
+		if(!$searchedUserInfo['USER_PASSWORD']){
 			//Account is not exsit
-			$result['header'] = "login_account is not exsit";
+			$result['header'] = "User is not exsit";
 			$result['message'] = "2";
 		}else{	
-			if(password_verify($info['pw'], $temp['hashed'])){
-				//Login success!!
-				//Check this user are certificated
-				//result of certificate
-				$certificated = $this->UserManagementModel->checkCertifi($info['email']);
+			// 찾는 유저가 있으면 비번 비교
+			if(password_verify($Loinginfo['PASSWORD'], $searchedUserInfo['USER_PASSWORD'])){
+				// 비번이 같으면 인증 회원인지 확인				
+				$certificated = $this->UserManagementModel->getCertifiByEmail($Loinginfo['EMAIL']);
 				
-				if($certificated['certi_state'] == 1){
-					//if user are not certificated can not sign_in
+				if($certificated['CERTIFICATION_STATE'] == 1){					
 					$result['header'] = "Certificate is not done";
 					$result['message'] = "3";
 				}else{
-					//Get authority and usn by email
-					$userInfo = $this->UserManagementModel->getUserInfo_email($info['email']);
-
-					$usn = $userInfo['USN'];
-					$is_admin = $userInfo['is_admin'];
-					$name = $userInfo['name'];
-
-					//then make login state to 1
-					if($this->UserManagementModel->changeSignin($info['email'])){
-						$result['header'] = "login_success";
-						$result['message'] = "0";
-						$result['usn'] = $usn;
-						$result['is_admin']	 = $is_admin;
-						$result['name'] = $name;
-					}
+					// 로그인 성공
+					$result['header'] = "login_success";
+					$result['message'] = "0";
+					$result['usn'] = $searchedUserInfo['USER_USN'];
+					$result['is_admin']	 = $searchedUserInfo['USER_ADMIN'];
+					$result['name'] = $searchedUserInfo['USER_NAME'];					
 				}		
 			}else{
-				//Login fail!!
+				// 로그인 실패
 				$result['header'] = "login_password_wrong";
 				$result['message'] = "1";
 			}
@@ -316,25 +308,19 @@ final class UserManagementController extends BaseController
 		->write(json_encode($result, JSON_NUMERIC_CHECK));
 	}
 
-//Sign_out
-//0: signout success, 1: signout fail
-	public function signout_proc(Request $request, Response $response, $args)
+/******************************
+ * 로그아웃
+ * 
+ * return
+ * 0: 로그아웃 성공, 1: 로그아웃 실패
+ ******************************/
+	public function signOut(Request $request, Response $response, $args)
 	{
-   		//Get the User's usn
-		$info = [];
-		$info['usn'] = $request->getParsedBody()['usn'];
-
-		//Array of put the result
-		$result = [];
-
-		if($this->UserManagementModel->changeSignout($info['usn'])){
-			$result['header'] = "Signout_success";
-			$result['message'] = "0";	
-		}else{
-			//Sign_out fail!!
-			$result['header'] = "Signout_fail";
-			$result['message'] = "1";
-		}	
+		$userInfo = [];
+		$userInfo['USN'] = $request->getParsedBody()['USN'];
+		
+		$result['header'] = "Signout_success";
+		$result['message'] = "0";				
 
 		return $response->withStatus(200)
 		->withHeader('Content-Type', 'application/json')
@@ -527,15 +513,16 @@ final class UserManagementController extends BaseController
 		->write(json_encode($result, JSON_NUMERIC_CHECK));
 	}
 
-//Check the user are certificated
-	public function check_certification(Request $request, Response $response, $args)
+/**************************
+*	인증 확인 (APP)
+****************************/
+	public function checkCertification(Request $request, Response $response, $args)
 	{
-		//Store input email
-		$email_address = $request->getParsedBody()['id'];
-		$certi_state = $this->UserManagementModel->checkCertifi($email_address);
+		$EMAIL = $request->getParsedBody()['EMAIL'];
+		$CERTIFICATION_STATE = $this->UserManagementModel->getCertifiByEmail($EMAIL);
 
-		//check the certi_state
-		if($certi_state['certi_state'] == '0'){
+		// CERTIFICATION 테이블의 CERTIFICATION_STATE 값 확인
+		if($CERTIFICATION_STATE['CERTIFICATION_STATE'] == '0'){
 			//certificated
 			$result['header'] = "Certificated";
 			$result['message'] = "0";
@@ -728,7 +715,7 @@ public function change_certification_app(Request $request, Response $response, $
 			
 			if($certi['certi_email'] != NULL){
 				//get usn from user table used by email
-				$user = $this->UserManagementModel->getUserInfo_email($certi['certi_email']);
+				$user = $this->UserManagementModel->getUserByEmail($certi['certi_email']);
 				if($user['USN'] != NULL){					
 					$usn = $user['USN'];
 					$this->view->render($response, 'new-password.twig', ['code' => $certi_code, 'usn' => $usn]);

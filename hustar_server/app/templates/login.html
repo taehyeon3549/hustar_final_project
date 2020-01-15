@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="kr">
 
 <head>
 
@@ -9,7 +9,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>Farm-ing Sign In</title>
+  <title>환영합니다 Hustar 입니다.</title>
 
   <!-- Custom fonts for this template-->
   <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -24,31 +24,31 @@
         <img src="http://teamc-iot.calit2.net/mail_iconn.png" style="height: 200px;background-color: #01dea5;">
     </div>
     <div class="card card-login mx-auto mt-5" style="margin-top: 5px;">
-      <div class="card-header">Farm-ing</div>
+      <div class="card-header">Hustar</div>
       <div class="card-body">
 
         <form>
           <div class="form-group">
             <div class="form-label-group">
               <input type="email" name="email"id="inputEmail" class="form-control" placeholder="Email address" required="required" autofocus="autofocus">
-              <label for="inputEmail">Test2_Email address</label>
+              <label for="inputEmail">ID</label>
             </div>
           </div>
           <div class="form-group">
             <div class="form-label-group">
               <input type="password" name ="pass" id="inputPassword" class="form-control" placeholder="Password" required="required">
-              <label for="inputPassword">Password</label>
+              <label for="inputPassword">PW</label>
             </div>
           </div>
           <div class="form-group">
             <div class="checkbox">
               <label>
                 <input type="checkbox" value="remember-me">
-                Remember Password
+                암호를 기억해주세요
               </label>
             </div>
           </div>
-          <a class="btn btn-primary btn-block" id="loginb">Login</a>
+          <a class="btn btn-primary btn-block" id="loginb">로그인</a>
         </form>
 
         <script type="text/javascript">
@@ -59,20 +59,20 @@
             var pass = $('input[name = pass]').val();
 
             if(email == ""){
-              alert("Please, Enter the email");
+              alert("ID를 입력해주세요");
             }else if(pass == ""){
-              alert("Please, Enter the password");
+              alert("비밀번호를 입력해주세요");
             }else{
               //send json
               $.ajax({
               method: "POST",
-              url: "/signin_proc",
+              url: "/signin",
               data: {
-                "id": $('input[name = email]').val(),                
-                "pw": $('input[name = pass]').val()                
+                "EMAIL": $('input[name = email]').val(),                
+                "PASSWORD": $('input[name = pass]').val()                
               }
               }).done(function( msg ) {
-                  //If sign_up success, show up the sign in page
+                  //로그인 성공
                   if(msg.message == 0){
                     //IF login success, get user's sensor data
                     $.ajax({
@@ -87,7 +87,7 @@
                     });         
                     alert("Welcome!!");
 
-                    //Create session
+                    // WEB SESSION 생성
                     //Get usn and is_admin
                     sessionStorage.setItem("usn", msg.usn);
                     sessionStorage.setItem("name", msg.name);
@@ -96,15 +96,15 @@
                     location.href = "/main";
                   }
                   if(msg.message == 1){
-                    alert("Please, check your password again.");
+                    alert("패스워드가 틀렸습니다");
                     location.href = "/";
                   }
                   if(msg.message == 2){
-                    alert("You don't have account. Why don't you join our member");
+                    alert("계정이 없네요, 회원가입 하실래요?");
                     location.href = "/register_email";
                   }
                   if(msg.message == 3){
-                    alert("You didn't certifate. Please, check your email.");
+                    alert("아직 인증이 안되었네요, 메일을 확인해주세요");
                     location.href = "/";
                   }
               });
@@ -112,8 +112,8 @@
           });
         </script>
         <div class="text-center">
-          <a class="d-block small mt-3" href="/register_email">Register an Account</a>
-          <a class="d-block small" href="/forgot-password">Forgot Password?</a>
+          <a class="d-block small mt-3" href="/register_email">회원 가입</a>
+          <a class="d-block small" href="/forgot-password">비밀번호가 기억나지 않은세요?</a>
         </div>
       </div>
     </div>

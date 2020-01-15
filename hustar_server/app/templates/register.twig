@@ -135,7 +135,7 @@
               //send json
               $.ajax({
               method: "POST",
-              url: "/signUP",
+              url: "/signup",
               data: {
                 "EMAIL": $('input[name = email]').val(),                
                 "NAME": name,
@@ -148,6 +148,7 @@
                   //If sign_up success, show up the sign in page
                   if(msg.message == 0){
                     alert("Hustar가 되신것을 환영합니다!!");
+                    alert(Birth);
                     location.href = "/";
                   }
                   if(msg.message == 1){
