@@ -28,6 +28,9 @@ final class UserManagementController extends BaseController
 		if($this->UserManagementModel->test_insert($test_db) == 1){
 			$result['header'] = "insert success";
 			$result['message'] = $test_db;
+		}else{
+			$result['header'] = "insert fail";
+			$result['message'] = "fail";
 		}
 
 		return $response->withStatus(200)
@@ -43,75 +46,78 @@ final class UserManagementController extends BaseController
 	public function send_mail($who, $code, $client, $type){
 		$mail = new PHPMailer(true);		
 		try{
-			//Server settings
+			// SMTP 설정
 			$mail->SMTPDebug = 0;		//debugging setting 
 			$mail->isSMTP();
 			$mail->Host = 'smtp.gmail.com';   
 			$mail->SMTPAuth = true;
-			$mail->Username = 'teamciot2019@gmail.com';   //SMTP username
-			$mail->Password = 'ucsandiego2019';
+			$mail->Username = 'hustar.ict.daegu@gmail.com';   //SMTP username
+			$mail->Password = 'hustar2019';
 			$mail->SMTPSecure = 'tls';
 			$mail->Port = 587;
 
-			//Recipients
-			$mail->setFrom('teamciot@gmail.com', "teamciot");
+			// 수신자
+			$mail->setFrom('hustar.ict.daegu@gmail.com', "hustar.ict.daegu");
 			$mail->addAddress($who);
 
 			$mail->isHTML(true);
 
-			//Body of email
-			//deside by $type
-			// 0 : certification mail, 1: forgotten password
+			// Email Body
+			// 인증 메일인지 비번 변경 메일인지 구분
+			// 0 : certification mail, 1: forgotten password			
 			if($type == 0){
-				//certification mail
-				$mail->Subject = "Please check this mail to Certification!";
-				$mail->Body = '<body style="margin: 0; padding: 0;">
-				<table align="center" border="0" cellpadding="0" cellspacing="0" width="600">
-					<tr>
-						<td align="center" bgcolor="#01dea5" style="padding: 40px 0 30px 0;">
-							<img src= "http://teamc-iot.calit2.net/mail_iconn.png" alt="Thank you for certification!!" height="230" style="display: block;width: 100%"/>
-						</td>
-					</tr>
-					<tr>
-						<td bgcolor="#f8f9fa" style="padding: 40px 30px 40px 30px;">
-							<table border="0" cellpadding="0" cellspacing="0" width="100%">
-								<tr>
-									<td>
-										<h4>
-											 If you want to join our member, Click the Link!!!
-										</h4>
-									</td>
-								</tr>
-								<tr align="center" style="height: 200px;">
-									<td>
-										<h2><b><a href = http://teamc-iot.calit2.net/verify/'.$client.'/'.$code.'>http://teamc-iot.calit2.net/verify/'.$client.'/'.$code.'</a></b></h2>
-									</td>
-								</tr>
-								<tr>
-									<td>
-									   
-									</td>
-								</tr>
-							</table>
-						</td>
-					</tr>
-					<tr>
-						<td align="center" bgcolor="#2e9afe" style="color:white;">
-							This email is sent by QI teamc.
-						</td>
-					</tr>
-				</table>
-			</body>';
-				//'<b><a href = '.'>http://teamc-iot.calit2.net/'.$code.'<'.'/a></br>This message is sent by team c, jane</b>';
-				$mail->AltBody = 'Please click the link to activate your account.';
+				//"Hustar ICT 회원 인증 메일 입니다.";
+				$subject = 'SHVzdGFyIElDVCDtmozsm5Ag7J247KadIOuplOydvCDsnoXri4jri6Qu';
+				$mail->Subject = '=?UTF-8?B?'.$subject.'?=';				
+				$mail->Body = 
+								'<body style="margin: 0; padding: 0;">
+									<table align="center" border="0" cellpadding="0" cellspacing="0" width="600">
+										<tr>
+											<td align="center" bgcolor="#01dea5" style="padding: 40px 0 30px 0;">
+												<img src= "http://54.180.159.207/mail_iconn.png" alt="Thank you for certification!!" height="230" style="display: block;width: 100%"/>
+											</td>
+										</tr>
+										<tr>
+											<td bgcolor="#f8f9fa" style="padding: 40px 30px 40px 30px;">
+												<table border="0" cellpadding="0" cellspacing="0" width="100%">
+													<tr>
+														<td>
+															<h4>
+																링크를 클릭하여, 이메일 인증을 완료해주세요!
+															</h4>
+														</td>
+													</tr>
+													<tr align="center" style="height: 200px;">
+														<td>
+															<h2><b><a href = http://54.180.159.207/verify/'.$client.'/'.$code.'>http://54.180.159.207/verify/'.$client.'/'.$code.'</a></b></h2>
+														</td>
+													</tr>
+													<tr>
+														<td>
+														
+														</td>
+													</tr>
+												</table>
+											</td>
+										</tr>
+										<tr>
+											<td align="center" bgcolor="#2e9afe" style="color:white;">
+												대구 Hustar ICT &nbsp;&nbsp;	Hustar.org
+											</td>
+										</tr>
+									</table>
+								</body>';				
+				$mail->AltBody = '링크를 클릭하여, 이메일 인증을 완료해주세요!';
 			}else if($type == 1){
 				//forgotten password
-				$mail->Subject = "If click this link, you can change the password";
+				//Hustar ICT 회원 비번 변경 메일 입니다.
+				$subject = 'SHVzdGFyIElDVCDtmozsm5Ag67mE67KIIOuzgOqyvSDrqZTsnbwg7J6F64uI64ukLg==';
+				$mail->Subject = '=?UTF-8?B?'.$subject.'?=';	
 				$mail->Body = '<body style="margin: 0; padding: 0;">
 				<table align="center" border="0" cellpadding="0" cellspacing="0" width="600">
 					<tr>
 						<td align="center" bgcolor="#01dea5" style="padding: 40px 0 30px 0;">
-							<img src= "http://teamc-iot.calit2.net/mail_iconn.png" alt="Change your password" height="230" style="display: block;width: 100%"/>
+							<img src= "http://54.180.159.207/mail_iconn.png" alt="Thank you for certification!!" height="230" style="display: block;width: 100%"/>
 						</td>
 					</tr>
 					<tr>
@@ -120,13 +126,13 @@ final class UserManagementController extends BaseController
 								<tr>
 									<td>
 										<h4>
-											 If you want to Change your password, Click the Link!!!
+											 링크를 클릭하여, 패스워드 변경 화면으로 이동하세요!
 										</h4>
 									</td>
 								</tr>
 								<tr align="center" style="height: 200px;">
 									<td>
-										<h2><b><a href = http://teamc-iot.calit2.net/pass/'.$code.'>http://teamc-iot.calit2.net/pass/'.$code.'</a></b></h2>
+										<h2><b><a href = http://54.180.159.207/pass/'.$code.'>http://54.180.159.207/pass/'.$code.'</a></b></h2>
 									</td>
 								</tr>
 								<tr>
@@ -139,12 +145,12 @@ final class UserManagementController extends BaseController
 					</tr>
 					<tr>
 						<td align="center" bgcolor="#2e9afe" style="color:white;">
-							This email is sent by QI teamc.
+						대구 Hustar ICT &nbsp;&nbsp;	Hustar.org
 						</td>
 					</tr>
 				</table>
 			</body>';
-				$mail->AltBody = 'Please click the link to change your password.';
+				$mail->AltBody = '링크를 클릭하여, 패스워드 변경 화면으로 이동하세요!';
 			}			
 			
 
@@ -154,13 +160,13 @@ final class UserManagementController extends BaseController
 
 			return true;	
 		} catch (Exception $e){
-			//print_r($e);
+			print_r($e);
 			return false;
 		}
 	}
 
-//Make nonce code - 8char
-	public function make_nonce(){
+	//인증 암호 생성 - 8char
+	public function makeNonce(){
 		//Create nonce code
 		$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 		$charactersLength = strlen($characters);
@@ -173,8 +179,8 @@ final class UserManagementController extends BaseController
 		return $randomString;
 	}
 	
-	//mailicon
-	public function mailicon(Request $request, Response $response, $args)
+	//메일 아이콘 호출 함수
+	public function mailIcon(Request $request, Response $response, $args)
 	{
 		echo '<img src="mail_iconn.png" />';
 	}
@@ -212,7 +218,7 @@ final class UserManagementController extends BaseController
 		$userInfo['USER_EMAIL'] = $request->getParsedBody()['EMAIL'];
 		$userInfo['PASSWORD'] = $request->getParsedBody()['PASSWORD'];
 		$userInfo['USER_NAME'] = $request->getParsedBody()['NAME'];
-		printf($userInfo['USER_NAME']);
+		$userInfo['USER_PHONE'] = $request->getParsedBody()['PHONE'];		
 		$userInfo['USER_GENDER'] = $request->getParsedBody()['GENDER'];
 		$userInfo['USER_BIRTH'] = $request->getParsedBody()['BIRTH'];				
 
@@ -352,7 +358,7 @@ final class UserManagementController extends BaseController
 			//user exist, send the link by email
 
 			//Create a nonce code in certification tabel in DB
-			$info['code'] = $this->make_nonce();
+			$info['code'] = $this->makeNonce();
 
 			//update user's certi_code in certification table
 			if($this->UserManagementModel->updateCertifi($info, 0)){
@@ -442,11 +448,15 @@ final class UserManagementController extends BaseController
 		->write(json_encode($result, JSON_NUMERIC_CHECK));
 	}
 
-//Send the certification eamil
-//0: send email success, 1: already have account, 2: send email fail, 3: insert certification table fail, 4: update certification table fail--------------------------------------
-	public function click_verify(Request $request, Response $response, $args)
+/********************************************************
+ * 이메일 인증 메일 전송
+ * 0: send email success, 1: already have account, 
+ * 2: send email fail, 3: insert certification table fail, 
+ * 4: update certification table fail	 
+ **********************************************************/
+	public function EmailVerify(Request $request, Response $response, $args)
 	{
-		//Get which client clicked
+		// WEB 인지 APP 인지 구분
 		//0: web , 1: app
 		if($args['where'] == 0){
 			$client = "web";
@@ -454,30 +464,29 @@ final class UserManagementController extends BaseController
 			$client = "app";
 		}
 
-		//Store input email
-		$email_address = $request->getParsedBody()['id'];
-		//$email_address = 'xogusrla09@gmail.com';
+		$EMAIL = $request->getParsedBody()['EMAIL'];
+		//$EMAIL = 'xogusrla09@gmail.com';
 
-		//Check the duplicate of email
-		if($this->UserManagementModel->duplicateEmail($email_address) == 0){
-			//if there are not have a user, start to create account
+		// 이미 가입 되어있는 회원인지 체크
+		if($this->UserManagementModel->duplicateEmail($EMAIL) == 0){
+			// 기존 회원이 아니면
 			$result = [];
 
-			//Create nonce code
-			$randomString = $this->make_nonce();
+			// 인증 암호 생성
+			$randomString = $this->makeNonce();
 
-		    //Data of certification
+		    // DB CERTIFICATION 테이블에 삽입할 값
 			$certi = [];		//certification data
-			$certi['email'] = $email_address;
+			$certi['email'] = $EMAIL;
 			$certi['code'] = $randomString;
 			$certi['state'] = 1;		//default is 1
 
-			//check the email, already certificated.
+			// 인증 받은 회원인지 아닌지 체크
 			if($this->UserManagementModel->alreadyCertifi($certi['email']) == 0){
-				//already try certificate - update certification table
+				// 만약 인증은 안하고 코드 발급을 받았다면 코드 갱신
 				if($this->UserManagementModel->updateCertifi($certi, 1)){
-					//update certification table success
-					//Send certification email
+					// CERTIFICATION 갱신 완료
+					// 인증 메일 전송
 					if($this->send_mail($certi['email'], $certi['code'], $client, 0)){
 						$result['header'] = "Send email success";
 						$result['message'] = "0";	
@@ -486,15 +495,15 @@ final class UserManagementController extends BaseController
 						$result['message'] = "2";
 					}				
 			    }else{
-					//update certification table fail
+					// CERTIFICATON 테이블 갱신 실패
 			    	$result['header'] = "Update certification table fail";
 			    	$result['message'] = "4";
 			    }
 			}else{
-				//Never been try certificate
-				//Insert the user data in certification table in DB			
+				// 인증코드를 처음 발급 받는 회원
+				// CERTIFICATION 테이블에 USER 정보 삽입
 				if($this->UserManagementModel->addCertifi($certi) == 0){
-					//Send certification email
+					// 인증 메일 전송
 					if($this->send_mail($certi['email'], $certi['code'], $client, 0)){
 						$result['header'] = "Send email success";
 						$result['message'] = "0";	
@@ -508,7 +517,7 @@ final class UserManagementController extends BaseController
 			    }
 			}
 		}else{
-			//already user have account
+			// 이미 회원 가입되어 있는 유저
 			$result['header'] = "Already have account";
 			$result['message'] = "1";
 		}
@@ -541,24 +550,16 @@ final class UserManagementController extends BaseController
 		->write(json_encode($result, JSON_NUMERIC_CHECK));
 	}
 
-//Change the certi_state in Certification table(In email Link)
+/**************************************************************
+* 이메일 인증 확인, CERTIFICATON 의 CERTIFICATION_STATE를 변경 (WEB)
+***************************************************************/
 	public function change_certification(Request $request, Response $response, $args)
 	{
-		//Store input email
-		//if(!isset($data[]))
-		//$certi_code = $request->getParsedBody()['code'];
-		
 		$certi_code = $args['code'];
 
-		//Change the state
-		if($this->UserManagementModel->changeCertifi($certi_code)){
-			 //$result['header'] = "Change the state success";
-			 //$result['message'] = "0";
-
-			//Show up sign up page
-			echo("<script>alert('Certification success')</script>");
-			//Add certi_code when open the sign up page
-			echo("<script>location.href='/sign_up/".$certi_code."';</script>");			
+		if($this->UserManagementModel->changeCertifi($certi_code)){			 
+			echo("<script>alert('인증 성공')</script>");			
+			echo("<script>location.href='/verify/sign_up/".$certi_code."';</script>");			
 		}else{
 			$result['header'] = "Change the state fail";
 			$result['message'] = "1";
@@ -569,21 +570,18 @@ final class UserManagementController extends BaseController
 		}		
 	}
 
-//Change the certi_state in Certification table(In email Link)
+/**************************************************************
+* 이메일 인증 확인, CERTIFICATON 의 CERTIFICATION_STATE를 변경 (APP)
+***************************************************************/
 public function change_certification_app(Request $request, Response $response, $args)
-{
-	//Store input email
-	//if(!isset($data[]))
-	//$certi_code = $request->getParsedBody()['code'];
-	
+{	
 	$certi_code = $args['code'];
 
-	//Change the state
 	if($this->UserManagementModel->changeCertifi($certi_code)){
 		$result['header'] = "Change the state success";
 		$result['message'] = "0";
 
-		//show up certificate success
+		// 이메일 인증 성공 화면 보이기
 		$this->view->render($response, 'register_email_certification.html');
 		//echo("<script>location.href='/register_email_certification';</script>");
 		/*

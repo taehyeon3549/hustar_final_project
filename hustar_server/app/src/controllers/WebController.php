@@ -17,6 +17,7 @@ final class WebController extends BaseController
 		$this->view = $view;
     }
     
+    //TEST
     public function index(Request $request, Response $response, $args)
     {
         $this->logger->info("Home page action dispatched");
@@ -58,22 +59,20 @@ final class WebController extends BaseController
         return $response;
     }
 
-    //sign up page
+    
+/****************************
+    * 회원 가입 페이지
+****************************/
 	public function sign_up(Request $request, Response $response, $args)
-    {
+    {        
         $this->logger->info("sign_up page action dispatched");
 
-        //$this->flash->addMessage('info', 'sign_up page load');
-
-        $code = $args['code'];      //Get the code value
-        
+        $code = $args['code'];      //Get the code value             
         //Get email using by certi_code
         $val = $this->WebModel->getEmail($code);
-        $email = $val['certi_email'];
-
-        //$this->view->render($response, 'register.html', array('code' => $code));
+        $email = $val['CERTIFICATION_EMAIL'];
+        
         $this->view->render($response, 'register.twig', ['email' => $email]);
-        //$this->view->render($response, 'register.php');
         return $response;
     }
 

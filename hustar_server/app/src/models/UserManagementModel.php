@@ -176,9 +176,12 @@ final class UserManagementModel extends BaseModel
 		return $result[0];
 	}
 	
-	//Update certification code
+	
+/*************************
+ * CERTIFICATION 코드 갱신  
+ *************************/
 	public function updateCertifi($info, $num) {  
-		$sql = "UPDATE Certification SET certi_code = ? , certi_state = ? WHERE certi_email = ?";
+		$sql = "UPDATE CERTIFICATION SET CERTIFICATION_CODE = ? , CERTIFICATION_STATE = ? WHERE CERTIFICATION_EMAIL = ?";
 		$sth = $this->db->prepare($sql);
 		
 		if($sth->execute(array($info['code'], $num, $info['email']))){
@@ -230,9 +233,9 @@ final class UserManagementModel extends BaseModel
 		}
 	}
 
-	//Get certification value using by email
+	// 인증 받은 회원인지 체크
 	public function alreadyCertifi($email) {  
-		$sql = "SELECT * FROM Certification WHERE certi_email = ?";
+		$sql = "SELECT * FROM CERTIFICATION WHERE CERTIFICATION_EMAIL = ?";
 		$sth = $this->db->prepare($sql);
 
 		$sth->execute(array($email));
@@ -264,9 +267,11 @@ final class UserManagementModel extends BaseModel
 	}
 	*/
 
-	//Add the certification data
+/****************************
+ * CERTIFICATION 테이블 입력
+ *****************************/
 	public function addCertifi($certi) {  
-		$sql = "INSERT INTO Certification (`certi_email`, `certi_code`, `certi_state`) VALUES (?, ?, ?)";
+		$sql = "INSERT INTO CERTIFICATION (`CERTIFICATION_EMAIL`, `CERTIFICATION_CODE`, `CERTIFICATION_STATE`) VALUES (?, ?, ?)";
 		$sth = $this->db->prepare($sql);
 
 		if($sth->execute(array($certi['email'], $certi['code'], $certi['state']))){
@@ -278,9 +283,11 @@ final class UserManagementModel extends BaseModel
 		}
 	}
 
-	//Update user's certification state 1 to 0
+/*******************************************
+ * CERTIFICATION 테이블 STATE 변경 0 to 1
+ ******************************************/
 	public function changeCertifi($certi) {   
-		$sql = "UPDATE `Certification` SET `certi_state` = '0' WHERE (`certi_code` = ?)";
+		$sql = "UPDATE `CERTIFICATION` SET `CERTIFICATION_STATE` = '0' WHERE (`CERTIFICATION_CODE` = ?)";
 		$sth = $this->db->prepare($sql);
 		
 		if($sth->execute(array($certi))){

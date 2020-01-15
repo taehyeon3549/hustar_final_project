@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="kr">
 
 <head>
 
@@ -9,7 +9,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>Sign Up</title>
+<title>Hustar 회원가입</title>
 
   <!-- Custom fonts for this template-->
   <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -32,27 +32,27 @@
 <body class="bg-dark">
   <div class="container">
     <div class="card card-register mx-auto mt-5">
-      <div class="card-header">Sign Up</div>
+     <div class="card-header">회원 가입</div>
       <div class="card-body">
         <form>
           <div class="form-group">
             <div class="form-label-group">
-              <input type="email" name= "email" id="inputEmail" class="form-control" placeholder="Email address" required="required" value={{email}} disabled>
-              <label for="inputEmail">Email address</label>
+              <input type="email" name= "email" id="inputEmail" class="form-control" placeholder="Email address" required="required" readonly value={{email}} 인증오류!!>
+              <label for="inputEmail">아이디(Email)</label>
             </div>
           </div>
           <div class="form-group">
             <div class="form-row">
               <div class="col-md-6">
                 <div class="form-label-group">
-                  <input type="text" name = "firstName" id="firstName" class="form-control" placeholder="First name" required="required" autofocus="autofocus">
-                  <label for="firstName">First name</label>
+                  <input type="text" name = "firstName" id="firstName" class="form-control" placeholder="성" required="required" autofocus="autofocus">
+                  <label for="firstName">성</label>
                 </div>
               </div>
               <div class="col-md-6">
                 <div class="form-label-group">
-                  <input type="text" name = "lastName" id="lastName" class="form-control" placeholder="Last name" required="required">
-                  <label for="lastName">Last name</label>
+                  <input type="text" name = "lastName" id="lastName" class="form-control" placeholder="이름" required="required">
+                  <label for="lastName">이름</label>
                 </div>
               </div>
             </div>
@@ -61,14 +61,14 @@
             <div class="form-row">
               <div class="col-md-6">
                 <div class="form-label-group">
-                  <input type="password" name = "inputPassword" id="inputPassword" class="form-control" placeholder="Password" required="required">
-                  <label for="inputPassword">Password</label>
+                  <input type="password" name = "inputPassword" id="inputPassword" class="form-control" placeholder="비밀번호" required="required">
+                  <label for="inputPassword">비밀번호</label>
                 </div>
               </div>
               <div class="col-md-6">
                 <div class="form-label-group">
-                  <input type="password" name = "confirmPassword" id="confirmPassword" class="form-control" placeholder="Confirm password" required="required">
-                  <label for="confirmPassword">Confirm password</label>
+                  <input type="password" name = "confirmPassword" id="confirmPassword" class="form-control" placeholder="비밀번호 재확인" required="required">
+                  <label for="confirmPassword">비밀번호 재확인</label>
                 </div>
               </div>
             </div>
@@ -82,8 +82,8 @@
               </div>            
               <div class="col-md-6">
                 <div class="form-label-group" style="padding-bottom: 5px; padding-top: 8px;">
-                  <input type="radio" name ="gender" value ='0'>Male
-						      <input type="radio" name ="gender" value ='1'>Female						
+                  <input type="radio" name ="gender" value ='0'>남성
+						      <input type="radio" name ="gender" value ='1'>여성						
                 </div>
               </div>
             </div>
@@ -92,17 +92,17 @@
             <div class="form-row">
               <div class="col-md-6">
                 <div class="form-label-group">
-                  <input type="phone" name = "emergencycall" id="emergencycall" class="form-control" placeholder="Emergency Call" required="required">
-                  <label for="emergencycall">Emergency Call</label>
+                  <input type="phone" name = "phone" id="phone" class="form-control" placeholder="연락처" required="required">
+                  <label for="phone">연락처</label>
                 </div>
               </div>
             </div>
           </div>
-          <a class="btn btn-primary btn-block" id = "registerb">Register</a>
+          <a class="btn btn-primary btn-block" id = "registerb">회원 가입</a>
         </form>
         <div class="text-center">
-          <a class="d-block small mt-3" href="/">Login Page</a>
-          <a class="d-block small" href="/forgot-password">Forgot Password?</a>
+          <a class="d-block small mt-3" href="/">로그인</a>
+          <a class="d-block small" href="/forgot-password">비밀번호를 잃어버렸어요....</a>
         </div>
 
         <!-- Button Action -->
@@ -115,47 +115,47 @@
             var confirmPassword = $('input[name = confirmPassword]').val();
             var Birth = $('input[name = Birth]').val();
             var gender = $('input[name=gender]:checked').val();
-            var emergency = $('input[name = emergencycall]').val();
+            var phone = $('input[name = phone]').val();
 
             if(firstName == ""){
-              alert("Please, Enter the firstname");
+              alert("성을 입력해주세요");
             }else if(lastName == ""){
-              alert("Please, Enter the lastname");
+              alert("이름을 입력해주세요");
             }else if(inputPassword == ""){
-              alert("Please, Enter the inputpassword");
+              alert("비밀번호를 입력해주세요");
             }else if(confirmPassword == ""){
-              alert("Please, Enter the comfirmpassword");
+              alert("비밀번호 재확인란을 입력해주세요");
             }else if(Birth == ""){
-              alert("Please, Enter the birth");
+              alert("생일을 입력해주세요");
             }else if(inputPassword != confirmPassword){
-              alert("Please, Enter two passwords are compared.");
+              alert("비밀번호를 재 확인해주세요");
             }else{
               var name = firstName.concat("", lastName);
               
               //send json
               $.ajax({
               method: "POST",
-              url: "/signup_proc",
+              url: "/signUP",
               data: {
-                "id": $('input[name = email]').val(),                
-                "name": name,
-                "password": inputPassword,
-                "birth": Birth,
-                "gender": gender,
-                "emergency": emergency               
+                "EMAIL": $('input[name = email]').val(),                
+                "NAME": name,
+                "PASSWORD": inputPassword,
+                "BRITH": Birth,
+                "GENDER": gender,
+                "PHONE": phone               
               }
               }).done(function( msg ) {
                   //If sign_up success, show up the sign in page
                   if(msg.message == 0){
-                    alert("Welcome!! Now you are our member.");
+                    alert("Hustar가 되신것을 환영합니다!!");
                     location.href = "/";
                   }
                   if(msg.message == 1){
-                    alert("You are already have a count!!");
+                    alert("이미 Hustar 이신데요???");
                     location.href = "/";
                   }
                   if(msg.message == 2){
-                    alert("Sorry, Could you sign up again? Server Error");
+                    alert("서버 Error, 회원가입을 다시 해주세요");
                     location.href = "/sign_up";
                   }
               });         

@@ -5,7 +5,7 @@ final class WebModel extends BaseModel
 {
 	//Get email in certification table in db
 	public function getEmail($code){
-		$sql = "SELECT * FROM Certification WHERE certi_code = ?";
+		$sql = "SELECT * FROM CERTIFICATION WHERE CERTIFICATION_CODE = ?";
 		$sth = $this->db->prepare($sql);
 		
 		$sth->execute(array($code));
