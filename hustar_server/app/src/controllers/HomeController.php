@@ -32,4 +32,15 @@ final class HomeController extends BaseController
         $this->view->render($response, 'post.twig', ['post' => $post, 'flash' => $messages]);
         return $response;
     }
+
+    public function test(Request $request, Response $response, $args)
+    {
+        $result = [];
+        $result['header'] = "TEST";
+        $result['message'] = "0";	
+        
+        return $response->withStatus(200)
+		->withHeader('Content-Type', 'application/json')
+		->write(json_encode($result, JSON_NUMERIC_CHECK));
+    }
 }
