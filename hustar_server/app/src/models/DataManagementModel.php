@@ -265,64 +265,6 @@ final class UserManagementModel extends BaseModel
 		}
 	}
 
-	//Get sensor data
-	public function getSensorByusn($sensor) {   
-		$sql = "SELECT * FROM Sensor WHERE s_user = ?";
-		$sth = $this->db->prepare($sql);
-		$sth->execute(array($sensor['usn']));
-		
-		$result = $sth->fetchAll();
-
-		return $result[0];
-	}
-
-	//Get sensor data
-	public function getSensorByssn($sensor) {   
-		$sql = "SELECT * FROM Sensor WHERE SSN = ?";
-		$sth = $this->db->prepare($sql);
-		$sth->execute(array($sensor['ssn']));
-		
-		$result = $sth->fetchAll();
-
-		return $result[0];
-	}
-
-	//Make null the sensor value
-	public function deleteAir($usn) {  
-		$sql = "DELETE FROM Air_Sensor_value WHERE a_usn = ?";
-		$sth = $this->db->prepare($sql);
-		
-		if($sth->execute(array($usn))){
-			return TRUE;
-		}else{
-			return FALSE;
-		}		
-	}
-
-	//Delete the sensor value
-	public function deletePolar($usn) {   
-		$sql = "DELETE FROM Polar_Sensor_value WHERE p_usn = ?";
-		$sth = $this->db->prepare($sql);
-		
-		if($sth->execute(array($usn))){
-			return TRUE;
-		}else{
-			return FALSE;
-		}		
-	}
-
-	//Delete the sensor
-	public function deleteSensor($usn) {   
-		$sql = "DELETE FROM Sensor WHERE s_user = ?";
-		$sth = $this->db->prepare($sql);
-		
-		if($sth->execute(array($usn))){
-			return TRUE;
-		}else{
-			return FALSE;
-		}		
-	}
-
 	//Delete the user
 	public function deleteUser($usn) {   
 		$sql = "DELETE FROM User WHERE USN = ?";

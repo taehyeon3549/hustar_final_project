@@ -126,63 +126,12 @@ $app->get('/pass/{code}', 'App\Controller\UserManagementController:change_passwo
 ->setName('mailicon');
 
 /****************************************/
-/*         Sensor Management            */
-/****************************************/
-
-//register_Sensor 
-$app->post('/registrationSensor', 'App\Controller\SensorManagementController:registrationSensor')
-->setName('registrationSensor');
-
-//Deregister_Sensor 
-$app->post('/deregistrationSensor', 'App\Controller\SensorManagementController:deregistrationSensor')
-->setName('deregistrationSensor');
-
-//Sensor List
-$app->post('/sensorList', 'App\Controller\SensorManagementController:sensorList')
-->setName('sensorList');
-
-//insertAirSensor value
-$app->post('/insertAirSensor', 'App\Controller\SensorManagementController:insertAirSensor')
-->setName('insertAirSensor');
-
-//insertPolarSensor value
-$app->post('/insertPolarSensor', 'App\Controller\SensorManagementController:insertPolarSensor')
-->setName('insertPolarSensor');
-
-//Show realtime value
-$app->post('/showRealdata', 'App\Controller\SensorManagementController:showRealdata')
-->setName('showRealdata');
-
-//Show historical value
-$app->post('/showHistodata', 'App\Controller\SensorManagementController:showHistodata')
-->setName('showHistodata');
-
-//Get GPS
-$app->get('/getGPS', 'App\Controller\SensorManagementController:getGPS')
-->setName('getGPS');
-
-//Get value
-$app->post('/location', 'App\Controller\SensorManagementController:location')
-->setName('location');
-
-//Get value
-$app->post('/getAQI__', 'App\Controller\SensorManagementController:getAQI__')
-->setName('getAQI__');
-
-//Get value
-$app->post('/test', 'App\Controller\SensorManagementController:test')
-->setName('test');
-
-
-/****************************************/
 /*          certification page          */
 /****************************************/
 
 //certification_success page
 $app->get('/certification/success', 'App\Controller\CertificateController:certification_success')
     ->setName('success');
-
-
 
 $app->get('/post/{id}', 'App\Controller\HomeController:viewPost')
     ->setName('view_post');
