@@ -19,12 +19,15 @@ final class UserManagementController extends BaseController
 		$this->view = $view;
 	}
 	
+	/*************************** *
+	* TEST 함수
+	*******************************/	
 	public function test(Request $request, Response $response, $args){
 		$test_db = $args['data'];
 
 		if($this->UserManagementModel->test_insert($test_db) == 1){
 			$result['header'] = "insert success";
-			$result['message'] = $test_db + " inserted ";
+			$result['message'] = $test_db;
 		}
 
 		return $response->withStatus(200)
@@ -32,9 +35,11 @@ final class UserManagementController extends BaseController
 		->write(json_encode($result, JSON_NUMERIC_CHECK));
 	}
 
-//Send email
-// return value : true, false
-// who : send to address,  code : certicate code,  client: web or app(where clicked),  type: 0=certification, 1=resetpassword
+	/*************************
+	// EMAIL 전송 함수 
+	// return value : true, false
+	// who : send to address,  code : certicate code,  client: web or app(where clicked),  type: 0=certification, 1=resetpassword
+ 	***************************/
 	public function send_mail($who, $code, $client, $type){
 		$mail = new PHPMailer(true);		
 		try{
@@ -174,42 +179,62 @@ final class UserManagementController extends BaseController
 		echo '<img src="mail_iconn.png" />';
 	}
 
-//Sign_up
-//0: sign_in success(send email), 1: already have account, 2: user db adding fail
-	public function signup_proc(Request $request, Response $response, $args)
+	/***************************************************
+	 * // Sign_up//
+	 * //0: sign_in success(send email), 1: already have account, 2: user db adding fail
+	 * USER TABLE 정보
+	 *	USER_USN
+	 *	USER_EMAIL
+	 *	USER_PASSWORD
+	 *	USER_EMAIL
+	 *	USER_PHONE
+	 *	USER_NAME
+	 *	USER_GENDER
+	 *	USER_BIRTH
+	 *	USER_ADMIN
+	 *	USER_CLASS
+	 *	
+	 *	GENDER :0		//0: 남자 1: 여자
+	 *	ADMIN : 0		//0: 교육생 1: 관리자
+	 *	CLASS :  0		// 미정
+
+	 *	return 
+		   0 : DB 삽입 성공
+		   1 : 이미 존재하는 회원
+		   2 : DB 삽입 실패
+	 ************************************************/
+	public function signUP(Request $request, Response $response, $args)
 	{
-		//Get the User's info in sign_up page
-		$info = [];
-		$info['email'] = $request->getParsedBody()['id'];
-		$info['pw'] = $request->getParsedBody()['password'];
-		$info['name'] = $request->getParsedBody()['name'];
-		$info['gender'] = $request->getParsedBody()['gender'];		//gender:0 = male, gender:1 = female
-		$info['birth'] = $request->getParsedBody()['birth'];
-		$info['emergency_call'] = $request->getParsedBody()['emergency'];
+		$result = [];
 
-		//Check the duplicate of email
-		if($this->UserManagementModel->duplicateEmail($info['email']) == 0){
-			//if there are not have a user, start to create account
-			//Set the user's init setting
-			$info['sign_state'] = 1;
-			$info['is_admin'] = 1;
+		/** 회원 가입 유저 정보 **/
+		$userInfo = [];
+		$userInfo['USER_EMAIL'] = $request->getParsedBody()['EMAIL'];
+		$userInfo['PASSWORD'] = $request->getParsedBody()['PASSWORD'];
+		$userInfo['USER_NAME'] = $request->getParsedBody()['NAME'];
+		printf($userInfo['USER_NAME']);
+		$userInfo['USER_GENDER'] = $request->getParsedBody()['GENDER'];
+		$userInfo['USER_BIRTH'] = $request->getParsedBody()['BIRTH'];				
 
-			//Hashing the password
-			$hash = password_hash($info['pw'], PASSWORD_DEFAULT);
-			$info['pw'] = $hash;
+		/* 이메일 중복 체크 */
+		if($this->UserManagementModel->duplicateEmail($userInfo['USER_EMAIL']) == 0){
+			// 0: 해당 이메일 없음, 1: 해당 이메일 있음						
+			$userInfo['USER_ADMIN'] = 0;
+			$userInfo['USER_CLASS'] = 1;
 
-			//Check the empty usn
-			$emptyusn = $this->UserManagementModel->checkEmptyusn();
+			//패스워드 암호화
+			$HASHED_PASSWORD = password_hash($userInfo['PASSWORD'], PASSWORD_DEFAULT);
+			$userInfo['USER_PASSWORD'] = $HASHED_PASSWORD;
+
+			// 유저 USN 빈곳 찾기
+			$emptyusn = $this->UserManagementModel->checkEmptyUSN();
 			if(count($emptyusn) > 0){
-				//If there are have empty usn, then use it
-				$info['usn'] = $emptyusn['val'];
+				//빈 USN 이 있으면 USN 재사용
+				$userInfo['USER_USN'] = $emptyusn['EmptyUSN'];
 			}
 
-			//Array of put the result
-			$result = [];
-
-			//Insert the user's info in DB and Check, is success
-			if($this->UserManagementModel->addUser($info) == 0){		
+			// 유저 정보 DB 삽입
+			if($this->UserManagementModel->addUser($userInfo) == 0){		
 				$result['header'] = "Add user success";
 				$result['message'] = "0";
 			}else{
@@ -217,7 +242,7 @@ final class UserManagementController extends BaseController
 				$result['message'] = "2";
 			}		
 		}else{
-			//already have a user
+			//이미 존재하는 유저
 			$result['header'] = "Already have account";
 			$result['message'] = "1";
 		}
@@ -400,7 +425,7 @@ final class UserManagementController extends BaseController
 		//Get the password of input
 		$password = $request->getParsedBody()['password'];
 		//Hashing the password
-		$certi['password'] = password_hash($password, PASSWORD_DEFAULT);
+		$certi['password'] = password_hash($password, PASSWORD_DEFAULT);		
 
 		if($this->UserManagementModel->changePassByusn($certi)){
 			//change success

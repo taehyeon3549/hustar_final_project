@@ -22,9 +22,11 @@ final class UserManagementModel extends BaseModel
 		return $val;
 	}
 	
-	//Check Duplicate of email
+	/**********************
+	 * 이메일 중복 체크
+	 **********************/
 	public function duplicateEmail($email){
-		$sql = "SELECT * FROM User WHERE email = ?";
+		$sql = "SELECT * FROM USER WHERE USER_EMAIL = ?";
 		$sth = $this->db->prepare($sql);
 		$sth->execute(array($email));
 		$result = $sth->fetchAll();
@@ -41,12 +43,20 @@ final class UserManagementModel extends BaseModel
 		}
 	}
 
+	/*********************
+	 *  DB 삽입
+	 *********************/
 	//Insert User 여기
     public function addUser($user) {        
-		$sql = "INSERT into User (USN, hashed, email, name, gender, birth, emergency_call ,sign_state, is_admin) values (?, ?, ?, ?, ? , ?, ?, ?, ? )";
+		$sql = "INSERT into USER (USER_USN, USER_PASSWORD, USER_EMAIL, USER_PHONE, USER_NAME, USER_GENDER, USER_BIRTH ,USER_ADMIN, USER_CLASS) 
+				values (?, ?, ?, ?, ? , ?, ?, ?, ? )";
 		$sth = $this->db->prepare($sql);
 
-		if($sth->execute(array($user['usn'], $user['pw'], $user['email'], $user['name'], $user['gender'], $user['birth'], $user['emergency_call'], $user['sign_state'], $user['is_admin']))){
+		if($sth->execute(array($user['USER_USN'], $user['USER_PASSWORD'], 
+								$user['USER_EMAIL'], $user['USER_PHONE'], 
+								$user['USER_NAME'], $user['USER_GENDER'], 
+								$user['USER_BIRTH'], $user['USER_ADMIN'], 
+								$user['USER_CLASS']))){
 			$val = "0";
 			return $val;
 		}else{
@@ -155,9 +165,9 @@ final class UserManagementModel extends BaseModel
 		}
 	}
 
-	//Check the empty usn in user table
-	public function checkEmptyusn() {   
-		$sql = "SELECT min(USN + 1) AS val FROM User WHERE (USN + 1) NOT IN (SELECT USN FROM User)";
+	// USER 테이블 USER_USN 빈 USN 체크
+	public function checkEmptyUSN() {   
+		$sql = "SELECT min(USER_USN + 1) AS EmptyUSN FROM USER WHERE (USER_USN + 1) NOT IN (SELECT USER_USN FROM USER)";
 		$sth = $this->db->prepare($sql);
 		$sth->execute();
 		

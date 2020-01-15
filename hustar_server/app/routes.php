@@ -62,8 +62,8 @@ $app->get('/test/{data}', 'App\Controller\UserManagementController:test')
 ->setName('test');
 
 //sign_up
-$app->post('/signup_proc', 'App\Controller\UserManagementController:signup_proc')
-->setName('signup_proc');
+$app->post('/signup', 'App\Controller\UserManagementController:signUP')
+->setName('signup');
 
 //eamil check
 $app->post('/check_user', 'App\Controller\UserManagementController:check_user')
