@@ -102,7 +102,9 @@ final class WebController extends BaseController
         return $response;
     }
 
-    //forgotten_password
+/************************************
+ * 패스워드 변경
+**************************************/
 	public function forgotten_password(Request $request, Response $response, $args)
     {
         $this->logger->info("forgotten_password page action dispatched");

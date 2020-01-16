@@ -132,7 +132,7 @@ final class UserManagementController extends BaseController
 								</tr>
 								<tr align="center" style="height: 200px;">
 									<td>
-										<h2><b><a href = http://54.180.159.207/pass/'.$code.'>http://54.180.159.207/pass/'.$code.'</a></b></h2>
+										<h2><b><a href = http://54.180.159.207/newpassword/'.$code.'>http://54.180.159.207/newpassword/'.$code.'</a></b></h2>
 									</td>
 								</tr>
 								<tr>
@@ -327,30 +327,29 @@ final class UserManagementController extends BaseController
 		->write(json_encode($result, JSON_NUMERIC_CHECK));
 	}
 
-//Forgotten password - send email
-//0: send mail success, 1: user is not exist, 2: send mail fail, 3: update certificate code fail
-	public function forgot_password_check(Request $request, Response $response, $args)
+/*****************************************************
+ * 임시비밀번호 발급
+ * 
+ * return
+ * 0: 임시비밀번호 전송 성공, 1: 없는 유저, 
+ * 2: 임시비밀번호 전송 실패, 3: 인증코드 발급 실패
+ *****************************************************/
+	public function makeNewPassword(Request $request, Response $response, $args)
 	{
-   		//Get the User's usn
-		$info = [];
-		$info['email'] = $request->getParsedBody()['id'];
-		$info['birth'] = $request->getParsedBody()['birth'];
+		$userInfo = [];
+		$userInfo['EMAIL'] = $request->getParsedBody()['EMAIL'];
+		$userInfo['BIRTH'] = $request->getParsedBody()['BIRTH'];
 
-		//Array of put the result
 		$result = [];
+		// 유저 정보가 맞는지 확인
+		if($this->UserManagementModel->checkUserinfo($userInfo)){
+			// 유저가 있으면 메일 보냄			
+			$userInfo['code'] = $this->makeNonce();
 
-		//check the user info is correct
-		if($this->UserManagementModel->checkUserinfo($info)){
-			//user exist, send the link by email
-
-			//Create a nonce code in certification tabel in DB
-			$info['code'] = $this->makeNonce();
-
-			//update user's certi_code in certification table
-			if($this->UserManagementModel->updateCertifi($info, 0)){
-				//success
-				//send password change eamil
-				if($this->send_mail($info['email'], $info['code'], NULL, 1)){
+			//CERTIFICATION 테이블 인증 상태 변경
+			if($this->UserManagementModel->updateCertifi($userInfo, 0)){
+				// 임시 비밀번호 메일 전송
+				if($this->send_mail($userInfo['EMAIL'], $userInfo['code'], NULL, 1)){
 					//success
 					$result['header'] = "Send email success";
 					$result['message'] = "0";	
@@ -405,21 +404,21 @@ final class UserManagementController extends BaseController
 		->write(json_encode($result, JSON_NUMERIC_CHECK));
 	}
 
-//change the password
+/***********************************
+ * 패스워드 변경
+ **********************************/
 	public function change_password(Request $request, Response $response, $args)
 	{
-		$certi = [];
+		$usercerti = [];
 
-		//Get usn
-		$certi['usn'] = $request->getParsedBody()['usn'];
+		$usercerti['USN'] = $request->getParsedBody()['USN'];
 
-		//Change the password
-		//Get the password of input
-		$password = $request->getParsedBody()['password'];
-		//Hashing the password
-		$certi['password'] = password_hash($password, PASSWORD_DEFAULT);		
+		// 패스워드 변경
+		$password = $request->getParsedBody()['PASSWORD'];
+		// 패스워드 해쉬
+		$usercerti['PASSWORD'] = password_hash($password, PASSWORD_DEFAULT);		
 
-		if($this->UserManagementModel->changePassByusn($certi)){
+		if($this->UserManagementModel->changePass($usercerti)){
 			//change success
 			$result['header'] = "Password change success";
 			$result['message'] = "0";
@@ -463,17 +462,17 @@ final class UserManagementController extends BaseController
 
 		    // DB CERTIFICATION 테이블에 삽입할 값
 			$certi = [];		//certification data
-			$certi['email'] = $EMAIL;
+			$certi['EMAIL'] = $EMAIL;
 			$certi['code'] = $randomString;
 			$certi['state'] = 1;		//default is 1
 
 			// 인증 받은 회원인지 아닌지 체크
-			if($this->UserManagementModel->alreadyCertifi($certi['email']) == 0){
+			if($this->UserManagementModel->checkCertifiByEmail($certi['EMAIL']) == 0){
 				// 만약 인증은 안하고 코드 발급을 받았다면 코드 갱신
 				if($this->UserManagementModel->updateCertifi($certi, 1)){
 					// CERTIFICATION 갱신 완료
 					// 인증 메일 전송
-					if($this->send_mail($certi['email'], $certi['code'], $client, 0)){
+					if($this->send_mail($certi['EMAIL'], $certi['code'], $client, 0)){
 						$result['header'] = "Send email success";
 						$result['message'] = "0";	
 					}else{
@@ -490,7 +489,7 @@ final class UserManagementController extends BaseController
 				// CERTIFICATION 테이블에 USER 정보 삽입
 				if($this->UserManagementModel->addCertifi($certi) == 0){
 					// 인증 메일 전송
-					if($this->send_mail($certi['email'], $certi['code'], $client, 0)){
+					if($this->send_mail($certi['EMAIL'], $certi['code'], $client, 0)){
 						$result['header'] = "Send email success";
 						$result['message'] = "0";	
 					}else{
@@ -701,27 +700,28 @@ public function change_certification_app(Request $request, Response $response, $
 		->write(json_encode($result, JSON_NUMERIC_CHECK));
 	}
 
-	//Change the password (In email Link)
-	public function change_password_page(Request $request, Response $response, $args)
+/***********************************************
+ * 패스워드 변경 - 사용자 확인
+ **********************************************/	
+	public function changePassword_checkUser(Request $request, Response $response, $args)
 	{		
-		$certi_code = $args['code'];
-
-		//check is certicode is valible
-		if($this->UserManagementModel->checkCertificode($certi_code)){
+		$certicode = $args['code'];
+		// 유효한 인증 코드인지 확인
+		if($this->UserManagementModel->checkCertifiByCode($certicode)){
 			//Add the certi_code back on the url
 			//echo("<script>location.href='/pass/'".$certi_code.";</script>");
 			//Then, get email from certification table used by certi_code
-			$certi = $this->UserManagementModel->getCertifi($certi_code);
+			$userCerti = $this->UserManagementModel->getCertifiByCode($certicode);
 			
-			if($certi['certi_email'] != NULL){
-				//get usn from user table used by email
-				$user = $this->UserManagementModel->getUserByEmail($certi['certi_email']);
-				if($user['USN'] != NULL){					
-					$usn = $user['USN'];
-					$this->view->render($response, 'new-password.twig', ['code' => $certi_code, 'usn' => $usn]);
+			if($userCerti['CERTIFICATION_EMAIL'] != NULL){
+				// USN 가져오기
+				$userInfo = $this->UserManagementModel->getUserByEmail($userCerti['CERTIFICATION_EMAIL']);
+				if($userInfo['USER_USN'] != NULL){					
+					$usn = $userInfo['USER_USN'];
+					$this->view->render($response, 'new-password.twig', ['code' => $certicode, 'usn' => $usn]);
         			return $response;
 				}else{
-					echo("<script>alert('Not runnable.')</script>");
+					echo("<script>alert('유효하지 않습니다.')</script>");
 					echo("<script>location.href='/';</script>");	
 				}
 			}else{

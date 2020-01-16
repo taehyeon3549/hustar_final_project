@@ -18,21 +18,21 @@ $app->get('/', 'App\Controller\WebController:dispatch')
 $app->get('/main', 'App\Controller\WebController:main')
     ->setName('main');
 
+// 패스워드 변경 페이지
+$app->get('/signup/forgotpassword', 'App\Controller\WebController:forgotten_password')
+    ->setName('forgot-password');
+
 // 회원가입 1단계 회원가입 페이지
 $app->get('/signup/email', 'App\Controller\WebController:register_email')
     ->setName('register_email');
 
-//forgotten_password page
-$app->get('/forgot-password', 'App\Controller\WebController:forgotten_password')
-    ->setName('forgot-password');
+// 회원가입 2단계 인증 메일 전송 완료 페이지
+$app->get('/signup/message', 'App\Controller\WebController:register_email_message')
+    ->setName('register_email_message'); 
 
 // 회원가입 3단계 정보 입력 페이지
 $app->get('/verify/sign_up/{code}', 'App\Controller\WebController:sign_up')
     ->setName('sign_up');  
-
-// 회원가입 2단계 인증 메일 전송 완료 페이지
-$app->get('/signup/message', 'App\Controller\WebController:register_email_message')
-    ->setName('register_email_message'); 
 
 // myaccount
 $app->get('/myaccount', 'App\Controller\WebController:myaccount')
@@ -95,16 +95,16 @@ $app->get('/maps', 'App\Controller\WebController:maps')
     $app->post('/signout', 'App\Controller\UserManagementController:signOut')
     ->setName('signOut');
 
-    //forgot_password check- user are exsit
-    $app->post('/forgot_password_check', 'App\Controller\UserManagementController:forgot_password_check')
-    ->setName('forgot_password_check');
+    // 임시비밀번호 발급
+    $app->post('/newpassword', 'App\Controller\UserManagementController:makeNewPassword')
+    ->setName('makeNewPassword');
 
     //forgot_password
     $app->post('/forgot_password', 'App\Controller\UserManagementController:forgot_password')
     ->setName('forgot_password');
 
-    //change_password
-    $app->post('/change_password', 'App\Controller\UserManagementController:change_password')
+    // 패스워드 변경
+    $app->post('/newpassword/change', 'App\Controller\UserManagementController:change_password')
     ->setName('change_password');
 
     //user cancellation check page
@@ -123,9 +123,9 @@ $app->get('/maps', 'App\Controller\WebController:maps')
     $app->get('/mailicon', 'App\Controller\UserManagementController:mailIcon')
     ->setName('mailicon');
 
-    //show up change password page
-    $app->get('/pass/{code}', 'App\Controller\UserManagementController:change_password_page')
-    ->setName('mailicon');
+    // 패스워드 변경 - 사용자 확인
+    $app->get('/newpassword/{code}', 'App\Controller\UserManagementController:changePassword_checkUser')
+    ->setName('CheckUser');
 
     /****************************************/
     /*          certification page          */

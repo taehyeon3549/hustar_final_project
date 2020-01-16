@@ -115,12 +115,14 @@ final class UserManagementModel extends BaseModel
 		return $result[0];
 	}
 
-	//Check User is exsit
+/*************************************
+ *  USER 검색( birth 와 email) 개수
+ ************************************/
 	public function checkUserinfo($user) {  
-		$sql = "SELECT * FROM User WHERE email = ? AND birth = ?";
+		$sql = "SELECT * FROM USER WHERE USER_EMAIL = ? AND USER_BIRTH = ?";
 		$sth = $this->db->prepare($sql);
 
-		$sth->execute(array($user['email'], $user['birth']));
+		$sth->execute(array($user['EMAIL'], $user['BIRTH']));
 		$result = $sth->fetchAll();
 		$num = count($result);
 
@@ -152,7 +154,7 @@ final class UserManagementModel extends BaseModel
 		$sql = "UPDATE CERTIFICATION SET CERTIFICATION_CODE = ? , CERTIFICATION_STATE = ? WHERE CERTIFICATION_EMAIL = ?";
 		$sth = $this->db->prepare($sql);
 		
-		if($sth->execute(array($info['code'], $num, $info['email']))){
+		if($sth->execute(array($info['code'], $num, $info['EMAIL']))){
 			//success
 			return TRUE;
 		}else{
@@ -161,9 +163,11 @@ final class UserManagementModel extends BaseModel
 		}
 	}
 
-	//Get certification value using by certi_code
-	public function getCertifi($code) {  
-		$sql = "SELECT * FROM Certification WHERE certi_code = ?";
+/**************************************
+ * CERTIFICATION 의 정보 가져오기(Code)
+ **************************************/
+	public function getCertifiByCode($code) {  
+		$sql = "SELECT * FROM CERTIFICATION WHERE CERTIFICATION_CODE = ?";
 		$sth = $this->db->prepare($sql);
 
 		$sth->execute(array($code));
@@ -187,12 +191,14 @@ final class UserManagementModel extends BaseModel
 		}
 	}
 
-	//Update user's password
-	public function changePassByusn($certi) {  
-		$sql = "UPDATE User SET hashed = ? WHERE usn = ?";
+/***************************************
+ * 사용자 패스워드 변경
+ **************************************/
+	public function changePass($certi) {  
+		$sql = "UPDATE USER SET USER_PASSWORD = ? WHERE USER_USN = ?";
 		$sth = $this->db->prepare($sql);
 		
-		if($sth->execute(array($certi['password'], $certi['usn']))){
+		if($sth->execute(array($certi['PASSWORD'], $certi['USN']))){
 			//success
 			return TRUE;
 		}else{
@@ -202,7 +208,7 @@ final class UserManagementModel extends BaseModel
 	}
 
 	// 인증 받은 회원인지 체크
-	public function alreadyCertifi($email) {  
+	public function checkCertifiByEmail($email) {  
 		$sql = "SELECT * FROM CERTIFICATION WHERE CERTIFICATION_EMAIL = ?";
 		$sth = $this->db->prepare($sql);
 
@@ -242,7 +248,7 @@ final class UserManagementModel extends BaseModel
 		$sql = "INSERT INTO CERTIFICATION (`CERTIFICATION_EMAIL`, `CERTIFICATION_CODE`, `CERTIFICATION_STATE`) VALUES (?, ?, ?)";
 		$sth = $this->db->prepare($sql);
 
-		if($sth->execute(array($certi['email'], $certi['code'], $certi['state']))){
+		if($sth->execute(array($certi['EMAIL'], $certi['code'], $certi['state']))){
 			//success
 			return 0;
 		}else{
@@ -348,9 +354,11 @@ final class UserManagementModel extends BaseModel
 		return $result[0];
 	}
 
-	//check the certification code is valible
-	public function checkCertificode($code) {   
-		$sql = "SELECT * FROM Certification WHERE certi_code = ?";
+/***************************************
+ * CERTIFICATION 을 CERTI_CODE로 확인
+ ***************************************/
+	public function checkCertifiByCode($code) {   
+		$sql = "SELECT * FROM CERTIFICATION WHERE CERTIFICATION_CODE = ?";
 		$sth = $this->db->prepare($sql);
 		$sth->execute(array($code));
 
