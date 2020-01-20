@@ -1,12 +1,12 @@
 package com.example.hustar_project;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class Login extends AppCompatActivity {
 
@@ -27,12 +27,12 @@ public class Login extends AppCompatActivity {
             }
         });
 
-        //로그인 버튼 클릭 시 main 화면으로 감
+        //로그인 버튼 클릭 시 켈린더 화면으로 감
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent loginIntent=new Intent(Login.this,MainActivity.class);
-                Login.this.startActivity(loginIntent);
+                Intent CalendarIntent=new Intent(Login.this,Calendar_check.class);
+                Login.this.startActivity(CalendarIntent);
             }
         });
     }
