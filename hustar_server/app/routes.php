@@ -145,3 +145,12 @@ $app->get('/maps', 'App\Controller\WebController:maps')
     // sign_in
     $app->get('/ucsd/sign_in', 'App\Controller\UserController:sign_in')
         ->setName('sign_in');
+
+    /****************************************/
+    /*               출석 인증               */
+    /****************************************/
+
+    // 출석 체크 - test
+    $app->get('/check/{what}', 'App\Controller\UserManagementController:testTest')
+        ->setName('test');
+

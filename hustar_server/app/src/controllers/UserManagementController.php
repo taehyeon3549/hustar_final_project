@@ -44,7 +44,7 @@ final class UserManagementController extends BaseController
 	// who : send to address,  code : certicate code,  client: web or app(where clicked),  type: 0=certification, 1=resetpassword
  	***************************/
 	public function send_mail($who, $code, $client, $type){
-		$mail = new PHPMailer(true);		
+		$mail = new PHPMailer(true);			
 		try{
 			// SMTP 설정
 			$mail->SMTPDebug = 0;		//debugging setting 
@@ -55,6 +55,7 @@ final class UserManagementController extends BaseController
 			$mail->Password = 'hustar2019';
 			$mail->SMTPSecure = 'tls';
 			$mail->Port = 587;
+			$mail->CharSet = "UTF-8";
 
 			// 수신자
 			$mail->setFrom('hustar.ict.daegu@gmail.com', "hustar.ict.daegu");
@@ -156,11 +157,11 @@ final class UserManagementController extends BaseController
 
 			$mail -> SMTPOptions = array(
 				"ssl" => array("verify_peer" => false, "verify_peer_name" => false, "allow_self_signed" => true));
-			$mail->send();
+			$mail->send();			
 
 			return true;	
 		} catch (Exception $e){
-			print_r($e);
+			//print_r($e);
 			return false;
 		}
 	}
@@ -790,5 +791,50 @@ public function change_certification_app(Request $request, Response $response, $
 		return $response->withStatus(200)
 		->withHeader('Content-Type', 'application/json')
 		->write(json_encode($result, JSON_NUMERIC_CHECK));
+	}
+
+	//TEST
+	public function testTest(Request $request, Response $response, $args)
+	{
+		$name = $args['what'];
+		
+		$userInfo['usn'] = $request->getParsedBody()['usn'];
+
+		$day = date("m-d");
+		$time = date("h:i:s");
+		printf("\n오늘 날짜 ".$day);
+		printf("\n");
+		printf("현재 시간 ".$time);
+
+		$result['Input'] = $name;
+		
+		// 암호 해독
+		$temp = exec("/var/www/html/hustar/hustar-app/KISA/decode $name");
+		$result['Decode'] = $temp;
+
+		//문자열 자르고
+		$decode = explode(' ', $temp);
+		
+		//날짜 체크
+		if($decode[1] == explode('-', $day)[0]  && $decode[2] == explode('-', $day)[1]){
+			//시간 체크
+			if($decode[3] == '10' && (int)$decode[4] <= 10){
+				$result['header'] = "Attendance Check";
+				$result['message'] = "Attend";
+			}else{
+				$result['header'] = "Attendance Check";
+				$result['message'] = "Absent";
+			}
+		}else{
+			$result['header'] = "Attendance Check";
+			$result['message'] = "Absent";
+		}
+		
+		//$result['result'] = exec("/var/www/html/hustar/hustar-app/KISA/decode $name");
+		
+		return $response->withStatus(200)
+		->withHeader('Content-Type', 'application/json')
+		->write(json_encode($result, JSON_NUMERIC_CHECK));
+		
 	}
 }
