@@ -371,4 +371,40 @@ final class UserManagementModel extends BaseModel
 			return FALSE;
 		}		
 	}
+
+
+/***************************************
+ * 출근 - ATTENDANCE 테이블 삽입
+ * return 0 성공
+ * return 1 실패
+ ***************************************/
+	public function AttendanceGTW($attenInfo) {  
+		$sql = "INSERT INTO `hustar_final`.`ATTENDANCE` 
+				(`ATTENDANCE_USN`, `ATTENDANCE_GTW`) VALUES (?, ?)";
+
+		$sth = $this->db->prepare($sql);
+		if($sth->execute(array($attenInfo['USN'], $attenInfo['GTW']))){
+			return 0;
+		}else{
+			return 1;
+		}
+	}
+
+/***************************************
+ * 퇴근 - ATTENDANCE 테이블 수정
+ * return 0 성공
+ * return 1 실패
+ ***************************************/
+	public function AttendanceGTH($attenInfo) {  
+		$sql = "UPDATE `hustar_final`.`ATTENDANCE` 
+				SET `ATTENDANCE_GTH` = ? 
+				WHERE (`ATTENDANCE_USN` = ?)";
+
+		$sth = $this->db->prepare($sql);
+		if($sth->execute(array($attenInfo['GTH'], $attenInfo['USN']))){
+			return 0;
+		}else{
+			return 1;
+		}
+	}
 }

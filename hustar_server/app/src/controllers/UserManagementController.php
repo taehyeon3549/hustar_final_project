@@ -794,22 +794,29 @@ public function change_certification_app(Request $request, Response $response, $
 	}
 
 	//TEST
+	/**
+	 * return 
+	 * 0 : 출근 성공
+	 * 1 : DB 에러
+	 * 2 : 지각
+	 * 3 : 퇴근 성공
+	 * 4 : 아직 수업 시간
+	 */
 	public function testTest(Request $request, Response $response, $args)
 	{
-		$name = $args['what'];
-		
-		$userInfo['usn'] = $request->getParsedBody()['usn'];
+		// 출근/퇴근 0/1
+		$flag = $args['what'];
+				
+		// code = 암호
+		$code = $request->getParsedBody()['code'];
+		$userInfo['USN'] = $request->getParsedBody()['usn'];
 
 		$day = date("m-d");
-		$time = date("h:i:s");
-		printf("\n오늘 날짜 ".$day);
-		printf("\n");
-		printf("현재 시간 ".$time);
-
-		$result['Input'] = $name;
+		$time = date("H:i:s");
+		$result['Input'] = $code;
 		
 		// 암호 해독
-		$temp = exec("/var/www/html/hustar/hustar-app/KISA/decode $name");
+		$temp = exec("/var/www/html/hustar/hustar-app/KISA/decode $code");
 		$result['Decode'] = $temp;
 
 		//문자열 자르고
@@ -817,14 +824,45 @@ public function change_certification_app(Request $request, Response $response, $
 		
 		//날짜 체크
 		if($decode[1] == explode('-', $day)[0]  && $decode[2] == explode('-', $day)[1]){
-			//시간 체크
-			if($decode[3] == '10' && (int)$decode[4] <= 10){
-				$result['header'] = "Attendance Check";
-				$result['message'] = "Attend";
-			}else{
-				$result['header'] = "Attendance Check";
-				$result['message'] = "Absent";
-			}
+			if($flag == 0){				// 출근
+				// DB 삽입
+				$userInfo['GTW'] = date("yy-m-d H:i:s");
+				$attendInfo = $this->UserManagementModel->AttendanceGTW($userInfo);
+				if($attendInfo == 1){
+					$result['header'] = "DB error";
+					$result['message'] = "1";
+				}
+				
+				if($decode[3] == '10' && (int)$decode[4] <= 10){		//시간 체크					
+					if($attendInfo == 0){
+						$result['header'] = "Go to work";
+						$result['message'] = "0";
+					}else{
+						$result['header'] = "DB error";
+						$result['message'] = "1";
+					}				
+				}else{
+					$result['header'] = "Be late for work";
+					$result['message'] = "2";
+				}				
+			}else if($flag == 1){	// 퇴근		
+			 	if((int)$decode[3] >= 18){		//시간 체크
+			 		// DB 수정
+			 		$userInfo['GTH'] = date("yy-m-d H:i:s");
+
+			 		$attendInfo = $this->UserManagementModel->AttendanceGTH($userInfo);
+			 		if($attendInfo == 0){
+			 			$result['header'] = "Go to Home";
+			 			$result['message'] = "3";
+					 }else{
+			 			$result['header'] = "DB error";
+			 			$result['message'] = "1";
+			 		}
+			 	}else{
+					$result['header'] = "It's still class time";
+					$result['message'] = "4";
+				 }
+			 }
 		}else{
 			$result['header'] = "Attendance Check";
 			$result['message'] = "Absent";
