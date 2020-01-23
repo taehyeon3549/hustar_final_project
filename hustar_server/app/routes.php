@@ -151,6 +151,10 @@ $app->get('/maps', 'App\Controller\WebController:maps')
     /****************************************/
 
     // 출석 체크 - test
-    $app->get('/check/{what}', 'App\Controller\UserManagementController:testTest')
-        ->setName('test');
+    $app->get('/check/{what}', 'App\Controller\UserManagementController:attendCheck')
+        ->setName('attendCheck');
+
+    // 시간 동기화
+    $app->get('/gettime', 'App\Controller\UserManagementController:gettime')
+        ->setName('getTime');
 

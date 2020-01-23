@@ -792,17 +792,18 @@ public function change_certification_app(Request $request, Response $response, $
 		->withHeader('Content-Type', 'application/json')
 		->write(json_encode($result, JSON_NUMERIC_CHECK));
 	}
-
-	//TEST
-	/**
+	
+	/*********************************************
+	 * 출결
+	 * 
 	 * return 
 	 * 0 : 출근 성공
 	 * 1 : DB 에러
 	 * 2 : 지각
 	 * 3 : 퇴근 성공
 	 * 4 : 아직 수업 시간
-	 */
-	public function testTest(Request $request, Response $response, $args)
+	 ***********************************************/
+	public function attendCheck(Request $request, Response $response, $args)
 	{
 		// 출근/퇴근 0/1
 		$flag = $args['what'];
@@ -812,7 +813,8 @@ public function change_certification_app(Request $request, Response $response, $
 		$userInfo['USN'] = $request->getParsedBody()['usn'];
 
 		$day = date("m-d");
-		$time = date("H:i:s");
+		$time = date("H:i:s");		
+
 		$result['Input'] = $code;
 		
 		// 암호 해독
@@ -821,48 +823,54 @@ public function change_certification_app(Request $request, Response $response, $
 
 		//문자열 자르고
 		$decode = explode(' ', $temp);
-		
+
 		//날짜 체크
 		if($decode[1] == explode('-', $day)[0]  && $decode[2] == explode('-', $day)[1]){
-			if($flag == 0){				// 출근
-				// DB 삽입
-				$userInfo['GTW'] = date("yy-m-d H:i:s");
-				$attendInfo = $this->UserManagementModel->AttendanceGTW($userInfo);
-				if($attendInfo == 1){
-					$result['header'] = "DB error";
-					$result['message'] = "1";
-				}
-				
-				if($decode[3] == '10' && (int)$decode[4] <= 10){		//시간 체크					
-					if($attendInfo == 0){
-						$result['header'] = "Go to work";
-						$result['message'] = "0";
-					}else{
+			if( ((int)$decode[5] - (int)date("s")) <= 10 && ((int)$decode[5] - (int)date("s")) >= 0){
+				printf(((int)$decode[5] - (int)date("s")));
+				if($flag == 0){				// 출근
+					// DB 삽입
+					$userInfo['GTW'] = date("yy-m-d H:i:s");
+					$attendInfo = $this->UserManagementModel->AttendanceGTW($userInfo);
+					if($attendInfo == 1){
 						$result['header'] = "DB error";
 						$result['message'] = "1";
+					}
+					
+					if($decode[3] == '10' && (int)$decode[4] <= 10){		//시간 체크					
+						if($attendInfo == 0){
+							$result['header'] = "Go to work";
+							$result['message'] = "0";
+						}else{
+							$result['header'] = "DB error";
+							$result['message'] = "1";
+						}				
+					}else{
+						$result['header'] = "Be late for work";
+						$result['message'] = "2";
 					}				
-				}else{
-					$result['header'] = "Be late for work";
-					$result['message'] = "2";
-				}				
-			}else if($flag == 1){	// 퇴근		
-			 	if((int)$decode[3] >= 18){		//시간 체크
-			 		// DB 수정
-			 		$userInfo['GTH'] = date("yy-m-d H:i:s");
+				}else if($flag == 1){	// 퇴근		
+					if((int)$decode[3] >= 18){		//시간 체크
+						// DB 수정
+						$userInfo['GTH'] = date("yy-m-d H:i:s");
 
-			 		$attendInfo = $this->UserManagementModel->AttendanceGTH($userInfo);
-			 		if($attendInfo == 0){
-			 			$result['header'] = "Go to Home";
-			 			$result['message'] = "3";
-					 }else{
-			 			$result['header'] = "DB error";
-			 			$result['message'] = "1";
-			 		}
-			 	}else{
-					$result['header'] = "It's still class time";
-					$result['message'] = "4";
-				 }
-			 }
+						$attendInfo = $this->UserManagementModel->AttendanceGTH($userInfo);
+						if($attendInfo == 0){
+							$result['header'] = "Go to Home";
+							$result['message'] = "3";
+						}else{
+							$result['header'] = "DB error";
+							$result['message'] = "1";
+						}
+					}else{
+						$result['header'] = "It's still class time";
+						$result['message'] = "4";
+					}
+				}
+			}else{
+				$result['header'] = "Are you hacked now?";
+				$result['message'] = "5";
+			}
 		}else{
 			$result['header'] = "Attendance Check";
 			$result['message'] = "Absent";
@@ -874,5 +882,13 @@ public function change_certification_app(Request $request, Response $response, $
 		->withHeader('Content-Type', 'application/json')
 		->write(json_encode($result, JSON_NUMERIC_CHECK));
 		
+	}
+	
+	// 시간 가져옴
+	public function gettime(Request $request, Response $response, $args)
+	{
+		$nowTime = date("yy-m-d H:i:s");
+
+		return $response->withStatus(200)->write($nowTime);
 	}
 }

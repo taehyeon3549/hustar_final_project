@@ -7,13 +7,15 @@ final class UserManagementModel extends BaseModel
 	 * TEST
 	 * ********************/	
 	public function test_insert($data){
+		$dd = date("yy-m-d H:i:s");
+
 		$sql = "INSERT INTO HUSTAR (`HUSTAR_NAME`, `HUSTAR_ADDRESS`, `HUSTAR_TELL`, `HUSTAR_CHARGE`, `HUSTAR_SUB_CLASS_NO`) 
-				VALUES ('testerrrrrr', 'testttttt', '00000', ?, '1')";
+				VALUES ('testerrrrrr', ?, '00000', ?, '1')";
 
 		$val = 0;
 
 		$sth = $this->db->prepare($sql);
-		if($sth->execute(array($data))){
+		if($sth->execute(array($dd, $data))){
 			$val = 1;	
 		}else{
 			$val = 0;
