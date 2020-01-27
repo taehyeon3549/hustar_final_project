@@ -737,56 +737,48 @@ public function change_certification_app(Request $request, Response $response, $
 		return TRUE;
 	}
 
-
-//inssert sensor data	
-	public function insertSensor(Request $request, Response $response, $args)
+	/***********************
+	 * 내정보 보기
+	 * 
+	 * USN으로 검색
+	 * 
+	 * return
+	 * 1: 실패
+	 * 정보 : 성공
+	 ***********************/
+	public function userInfo(Request $request, Response $response, $args)
 	{
-		$senosr = [];
+		$USN = $request->getParsedBody()['USN'];
 
-		$sensor['ssn'] = $request->getParsedBody()['ssn'];
-		$sensor['pm2_5'] = $request->getParsedBody()['pm2_5'];
-		$sensor['pm10'] = $request->getParsedBody()['pm10'];
-		$sensor['o3'] = $request->getParsedBody()['o3'];
-		$sensor['co'] = $request->getParsedBody()['co'];
-		$sensor['no2'] = $request->getParsedBody()['no2'];
-		$sensor['so2'] = $request->getParsedBody()['so2'];
-		$sensor['temperture'] = $request->getParsedBody()['temperture'];
-		$sensor['latitude'] = $request->getParsedBody()['latitude'];
-		$sensor['longitude'] = $request->getParsedBody()['longitude'];
-		$sensor['time'] = $request->getParsedBody()['time'];
-
-
-		if($this->UserManagementModel->insertSensorData($sensor) > 0){
-			//Already exist the email, make response 1
-			$result['header'] = "Miss";
-			$result['message'] = "1";
-		}else{
-			//Not exist the eamil, make response 0
-			$result['header'] = "success";
-			$result['message'] = "0";	
-		}
-
-		return $response->withStatus(200)
-		->withHeader('Content-Type', 'application/json')
-		->write(json_encode($result, JSON_NUMERIC_CHECK));
-	}
-
-	//Get user info
-	public function userinfo(Request $request, Response $response, $args)
-	{
-		$usn = $args['usn'];
-
-		$userinfo = $this->UserManagementModel->getUserInfo_usn($usn);
+		$userinfo = $this->UserManagementModel->getUserByUSN($USN);
 		
-		$result['email'] = $userinfo['email'];
-		$result['name'] = $userinfo['name'];
-		if($userinfo['gender'] == 0){
-			$result['gender'] = "Male";
+		if(count($userinfo) != NULL){
+			$result['EMAIL'] = $userinfo['USER_EMAIL'];
+			$result['PHONE'] = $userinfo['USER_PHONE'];
+			$result['NAME'] = $userinfo['USER_NAME'];
+			
+			//성별 체크
+			if($userinfo['USER_GENDER'] == 0){
+				$result['GENDER'] = "Male";
+			}else{
+				$result['GENDER'] = "Female";
+			}
+
+			$result['BIRTH'] = $userinfo['USER_BIRTH'];
+
+			// 부서 정보 가져오기
+			$userClass = $this->UserManagementModel->getClass($userinfo['USER_CLASS']);
+			$result['CLASS'] = $userClass['HUSTAR_NAME'];
+
+			// 분반 정보 가져오기
+			$userSubClass = $this->UserManagementModel->getSubClass($userClass['HUSTAR_SUB_CLASS_NO']);
+			$result['SUBCLASS'] = $userSubClass['SUB_CLASS_NAME'];
+			$result['SUPERVISOR'] = $userSubClass['SUB_CLASS_CHARGER'];
+
 		}else{
-			$result['gender'] = "Female";
-		}
-		$result['birth'] = $userinfo['birth'];
-		$result['emergency'] = $userinfo['emergency_call'];
+			$result['header'] = "Get My Info fail";
+			$result['message'] = "1";
+		}		
 		
 		return $response->withStatus(200)
 		->withHeader('Content-Type', 'application/json')
@@ -882,13 +874,59 @@ public function change_certification_app(Request $request, Response $response, $
 		->withHeader('Content-Type', 'application/json')
 		->write(json_encode($result, JSON_NUMERIC_CHECK));
 		
-	}
-	
-	// 시간 가져옴
-	public function gettime(Request $request, Response $response, $args)
-	{
-		$nowTime = date("yy-m-d H:i:s");
+	}	
 
-		return $response->withStatus(200)->write($nowTime);
-	}
+/**********************
+ * 외출 복귀
+ * return
+ * 0: 복귀 성공 1: 복귀 실패 2: 외출 성공 3: 외출 실패
+ *********************/
+	public function outingCheck(Request $request, Response $response, $args)
+	{			
+		$userInfo['USN'] = $request->getParsedBody()['USN'];
+		$userInfo['TIME'] = date("yy-m-d H:i:s");
+		
+		$userOuting = $this->UserManagementModel->getOutingByUSN($userInfo['USN']);
+
+		if($userOuting != NULL){									// 외출이 처음이 아니라면
+			$lastOuting = count($userOuting) - 1;					//맨 마지막 외출 확인
+			//print_r($userOuting);
+			//print_r($userOuting[$lastOuting]);
+	
+			if($userOuting[$lastOuting]['OUTING_BACK'] == ""){		// 복귀 안한게 있음
+				$userInfo['last'] = $userOuting[$lastOuting]['OUTING_NO'];
+				$check = $this->UserManagementModel->OuttingBack($userInfo);
+				if($check == 0){
+					$result['header'] = "Outing update success";
+					$result['message'] = "0";
+				}else{
+					$result['header'] = "Outing update fail";
+					$result['message'] = "1";
+				}
+			}else{													// 복귀 다 했음
+				$check = $this->UserManagementModel->OuttingOut($userInfo);
+				if($check == 0){
+					$result['header'] = "Outing insert success";
+					$result['message'] = "2";
+				}else{
+					$result['header'] = "Outing insert fail";
+					$result['message'] = "3";
+				}
+			}
+		}else{
+			$check = $this->UserManagementModel->OuttingOut($userInfo);
+			if($check == 0){
+				$result['header'] = "Outing insert success";
+				$result['message'] = "2";
+			}else{
+				$result['header'] = "Outing insert fail";
+				$result['message'] = "3";
+			}	
+		}
+		
+		return $response->withStatus(200)
+		->withHeader('Content-Type', 'application/json')
+		->write(json_encode($result, JSON_NUMERIC_CHECK));	
+
+	}	
 }

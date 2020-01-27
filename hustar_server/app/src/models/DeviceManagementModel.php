@@ -99,75 +99,7 @@ final class DeviceManagementModel extends BaseModel
 		}		
 		return $val;
 	}
-	//Check the duplicate of sensor
-	public function checkSensor($sensor){
-		$sql = "SELECT * FROM Sensor WHERE s_MAC = ?";
-		$sth = $this->db->prepare($sql);
-		$sth->execute(array($sensor['mac']));
-
-		$result = $sth->fetchAll();
-		$num = count($result);
-
-		if($num == 0){
-			//sensor not exsit			
-			$val = 0;
-		}else{
-			//sensor exsit
-			$val = 1;	
-		}
-		return $val;		
-	}
-
 	
-
-	
-	//Get sensor info
-	public function getSensorBymac($sensor){
-		$sql = "SELECT * FROM Sensor WHERE s_MAC = ?";
-		$sth = $this->db->prepare($sql);
-		$sth->execute(array($sensor));
-		$result = $sth->fetchAll();
-
-		return $result[0];
-	}
-
-	//Delete Polar sensor value
-	public function deletePolar($sensor){
-		$sql = "DELETE FROM Polar_Sensor_value WHERE p_ssn = ? AND p_usn = ?";
-		$sth = $this->db->prepare($sql);
-		
-		if($sth->execute(array($sensor['ssn'], $sensor['usn']))){
-			//insert success
-			return TRUE;
-		}else{
-			return FALSE;
-		}		
-	}
-
-	//Deregistratioin sensor info
-	public function deregitSensor($sensor){
-		$sql = "DELETE FROM Sensor WHERE SSN = ? AND s_user = ?";
-		
-		$sth = $this->db->prepare($sql);
-		
-		if($sth->execute(array($sensor['ssn'], $sensor['usn']))){
-			//insert success
-			return TRUE;
-		}else{
-			return FALSE;
-		}		
-	}
-
-	//Get sensor list by usn
-	public function getSensorByusn($usn){   
-		$sql = "SELECT * FROM Sensor WHERE s_user = ? ";
-		$sth = $this->db->prepare($sql);
-		$sth->execute(array($usn));		
-		$result = $sth->fetchAll();	
-		
-		return $result;
-	}
-
 	//Get sensor list by ssn
 	public function getSensorByssn($sensor){   
 		$sql = "SELECT s_name FROM Sensor WHERE SSN = ? ";
@@ -175,18 +107,6 @@ final class DeviceManagementModel extends BaseModel
 		$sth->execute(array($sensor));		
 		$result = $sth->fetchAll();		
 		return $result[0];
-	}
-
-	//Insert airdata
-	public function insertAirdata($sensor){   
-		$sql = "INSERT INTO Air_Sensor_value (a_ssn, a_PM2_5, a_O3, a_CO, a_NO2, a_SO2, a_Temperture, a_latitude, a_longitude, a_time, a_usn, AQ_PM2_5, AQ_O3, AQ_CO, AQ_NO2, AQ_SO2) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-		$sth = $this->db->prepare($sql);
-		
-		if($sth->execute(array($sensor['ssn'], $sensor['pm2_5'], $sensor['o3'], $sensor['co'], $sensor['no2'], $sensor['so2'], $sensor['temperture'], $sensor['latitude'], $sensor['longitude'], $sensor['time'], $sensor['usn'], $sensor['aq_pm2_5'], $sensor['aq_o3'], $sensor['aq_co'], $sensor['aq_no2'],$sensor['aq_so2']))){
-			return TRUE;
-		}else{
-			return FALSE;
-		}
 	}
 
 	//Insert polardata

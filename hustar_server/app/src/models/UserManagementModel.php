@@ -106,12 +106,40 @@ final class UserManagementModel extends BaseModel
 		return $result[0];
 	}
 
-	//Get User's info in User table by usn
-	public function getUserInfo_usn($usn) {  
-		$sql = "SELECT * FROM User WHERE USN = ?";
+/*****************************
+ * 내 정보 가져오기
+ *****************************/
+	public function getUserByUSN($USN) {  
+		$sql = "SELECT * FROM USER WHERE USER_USN = ?";
 		$sth = $this->db->prepare($sql);
 		
-		$sth->execute(array($usn));
+		$sth->execute(array($USN));
+		$result = $sth->fetchAll();
+
+		return $result[0];
+	}
+
+/*******************************
+ * HUSTAR Class 정보 가져오기 
+ ******************************/
+	public function getClass($CLASS) {  
+		$sql = "SELECT * FROM HUSTAR WHERE HUSTAR_NO = ?";
+		$sth = $this->db->prepare($sql);
+		
+		$sth->execute(array($CLASS));
+		$result = $sth->fetchAll();
+
+		return $result[0];
+	}
+
+/*******************************
+ * HUSTAR SubClass 정보 가져오기 
+ ******************************/
+	public function getSubClass($CLASS) {  
+		$sql = "SELECT * FROM SUB_CLASS WHERE SUB_CLASS_NO = ?";
+		$sth = $this->db->prepare($sql);
+		
+		$sth->execute(array($CLASS));
 		$result = $sth->fetchAll();
 
 		return $result[0];
@@ -137,9 +165,12 @@ final class UserManagementModel extends BaseModel
 		}
 	}
 
-	// USER 테이블 USER_USN 빈 USN 체크
+	/**************************************
+	 * USER 테이블 USER_USN 빈 USN 체크
+	 * ************************************/
 	public function checkEmptyUSN() {   
-		$sql = "SELECT min(USER_USN + 1) AS EmptyUSN FROM USER WHERE (USER_USN + 1) NOT IN (SELECT USER_USN FROM USER)";
+		$sql = "SELECT min(USER_USN + 1) AS EmptyUSN 
+				FROM USER WHERE (USER_USN + 1) NOT IN (SELECT USER_USN FROM USER)";
 		$sth = $this->db->prepare($sql);
 		$sth->execute();
 		
@@ -275,64 +306,6 @@ final class UserManagementModel extends BaseModel
 		}
 	}
 
-	//Get sensor data
-	public function getSensorByusn($sensor) {   
-		$sql = "SELECT * FROM Sensor WHERE s_user = ?";
-		$sth = $this->db->prepare($sql);
-		$sth->execute(array($sensor));
-		
-		$result = $sth->fetchAll();
-
-		return $result[0];
-	}
-
-	//Get sensor data
-	public function getSensorByssn($sensor) {   
-		$sql = "SELECT * FROM Sensor WHERE SSN = ?";
-		$sth = $this->db->prepare($sql);
-		$sth->execute(array($sensor['ssn']));
-		
-		$result = $sth->fetchAll();
-
-		return $result[0];
-	}
-
-	//Make null the sensor value
-	public function deleteAir($usn) {  
-		$sql = "DELETE FROM Air_Sensor_value WHERE a_usn = ?";
-		$sth = $this->db->prepare($sql);
-		
-		if($sth->execute(array($usn))){
-			return TRUE;
-		}else{
-			return FALSE;
-		}		
-	}
-
-	//Delete the sensor value
-	public function deletePolar($usn) {   
-		$sql = "DELETE FROM Polar_Sensor_value WHERE p_usn = ?";
-		$sth = $this->db->prepare($sql);
-		
-		if($sth->execute(array($usn))){
-			return TRUE;
-		}else{
-			return FALSE;
-		}		
-	}
-
-	//Delete the sensor
-	public function deleteSensor($usn) {   
-		$sql = "DELETE FROM Sensor WHERE s_user = ?";
-		$sth = $this->db->prepare($sql);
-		
-		if($sth->execute(array($usn))){
-			return TRUE;
-		}else{
-			return FALSE;
-		}		
-	}
-
 	//Delete the user
 	public function deleteUser($usn) {   
 		$sql = "DELETE FROM User WHERE USN = ?";
@@ -409,4 +382,57 @@ final class UserManagementModel extends BaseModel
 			return 1;
 		}
 	}
+
+/***************************************
+ * 외출 - OUTTING 테이블 삽입
+ * return 0 성공
+ * return 1 실패
+ ***************************************/
+	public function OuttingOut($outingInfo) {  
+		$sql = "INSERT INTO OUTING (OUTING_USN, OUTING_OUT) VALUES (?, ?)";
+
+		$sth = $this->db->prepare($sql);
+		if($sth->execute(array($outingInfo['USN'], $outingInfo['TIME']))){
+			return 0;
+		}else{
+			return 1;
+		}
+	}
+
+/***************************************
+ * 외출 - OUTTING 테이블 수정
+ * return 0 성공
+ * return 1 실패
+ ***************************************/
+	public function OuttingBack($outingInfo) {  
+		$sql = "UPDATE OUTING 
+				SET OUTING_BACK = ? 
+				WHERE (OUTING_USN = ? and OUTING_NO = ?)";
+
+		$sth = $this->db->prepare($sql);
+		if($sth->execute(array($outingInfo['TIME'], $outingInfo['USN'], $outingInfo['last']))){
+			return 0;
+		}else{
+			return 1;
+		}
+	}
+
+/***************************************
+ * OUTTING 테이블 검색 - USN
+ * return 0 성공
+ * return 1 실패
+ ***************************************/
+public function getOutingByUSN($userInfo) {  
+	$sql = "SELECT * FROM OUTING 			
+			WHERE (OUTING_USN = ?)";
+	
+	$sth = $this->db->prepare($sql);
+	$sth->execute(array($userInfo));
+	$result = $sth->fetchAll();
+
+	return $result;
+}
+
+
+
 }

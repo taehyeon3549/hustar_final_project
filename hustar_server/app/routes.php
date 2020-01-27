@@ -113,8 +113,8 @@ $app->get('/maps', 'App\Controller\WebController:maps')
     $app->post('/delete_account', 'App\Controller\UserManagementController:delete_account')
     ->setName('delete_account');
 
-    //get user info
-    $app->get('/userinfo/{usn}', 'App\Controller\UserManagementController:userinfo')
+    // 내정보 보기
+    $app->post('/userinfo', 'App\Controller\UserManagementController:userInfo')
     ->setName('userinfo');
 
     //logo_img
@@ -145,15 +145,19 @@ $app->get('/maps', 'App\Controller\WebController:maps')
         ->setName('sign_in');
 
     /****************************************/
-    /*               출석 인증               */
+    /*               출결                   */
     /****************************************/
 
     // 출석 체크 - test
     $app->get('/check/{what}', 'App\Controller\UserManagementController:attendCheck')
         ->setName('attendCheck');
 
+    // 외출 체크
+    $app->post('/outing', 'App\Controller\UserManagementController:outingCheck')
+        ->setName('outingCheck');
+
     // 시간 동기화
-    $app->get('/gettime', 'App\Controller\UserManagementController:gettime')
+    $app->get('/gettime', 'App\Controller\DeviceManagementController:gettime')
         ->setName('getTime');
 
 

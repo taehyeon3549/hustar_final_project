@@ -19,6 +19,17 @@ final class DeviceManagementController extends BaseController
 		$this->view = $view;		
 	}
 
+	
+	/************************
+	 * 서버 시간 
+	 *********************** */	
+	public function gettime(Request $request, Response $response, $args)
+	{
+		$nowTime = date("yy-m-d H:i:s");
+
+		return $response->withStatus(200)->write($nowTime);
+	}
+
 	/******************************************************************
 	 * 기기 등록
 	 * 
@@ -33,7 +44,7 @@ final class DeviceManagementController extends BaseController
 		$userinfo['MAC'] = $request->getParsedBody()['MAC'];
 		$userinfo['DAY'] = date("Y-m-d");
 
-		// 이미 등록 되어있는 기기인지 검색	
+		// 이미 등록 되어있는 기기 & 회원 인지 검색	
 		$deviceCheck = $this->DeviceManagementModel->getDeviceByMAC($userinfo);
 		$userCheck = $this->DeviceManagementModel->getDeviceByUSN($userinfo);
 
