@@ -1,8 +1,34 @@
 <?php
 namespace App\Model;
 
-final class SensorManagementModel extends BaseModel
+final class DeviceManagementModel extends BaseModel
 {
+	//기기 등록
+	public function regitDevice($userinfo){
+		$sql = "INSERT INTO `hustar_final`.`DEVICE` 
+				(`DEVICE_USN`, `DEVICE_MAC`, `DEVICE_REGISTER_DAY`) 
+				VALUES (?,?,?)"
+		$sth = $this->db->prepare($sql);
+
+		if($sth->execute(array($userinfo['USN'], $sensor['MAC'], $sensor['DAY']))){
+			//insert success
+			$val = 0;
+		}else{
+			$val = 1;
+		}		
+
+		return $val
+	}
+
+	// 기기 검색 : MAC
+	// public function getDeviceByMAC($mac){
+	// 	$sql = "SELECT * FROM 'hustar_final'.'DEVICE'
+	// 			WHERE DEVICE_MAC = $mac"
+	// 	$sth = $this->db->prepare($sql);
+
+	// 	$sth->execute(arr)
+	// }
+
 	//Check the duplicate of sensor
 	public function checkSensor($sensor){
 		$sql = "SELECT * FROM Sensor WHERE s_MAC = ?";

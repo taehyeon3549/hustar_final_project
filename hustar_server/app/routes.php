@@ -158,3 +158,11 @@ $app->get('/maps', 'App\Controller\WebController:maps')
     $app->get('/gettime', 'App\Controller\UserManagementController:gettime')
         ->setName('getTime');
 
+
+    /****************************************/
+    /*               기기 관리               */
+    /****************************************/
+        
+    // 기기 등록
+    $app->post('/device/register', 'App\Controller\DeviceManagementController:deviceRegistration')
+        ->setName('register');

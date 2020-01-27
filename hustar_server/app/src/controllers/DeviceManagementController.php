@@ -7,29 +7,32 @@ use Psr\Http\Message\ResponseInterface as Response;
 final class SensorManagementController extends BaseController
 {
 	protected $logger;
-	protected $SensorManagementModel;
+	protected $DevicerManagementModel;
 	protected $view;
 
-	public function __construct($logger, $SensorManagementModel, $view)
+	public function __construct($logger, $DeviceManagementModel, $view)
 	{
 		$this->logger = $logger;
-		$this->SensorManagementModel = $SensorManagementModel;
+		$this->DeviceManagementModel = $DeviceManagementModel;
 		$this->view = $view;
 	}
 
-	//Registratioin sensor info
-	//0: success, 1: Already exist the sensor, 2: Registeration fail
-	public function registrationSensor(Request $request, Response $response, $args)
+	/******************************************************************
+	 * 기기 등록
+	 * 
+	 * return
+	 * 0: 등록 성공 , 1: 등록된 기기 , 2: 등록 실패
+	 *******************************************************************/	
+	public function deviceRegistration(Request $request, Response $response, $args)
 	{
-		$sensor = [];
+		$userinfo = [];
 
-		$sensor['usn'] = $request->getParsedBody()['usn'];
-		$sensor['mac'] = $request->getParsedBody()['mac'];
-		$sensor['sensor_name'] = $request->getParsedBody()['sensor_name'];
-		$sensor['state'] = 1;
+		$userinfo['USN'] = $request->getParsedBody()['USN'];
+		$userinfo['MAC'] = $request->getParsedBody()['MAC'];
+		$userinfo['DAY'] = date("Y-m-d");
 
-		//check duplicate of mac address	
-		if($this->SensorManagementModel->checkSensor($sensor) == 0){
+		// 이미 등록 되어있는 기기인지 검색	
+		if($this->DeviceManagementModel->checkSensor($sensor) == 0){
 			//not exist go ahead
 			//Check the empty ssn
 			$empty_ssn = $this->SensorManagementModel->checkEmptyssn();

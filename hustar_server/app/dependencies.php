@@ -115,6 +115,15 @@ $container['App\Controller\UserManagementController'] = function ($container) {
     return new App\Controller\UserManagementController($logger, $userManagementModel, $view);
 };
 
+//DeviceManagement Controller
+$container['App\Controller\DeviceManagementController'] = function ($container) {
+	$logger = $container->get('logger');
+	$userManagementModel = $container->get('DeviceManagementModel');
+	$view = $container->get('view');
+
+    return new App\Controller\DeviceManagementController($logger, $deviceManagementModel, $view);
+};
+
 //-----------------------------------------------------------------------------
 // Model factories
 // -----------------------------------------------------------------------------
@@ -139,9 +148,9 @@ $container['userManagementModel'] = function ($container) {
     return $userManagementModel;
 };
 
-$container['sensorManagementModel'] = function ($container) {
+$container['deviceManagementModel'] = function ($container) {
     $settings = $container->get('settings');
-    $sensorManagementModel = new App\Model\SensorManagementModel($container->get('db'));
+    $deviceManagementModel = new App\Model\DeviceManagementModel($container->get('db'));
 	
-    return $sensorManagementModel;
+    return $deviceManagementModel;
 };
