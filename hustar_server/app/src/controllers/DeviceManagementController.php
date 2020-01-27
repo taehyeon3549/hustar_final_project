@@ -3,8 +3,10 @@ namespace App\Controller;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
-final class SensorManagementController extends BaseController
+final class DeviceManagementController extends BaseController
 {
 	protected $logger;
 	protected $DevicerManagementModel;
@@ -14,14 +16,14 @@ final class SensorManagementController extends BaseController
 	{
 		$this->logger = $logger;
 		$this->DeviceManagementModel = $DeviceManagementModel;
-		$this->view = $view;
+		$this->view = $view;		
 	}
 
 	/******************************************************************
 	 * 기기 등록
 	 * 
 	 * return
-	 * 0: 등록 성공 , 1: 등록된 기기 , 2: 등록 실패
+	 * 0: 등록 성공 , 1: 등록된 기기 , 2: 등록 실패 , 3: 이미 등록한 회원(기기변경으로)
 	 *******************************************************************/	
 	public function deviceRegistration(Request $request, Response $response, $args)
 	{
@@ -32,47 +34,89 @@ final class SensorManagementController extends BaseController
 		$userinfo['DAY'] = date("Y-m-d");
 
 		// 이미 등록 되어있는 기기인지 검색	
-		if($this->DeviceManagementModel->checkSensor($sensor) == 0){
-			//not exist go ahead
-			//Check the empty ssn
-			$empty_ssn = $this->SensorManagementModel->checkEmptyssn();
-			$num = count($empty_ssn);			
+		$deviceCheck = $this->DeviceManagementModel->getDeviceByMAC($userinfo);
+		$userCheck = $this->DeviceManagementModel->getDeviceByUSN($userinfo);
 
-			if($num > 0){
-				//exsit empty ssn
-				$sensor['ssn'] = $empty_ssn['val'];
-			}
-
-			//Register the sensor
-			if($this->SensorManagementModel->regitSensor($sensor)){
-				//success register the sensor
-				//get Insert sensor's info
-				$info = $this->SensorManagementModel->getSensorBymac($sensor['mac']);
-				
-				$result['header'] = "Registeration success";
-				$result['message'] = [];
-				$result['message']['result'] = 0;
-				$result['message']['ssn'] = $info['SSN'];
-				$result['message']['mac'] = $info['s_MAC'];
-				$result['message']['sensor_name'] = $info['s_name'];
-			}else{
-				//fail register the sensor
+		if(count($deviceCheck) == 0){		// 등록되어 있는 기기가 없다면
+			if(count($userCheck) != 0){		// 등록한 회원이라면				
 				$result['header'] = "Registeration fail";
-				$result['message'] = [];
-				$result['message']['result'] = 2;
-			}						
+				$result['message'] = 3;
+			}else{
+				// 중간에 빈 SSN 확인
+				$emptyssn = $this->DeviceManagementModel->checkEmptyssn();
+				$num = count($emptyssn);
+				if($num > 0){		// 비어있는 SSN이 있다면
+					$userinfo['SSN'] = $emptyssn['val'];
+				}
+
+				// 기기등록
+				if($this->DeviceManagementModel->regitDevice($userinfo) == 0){
+					$result['header'] = "Registeration success";
+					$result['message'] = 0;
+				}else{
+					$result['header'] = "Registeration fail";
+					$result['message'] = 2;
+				}
+			}
 		}else{
-			//exist
-			$result['header'] = "Already exist the sensor";
-			$result['message'] = [];
-			$result['message']['result'] = 1;
+			$result['header'] = "Registeration fail";
+			$result['message'] = 1;
 		}
 
 		return $response->withStatus(200)
 		->withHeader('Content-Type', 'application/json')
 		->write(json_encode($result, JSON_NUMERIC_CHECK));
+		
 	}
 
+	/*************************************
+	 * 기기 삭제
+	 * 
+	 * return
+	 * 0: 기기삭제 성공 1: 기기삭제 실패
+	 ************************************/
+	public function deviceDeregistration(Request $request, Response $response, $args)
+	{
+		$deviceinfo['USN'] = $request->getParsedBody()['USN'];
+		$deviceinfo['MAC'] = $request->getParsedBody()['MAC'];
+		
+		if($this->DeviceManagementModel->deleteDevice($deviceinfo) == 0){	//삭제 성공
+			$result['header'] = "Delete Device success";
+			$result['message'] = "0";
+		}else{
+			$result['header'] = "Delete Device fail";
+			$result['message'] = "1";
+		}
+		
+		return $response->withStatus(200)
+		->withHeader('Content-Type', 'application/json')
+		->write(json_encode($result, JSON_NUMERIC_CHECK));
+	}
+
+	/*************************************
+	 * 기기 수정
+	 * 
+	 * return
+	 * 0: 기기수정 성공 1: 기기수정 실패
+	 ************************************/
+	public function deviceUpdate(Request $request, Response $response, $args)
+	{
+		$deviceinfo['USN'] = $request->getParsedBody()['USN'];
+		$deviceinfo['MAC'] = $request->getParsedBody()['MAC'];
+		
+		if($this->DeviceManagementModel->updateDevice($deviceinfo) == 0){	//수정 성공
+			$result['header'] = "Update Device success";
+			$result['message'] = "0";
+		}else{
+			$result['header'] = "Update Device fail";
+			$result['message'] = "1";
+		}
+		
+		return $response->withStatus(200)
+		->withHeader('Content-Type', 'application/json')
+		->write(json_encode($result, JSON_NUMERIC_CHECK));
+	}
+	
 	//Deregistratioin sensor info	
 	//0: Delete sensor success, 1: Delete Air sensor value fail, 2: Delete Polar sensor value fail
 	public function deregistrationSensor(Request $request, Response $response, $args)
@@ -108,6 +152,8 @@ final class SensorManagementController extends BaseController
 		->withHeader('Content-Type', 'application/json')
 		->write(json_encode($result, JSON_NUMERIC_CHECK));
 	}
+
+	
 
 	//Sensor List
 	public function sensorList(Request $request, Response $response, $args)

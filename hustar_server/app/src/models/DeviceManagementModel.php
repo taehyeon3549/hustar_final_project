@@ -3,32 +3,102 @@ namespace App\Model;
 
 final class DeviceManagementModel extends BaseModel
 {
-	//기기 등록
-	public function regitDevice($userinfo){
-		$sql = "INSERT INTO `hustar_final`.`DEVICE` 
-				(`DEVICE_USN`, `DEVICE_MAC`, `DEVICE_REGISTER_DAY`) 
-				VALUES (?,?,?)"
+	protected $db;
+
+	public function __construct($db){
+		$this->db = $db;		
+	}
+
+	/*************************
+	 * 기기 검색 : MAC
+	 *************************/
+	public function getDeviceByMAC($mac){
+		$sql = "SELECT * FROM DEVICE
+				WHERE DEVICE_MAC = ?";
 		$sth = $this->db->prepare($sql);
 
-		if($sth->execute(array($userinfo['USN'], $sensor['MAC'], $sensor['DAY']))){
-			//insert success
-			$val = 0;
+		$sth->execute(array($mac['MAC']));
+		$result = $sth->fetchAll();
+		return $result;
+	}
+
+	/*************************
+	 * 기기 검색 : USN
+	 *************************/
+	public function getDeviceByUSN($USN){
+		$sql = "SELECT * FROM DEVICE
+				WHERE DEVICE_USN = ?";
+		$sth = $this->db->prepare($sql);
+
+		$sth->execute(array($USN['USN']));
+		$result = $sth->fetchAll();
+		return $result;
+	}
+
+	/******************************
+	 * 비어있는 SSN 확인
+	 ******************************/	
+	public function checkEmptyssn(){   
+		$sql = "SELECT min(DEVICE_SSN + 1) AS val FROM hustar_final.DEVICE 
+				WHERE (DEVICE_SSN + 1) 
+				NOT IN (SELECT DEVICE_SSN FROM hustar_final.DEVICE)";
+				
+		$sth = $this->db->prepare($sql);
+		$sth->execute();
+		
+		$result = $sth->fetchAll();
+		
+		return $result[0];
+	}
+
+	/**************************
+	 * 휴대폰 등록
+	 ***************************/
+	public function regitDevice($deviceinfo){
+		$sql = "INSERT INTO DEVICE (`DEVICE_SSN`, `DEVICE_USN`, 
+									`DEVICE_MAC`, `DEVICE_REGISTER_DAY`) 
+				VALUES (?, ?, ?, ?);";
+		$sth = $this->db->prepare($sql);
+		
+		if($sth->execute(array($deviceinfo['SSN'], $deviceinfo['USN'], 
+							$deviceinfo['MAC'], $deviceinfo['DAY']))){			
+			$val = 0;	
 		}else{
 			$val = 1;
 		}		
-
-		return $val
+		return $val;
 	}
 
-	// 기기 검색 : MAC
-	// public function getDeviceByMAC($mac){
-	// 	$sql = "SELECT * FROM 'hustar_final'.'DEVICE'
-	// 			WHERE DEVICE_MAC = $mac"
-	// 	$sth = $this->db->prepare($sql);
+	/***********************
+	 * 휴대폰 삭제
+	 ***********************/
+	public function deleteDevice($deviceinfo){
+		$sql = "DELETE FROM DEVICE WHERE DEVICE_USN = ? AND DEVICE_MAC = ?";
+		$sth = $this->db->prepare($sql);
+		
+		if($sth->execute(array($deviceinfo['USN'], $deviceinfo['MAC']))){			
+			$val = 0;			
+		}else{
+			$val = 1;
+		}		
+		return $val;
+	}
 
-	// 	$sth->execute(arr)
-	// }
-
+	/***********************
+	 * 휴대폰 수정
+	 ***********************/
+	public function updateDevice($deviceinfo){
+		$sql = "UPDATE DEVICE
+				SET DEVICE_MAC = ? WHERE (DEVICE_USN = ?)";
+		$sth = $this->db->prepare($sql);
+		
+		if($sth->execute(array($deviceinfo['MAC'], $deviceinfo['USN']))){			
+			$val = 0;			
+		}else{
+			$val = 1;
+		}		
+		return $val;
+	}
 	//Check the duplicate of sensor
 	public function checkSensor($sensor){
 		$sql = "SELECT * FROM Sensor WHERE s_MAC = ?";
@@ -48,18 +118,7 @@ final class DeviceManagementModel extends BaseModel
 		return $val;		
 	}
 
-	//Registratioin sensor info
-	public function regitSensor($sensor){
-		$sql = "INSERT INTO Sensor (SSN, s_user, s_MAC, s_name, s_state) VALUES (?, ?, ?, ?, ?)";
-		$sth = $this->db->prepare($sql);
-		
-		if($sth->execute(array($sensor['ssn'], $sensor['usn'], $sensor['mac'], $sensor['sensor_name'], $sensor['state']))){
-			//insert success
-			return TRUE;
-		}else{
-			return FALSE;
-		}		
-	}
+	
 
 	
 	//Get sensor info
@@ -70,19 +129,6 @@ final class DeviceManagementModel extends BaseModel
 		$result = $sth->fetchAll();
 
 		return $result[0];
-	}
-
-	//Delete air sensor value
-	public function deleteAir($sensor){
-		$sql = "DELETE FROM Air_Sensor_value WHERE a_ssn = ? AND a_usn = ?";
-		$sth = $this->db->prepare($sql);
-		
-		if($sth->execute(array($sensor['ssn'], $sensor['usn']))){
-			//insert success
-			return TRUE;
-		}else{
-			return FALSE;
-		}		
 	}
 
 	//Delete Polar sensor value
@@ -128,18 +174,6 @@ final class DeviceManagementModel extends BaseModel
 		$sth = $this->db->prepare($sql);
 		$sth->execute(array($sensor));		
 		$result = $sth->fetchAll();		
-		return $result[0];
-	}
-
-
-	//Check the empty ssn in sensor table
-	public function checkEmptyssn(){   
-		$sql = "SELECT min(SSN + 1) AS val FROM Sensor WHERE (SSN + 1) NOT IN (SELECT SSN FROM Sensor)";
-		$sth = $this->db->prepare($sql);
-		$sth->execute();
-		
-		$result = $sth->fetchAll();
-		
 		return $result[0];
 	}
 

@@ -1,7 +1,5 @@
 <?php
 
-// Routes
-
 /****************************************/
 /*              web page                */
 /****************************************/
@@ -166,3 +164,11 @@ $app->get('/maps', 'App\Controller\WebController:maps')
     // 기기 등록
     $app->post('/device/register', 'App\Controller\DeviceManagementController:deviceRegistration')
         ->setName('register');
+
+    // 기기 삭제
+    $app->post('/device/deregistration', 'App\Controller\DeviceManagementController:deviceDeregistration')
+        ->setName('deviceDeregistration');
+
+    // 기기 수정
+    $app->post('/device/update', 'App\Controller\DeviceManagementController:deviceUpdate')
+        ->setName('deviceUpdate');

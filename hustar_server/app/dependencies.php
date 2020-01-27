@@ -80,6 +80,38 @@ $container['logger'] = function ($c) {
     return $logger;
 };
 
+//-----------------------------------------------------------------------------
+// Model factories
+// -----------------------------------------------------------------------------
+$container['webModel'] = function ($container) {
+    $settings = $container->get('settings');
+    $webModel = new App\Model\WebModel($container->get('db'));
+	
+    return $webModel;
+};
+
+$container['backendModel'] = function ($container) {
+    $settings = $container->get('settings');
+    $backendModel = new App\Model\BackendModel($container->get('db'));
+	
+    return $backendModel;
+};
+
+$container['userManagementModel'] = function ($container) {
+    $settings = $container->get('settings');
+    $userManagementModel = new App\Model\UserManagementModel($container->get('db'));
+	
+    return $userManagementModel;
+};
+
+$container['deviceManagementModel'] = function ($container) {
+    $settings = $container->get('settings');
+    $deviceManagementModel = new App\Model\DeviceManagementModel($container->get('db'));
+	
+    return $deviceManagementModel;
+};
+
+
 // -----------------------------------------------------------------------------
 // Controller factories
 // -----------------------------------------------------------------------------
@@ -118,39 +150,8 @@ $container['App\Controller\UserManagementController'] = function ($container) {
 //DeviceManagement Controller
 $container['App\Controller\DeviceManagementController'] = function ($container) {
 	$logger = $container->get('logger');
-	$userManagementModel = $container->get('DeviceManagementModel');
-	$view = $container->get('view');
-
+    $deviceManagementModel = $container->get('deviceManagementModel');
+    $view = $container->get('view');    
+    
     return new App\Controller\DeviceManagementController($logger, $deviceManagementModel, $view);
-};
-
-//-----------------------------------------------------------------------------
-// Model factories
-// -----------------------------------------------------------------------------
-$container['webModel'] = function ($container) {
-    $settings = $container->get('settings');
-    $webModel = new App\Model\WebModel($container->get('db'));
-	
-    return $webModel;
-};
-
-$container['backendModel'] = function ($container) {
-    $settings = $container->get('settings');
-    $backendModel = new App\Model\BackendModel($container->get('db'));
-	
-    return $backendModel;
-};
-
-$container['userManagementModel'] = function ($container) {
-    $settings = $container->get('settings');
-    $userManagementModel = new App\Model\UserManagementModel($container->get('db'));
-	
-    return $userManagementModel;
-};
-
-$container['deviceManagementModel'] = function ($container) {
-    $settings = $container->get('settings');
-    $deviceManagementModel = new App\Model\DeviceManagementModel($container->get('db'));
-	
-    return $deviceManagementModel;
 };
