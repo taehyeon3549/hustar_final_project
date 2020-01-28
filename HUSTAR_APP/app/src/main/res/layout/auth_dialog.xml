@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="350dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    <TextView
+        android:background="@color/toolbar_color"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:gravity="center"
+        android:text="메일인증 안내입니다."
+        android:textSize="16dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_width="330dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:gravity="center"
+        android:text="입력하신 이메일 주소로 '인증 확인'메일을 전송했습니다."
+        android:textSize="14dp" />
+    <TextView
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_width="335dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="60dp"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:text="인증 메일의 링크를 클릭하여 이메일 인증을 완료해 주세요 "
+        android:textSize="14dp" />
+    <TextView
+        android:id="@+id/btn_ok"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_weight="1"
+        android:background="#424242"
+        android:clickable="true"
+        android:gravity="center"
+        android:text="확인"
+        android:textColor="#ffffff"
+        android:textSize="16dp"
+        android:textStyle="bold" />
+
+</LinearLayout>
