@@ -7,13 +7,15 @@ final class UserManagementModel extends BaseModel
 	 * TEST
 	 * ********************/	
 	public function test_insert($data){
+		$dd = date("yy-m-d H:i:s");
+
 		$sql = "INSERT INTO HUSTAR (`HUSTAR_NAME`, `HUSTAR_ADDRESS`, `HUSTAR_TELL`, `HUSTAR_CHARGE`, `HUSTAR_SUB_CLASS_NO`) 
-				VALUES ('testerrrrrr', 'testttttt', '00000', ?, '1')";
+				VALUES ('testerrrrrr', ?, '00000', ?, '1')";
 
 		$val = 0;
 
 		$sth = $this->db->prepare($sql);
-		if($sth->execute(array($data))){
+		if($sth->execute(array($dd, $data))){
 			$val = 1;	
 		}else{
 			$val = 0;
@@ -104,23 +106,53 @@ final class UserManagementModel extends BaseModel
 		return $result[0];
 	}
 
-	//Get User's info in User table by usn
-	public function getUserInfo_usn($usn) {  
-		$sql = "SELECT * FROM User WHERE USN = ?";
+/*****************************
+ * 내 정보 가져오기
+ *****************************/
+	public function getUserByUSN($USN) {  
+		$sql = "SELECT * FROM USER WHERE USER_USN = ?";
 		$sth = $this->db->prepare($sql);
 		
-		$sth->execute(array($usn));
+		$sth->execute(array($USN));
 		$result = $sth->fetchAll();
 
 		return $result[0];
 	}
 
-	//Check User is exsit
+/*******************************
+ * HUSTAR Class 정보 가져오기 
+ ******************************/
+	public function getClass($CLASS) {  
+		$sql = "SELECT * FROM HUSTAR WHERE HUSTAR_NO = ?";
+		$sth = $this->db->prepare($sql);
+		
+		$sth->execute(array($CLASS));
+		$result = $sth->fetchAll();
+
+		return $result[0];
+	}
+
+/*******************************
+ * HUSTAR SubClass 정보 가져오기 
+ ******************************/
+	public function getSubClass($CLASS) {  
+		$sql = "SELECT * FROM SUB_CLASS WHERE SUB_CLASS_NO = ?";
+		$sth = $this->db->prepare($sql);
+		
+		$sth->execute(array($CLASS));
+		$result = $sth->fetchAll();
+
+		return $result[0];
+	}
+
+/*************************************
+ *  USER 검색( birth 와 email) 개수
+ ************************************/
 	public function checkUserinfo($user) {  
-		$sql = "SELECT * FROM User WHERE email = ? AND birth = ?";
+		$sql = "SELECT * FROM USER WHERE USER_EMAIL = ? AND USER_BIRTH = ?";
 		$sth = $this->db->prepare($sql);
 
-		$sth->execute(array($user['email'], $user['birth']));
+		$sth->execute(array($user['EMAIL'], $user['BIRTH']));
 		$result = $sth->fetchAll();
 		$num = count($result);
 
@@ -133,9 +165,12 @@ final class UserManagementModel extends BaseModel
 		}
 	}
 
-	// USER 테이블 USER_USN 빈 USN 체크
+	/**************************************
+	 * USER 테이블 USER_USN 빈 USN 체크
+	 * ************************************/
 	public function checkEmptyUSN() {   
-		$sql = "SELECT min(USER_USN + 1) AS EmptyUSN FROM USER WHERE (USER_USN + 1) NOT IN (SELECT USER_USN FROM USER)";
+		$sql = "SELECT min(USER_USN + 1) AS EmptyUSN 
+				FROM USER WHERE (USER_USN + 1) NOT IN (SELECT USER_USN FROM USER)";
 		$sth = $this->db->prepare($sql);
 		$sth->execute();
 		
@@ -152,7 +187,7 @@ final class UserManagementModel extends BaseModel
 		$sql = "UPDATE CERTIFICATION SET CERTIFICATION_CODE = ? , CERTIFICATION_STATE = ? WHERE CERTIFICATION_EMAIL = ?";
 		$sth = $this->db->prepare($sql);
 		
-		if($sth->execute(array($info['code'], $num, $info['email']))){
+		if($sth->execute(array($info['code'], $num, $info['EMAIL']))){
 			//success
 			return TRUE;
 		}else{
@@ -161,9 +196,11 @@ final class UserManagementModel extends BaseModel
 		}
 	}
 
-	//Get certification value using by certi_code
-	public function getCertifi($code) {  
-		$sql = "SELECT * FROM Certification WHERE certi_code = ?";
+/**************************************
+ * CERTIFICATION 의 정보 가져오기(Code)
+ **************************************/
+	public function getCertifiByCode($code) {  
+		$sql = "SELECT * FROM CERTIFICATION WHERE CERTIFICATION_CODE = ?";
 		$sth = $this->db->prepare($sql);
 
 		$sth->execute(array($code));
@@ -187,12 +224,14 @@ final class UserManagementModel extends BaseModel
 		}
 	}
 
-	//Update user's password
-	public function changePassByusn($certi) {  
-		$sql = "UPDATE User SET hashed = ? WHERE usn = ?";
+/***************************************
+ * 사용자 패스워드 변경
+ **************************************/
+	public function changePass($certi) {  
+		$sql = "UPDATE USER SET USER_PASSWORD = ? WHERE USER_USN = ?";
 		$sth = $this->db->prepare($sql);
 		
-		if($sth->execute(array($certi['password'], $certi['usn']))){
+		if($sth->execute(array($certi['PASSWORD'], $certi['USN']))){
 			//success
 			return TRUE;
 		}else{
@@ -202,7 +241,7 @@ final class UserManagementModel extends BaseModel
 	}
 
 	// 인증 받은 회원인지 체크
-	public function alreadyCertifi($email) {  
+	public function checkCertifiByEmail($email) {  
 		$sql = "SELECT * FROM CERTIFICATION WHERE CERTIFICATION_EMAIL = ?";
 		$sth = $this->db->prepare($sql);
 
@@ -242,7 +281,7 @@ final class UserManagementModel extends BaseModel
 		$sql = "INSERT INTO CERTIFICATION (`CERTIFICATION_EMAIL`, `CERTIFICATION_CODE`, `CERTIFICATION_STATE`) VALUES (?, ?, ?)";
 		$sth = $this->db->prepare($sql);
 
-		if($sth->execute(array($certi['email'], $certi['code'], $certi['state']))){
+		if($sth->execute(array($certi['EMAIL'], $certi['code'], $certi['state']))){
 			//success
 			return 0;
 		}else{
@@ -265,64 +304,6 @@ final class UserManagementModel extends BaseModel
 			//fail
 			return FALSE;
 		}
-	}
-
-	//Get sensor data
-	public function getSensorByusn($sensor) {   
-		$sql = "SELECT * FROM Sensor WHERE s_user = ?";
-		$sth = $this->db->prepare($sql);
-		$sth->execute(array($sensor));
-		
-		$result = $sth->fetchAll();
-
-		return $result[0];
-	}
-
-	//Get sensor data
-	public function getSensorByssn($sensor) {   
-		$sql = "SELECT * FROM Sensor WHERE SSN = ?";
-		$sth = $this->db->prepare($sql);
-		$sth->execute(array($sensor['ssn']));
-		
-		$result = $sth->fetchAll();
-
-		return $result[0];
-	}
-
-	//Make null the sensor value
-	public function deleteAir($usn) {  
-		$sql = "DELETE FROM Air_Sensor_value WHERE a_usn = ?";
-		$sth = $this->db->prepare($sql);
-		
-		if($sth->execute(array($usn))){
-			return TRUE;
-		}else{
-			return FALSE;
-		}		
-	}
-
-	//Delete the sensor value
-	public function deletePolar($usn) {   
-		$sql = "DELETE FROM Polar_Sensor_value WHERE p_usn = ?";
-		$sth = $this->db->prepare($sql);
-		
-		if($sth->execute(array($usn))){
-			return TRUE;
-		}else{
-			return FALSE;
-		}		
-	}
-
-	//Delete the sensor
-	public function deleteSensor($usn) {   
-		$sql = "DELETE FROM Sensor WHERE s_user = ?";
-		$sth = $this->db->prepare($sql);
-		
-		if($sth->execute(array($usn))){
-			return TRUE;
-		}else{
-			return FALSE;
-		}		
 	}
 
 	//Delete the user
@@ -348,9 +329,11 @@ final class UserManagementModel extends BaseModel
 		return $result[0];
 	}
 
-	//check the certification code is valible
-	public function checkCertificode($code) {   
-		$sql = "SELECT * FROM Certification WHERE certi_code = ?";
+/***************************************
+ * CERTIFICATION 을 CERTI_CODE로 확인
+ ***************************************/
+	public function checkCertifiByCode($code) {   
+		$sql = "SELECT * FROM CERTIFICATION WHERE CERTIFICATION_CODE = ?";
 		$sth = $this->db->prepare($sql);
 		$sth->execute(array($code));
 
@@ -363,4 +346,93 @@ final class UserManagementModel extends BaseModel
 			return FALSE;
 		}		
 	}
+
+
+/***************************************
+ * 출근 - ATTENDANCE 테이블 삽입
+ * return 0 성공
+ * return 1 실패
+ ***************************************/
+	public function AttendanceGTW($attenInfo) {  
+		$sql = "INSERT INTO `hustar_final`.`ATTENDANCE` 
+				(`ATTENDANCE_USN`, `ATTENDANCE_GTW`) VALUES (?, ?)";
+
+		$sth = $this->db->prepare($sql);
+		if($sth->execute(array($attenInfo['USN'], $attenInfo['GTW']))){
+			return 0;
+		}else{
+			return 1;
+		}
+	}
+
+/***************************************
+ * 퇴근 - ATTENDANCE 테이블 수정
+ * return 0 성공
+ * return 1 실패
+ ***************************************/
+	public function AttendanceGTH($attenInfo) {  
+		$sql = "UPDATE `hustar_final`.`ATTENDANCE` 
+				SET `ATTENDANCE_GTH` = ? 
+				WHERE (`ATTENDANCE_USN` = ?)";
+
+		$sth = $this->db->prepare($sql);
+		if($sth->execute(array($attenInfo['GTH'], $attenInfo['USN']))){
+			return 0;
+		}else{
+			return 1;
+		}
+	}
+
+/***************************************
+ * 외출 - OUTTING 테이블 삽입
+ * return 0 성공
+ * return 1 실패
+ ***************************************/
+	public function OuttingOut($outingInfo) {  
+		$sql = "INSERT INTO OUTING (OUTING_USN, OUTING_OUT) VALUES (?, ?)";
+
+		$sth = $this->db->prepare($sql);
+		if($sth->execute(array($outingInfo['USN'], $outingInfo['TIME']))){
+			return 0;
+		}else{
+			return 1;
+		}
+	}
+
+/***************************************
+ * 외출 - OUTTING 테이블 수정
+ * return 0 성공
+ * return 1 실패
+ ***************************************/
+	public function OuttingBack($outingInfo) {  
+		$sql = "UPDATE OUTING 
+				SET OUTING_BACK = ? 
+				WHERE (OUTING_USN = ? and OUTING_NO = ?)";
+
+		$sth = $this->db->prepare($sql);
+		if($sth->execute(array($outingInfo['TIME'], $outingInfo['USN'], $outingInfo['last']))){
+			return 0;
+		}else{
+			return 1;
+		}
+	}
+
+/***************************************
+ * OUTTING 테이블 검색 - USN
+ * return 0 성공
+ * return 1 실패
+ ***************************************/
+public function getOutingByUSN($userInfo) {  
+	$sql = "SELECT * FROM OUTING 			
+			WHERE (OUTING_USN = ?)";
+	
+	$sth = $this->db->prepare($sql);
+	$sth->execute(array($userInfo));
+	$result = $sth->fetchAll();
+
+	return $result;
+}
+
+
+
 }

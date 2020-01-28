@@ -1,114 +1,48 @@
 <?php
 namespace App\Model;
 
-final class SensorManagementModel extends BaseModel
+final class DeviceManagementModel extends BaseModel
 {
-	//Check the duplicate of sensor
-	public function checkSensor($sensor){
-		$sql = "SELECT * FROM Sensor WHERE s_MAC = ?";
-		$sth = $this->db->prepare($sql);
-		$sth->execute(array($sensor['mac']));
+	protected $db;
 
+	public function __construct($db){
+		$this->db = $db;		
+	}
+
+	/*************************
+	 * 기기 검색 : MAC
+	 *************************/
+	public function getDeviceByMAC($mac){
+		$sql = "SELECT * FROM DEVICE
+				WHERE DEVICE_MAC = ?";
+		$sth = $this->db->prepare($sql);
+
+		$sth->execute(array($mac['MAC']));
 		$result = $sth->fetchAll();
-		$num = count($result);
-
-		if($num == 0){
-			//sensor not exsit			
-			$val = 0;
-		}else{
-			//sensor exsit
-			$val = 1;	
-		}
-		return $val;		
-	}
-
-	//Registratioin sensor info
-	public function regitSensor($sensor){
-		$sql = "INSERT INTO Sensor (SSN, s_user, s_MAC, s_name, s_state) VALUES (?, ?, ?, ?, ?)";
-		$sth = $this->db->prepare($sql);
-		
-		if($sth->execute(array($sensor['ssn'], $sensor['usn'], $sensor['mac'], $sensor['sensor_name'], $sensor['state']))){
-			//insert success
-			return TRUE;
-		}else{
-			return FALSE;
-		}		
-	}
-
-	
-	//Get sensor info
-	public function getSensorBymac($sensor){
-		$sql = "SELECT * FROM Sensor WHERE s_MAC = ?";
-		$sth = $this->db->prepare($sql);
-		$sth->execute(array($sensor));
-		$result = $sth->fetchAll();
-
-		return $result[0];
-	}
-
-	//Delete air sensor value
-	public function deleteAir($sensor){
-		$sql = "DELETE FROM Air_Sensor_value WHERE a_ssn = ? AND a_usn = ?";
-		$sth = $this->db->prepare($sql);
-		
-		if($sth->execute(array($sensor['ssn'], $sensor['usn']))){
-			//insert success
-			return TRUE;
-		}else{
-			return FALSE;
-		}		
-	}
-
-	//Delete Polar sensor value
-	public function deletePolar($sensor){
-		$sql = "DELETE FROM Polar_Sensor_value WHERE p_ssn = ? AND p_usn = ?";
-		$sth = $this->db->prepare($sql);
-		
-		if($sth->execute(array($sensor['ssn'], $sensor['usn']))){
-			//insert success
-			return TRUE;
-		}else{
-			return FALSE;
-		}		
-	}
-
-	//Deregistratioin sensor info
-	public function deregitSensor($sensor){
-		$sql = "DELETE FROM Sensor WHERE SSN = ? AND s_user = ?";
-		
-		$sth = $this->db->prepare($sql);
-		
-		if($sth->execute(array($sensor['ssn'], $sensor['usn']))){
-			//insert success
-			return TRUE;
-		}else{
-			return FALSE;
-		}		
-	}
-
-	//Get sensor list by usn
-	public function getSensorByusn($usn){   
-		$sql = "SELECT * FROM Sensor WHERE s_user = ? ";
-		$sth = $this->db->prepare($sql);
-		$sth->execute(array($usn));		
-		$result = $sth->fetchAll();	
-		
 		return $result;
 	}
 
-	//Get sensor list by ssn
-	public function getSensorByssn($sensor){   
-		$sql = "SELECT s_name FROM Sensor WHERE SSN = ? ";
+	/*************************
+	 * 기기 검색 : USN
+	 *************************/
+	public function getDeviceByUSN($USN){
+		$sql = "SELECT * FROM DEVICE
+				WHERE DEVICE_USN = ?";
 		$sth = $this->db->prepare($sql);
-		$sth->execute(array($sensor));		
-		$result = $sth->fetchAll();		
-		return $result[0];
+
+		$sth->execute(array($USN['USN']));
+		$result = $sth->fetchAll();
+		return $result;
 	}
 
-
-	//Check the empty ssn in sensor table
+	/******************************
+	 * 비어있는 SSN 확인
+	 ******************************/	
 	public function checkEmptyssn(){   
-		$sql = "SELECT min(SSN + 1) AS val FROM Sensor WHERE (SSN + 1) NOT IN (SELECT SSN FROM Sensor)";
+		$sql = "SELECT min(DEVICE_SSN + 1) AS val FROM hustar_final.DEVICE 
+				WHERE (DEVICE_SSN + 1) 
+				NOT IN (SELECT DEVICE_SSN FROM hustar_final.DEVICE)";
+				
 		$sth = $this->db->prepare($sql);
 		$sth->execute();
 		
@@ -117,16 +51,62 @@ final class SensorManagementModel extends BaseModel
 		return $result[0];
 	}
 
-	//Insert airdata
-	public function insertAirdata($sensor){   
-		$sql = "INSERT INTO Air_Sensor_value (a_ssn, a_PM2_5, a_O3, a_CO, a_NO2, a_SO2, a_Temperture, a_latitude, a_longitude, a_time, a_usn, AQ_PM2_5, AQ_O3, AQ_CO, AQ_NO2, AQ_SO2) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	/**************************
+	 * 휴대폰 등록
+	 ***************************/
+	public function regitDevice($deviceinfo){
+		$sql = "INSERT INTO DEVICE (`DEVICE_SSN`, `DEVICE_USN`, 
+									`DEVICE_MAC`, `DEVICE_REGISTER_DAY`) 
+				VALUES (?, ?, ?, ?);";
 		$sth = $this->db->prepare($sql);
 		
-		if($sth->execute(array($sensor['ssn'], $sensor['pm2_5'], $sensor['o3'], $sensor['co'], $sensor['no2'], $sensor['so2'], $sensor['temperture'], $sensor['latitude'], $sensor['longitude'], $sensor['time'], $sensor['usn'], $sensor['aq_pm2_5'], $sensor['aq_o3'], $sensor['aq_co'], $sensor['aq_no2'],$sensor['aq_so2']))){
-			return TRUE;
+		if($sth->execute(array($deviceinfo['SSN'], $deviceinfo['USN'], 
+							$deviceinfo['MAC'], $deviceinfo['DAY']))){			
+			$val = 0;	
 		}else{
-			return FALSE;
-		}
+			$val = 1;
+		}		
+		return $val;
+	}
+
+	/***********************
+	 * 휴대폰 삭제
+	 ***********************/
+	public function deleteDevice($deviceinfo){
+		$sql = "DELETE FROM DEVICE WHERE DEVICE_USN = ? AND DEVICE_MAC = ?";
+		$sth = $this->db->prepare($sql);
+		
+		if($sth->execute(array($deviceinfo['USN'], $deviceinfo['MAC']))){			
+			$val = 0;			
+		}else{
+			$val = 1;
+		}		
+		return $val;
+	}
+
+	/***********************
+	 * 휴대폰 수정
+	 ***********************/
+	public function updateDevice($deviceinfo){
+		$sql = "UPDATE DEVICE
+				SET DEVICE_MAC = ? WHERE (DEVICE_USN = ?)";
+		$sth = $this->db->prepare($sql);
+		
+		if($sth->execute(array($deviceinfo['MAC'], $deviceinfo['USN']))){			
+			$val = 0;			
+		}else{
+			$val = 1;
+		}		
+		return $val;
+	}
+	
+	//Get sensor list by ssn
+	public function getSensorByssn($sensor){   
+		$sql = "SELECT s_name FROM Sensor WHERE SSN = ? ";
+		$sth = $this->db->prepare($sql);
+		$sth->execute(array($sensor));		
+		$result = $sth->fetchAll();		
+		return $result[0];
 	}
 
 	//Insert polardata
