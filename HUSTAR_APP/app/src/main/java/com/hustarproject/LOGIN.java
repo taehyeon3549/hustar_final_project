@@ -5,11 +5,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -67,6 +69,8 @@ public class LOGIN extends AppCompatActivity {
 
     public class login extends AsyncTask<String, Void, Void> {
 
+        public String messsage;
+
         @Override
         protected Void doInBackground(String... strings) {
             String loging = server_root + "/signin";
@@ -115,27 +119,14 @@ public class LOGIN extends AppCompatActivity {
                     JSONObject responseJSON = new JSONObject(response);
 
                     String header = (String) responseJSON.get("header");
-                    String messsage = responseJSON.get("message").toString();
+                    messsage = responseJSON.get("message").toString();
                     Log.i("TEST", "header 는 " + header + "message 는" + messsage);
                     result = "header 는 " + header + "message 는" + messsage;
                     Log.i("TAG", "DATA response = " + response);
-                    Intent intent=new Intent(LOGIN.this,MainActivity.class);
-                    LOGIN.this.startActivity(intent);
-                    /*결과에 따른 이벤트*/
-//                    switch (messsage) {
-//                        case "0":
-//                            Intent intent=new Intent(LOGIN.this,MainActivity.class);
-//                            LOGIN.this.startActivity(intent);
-//                            break;
-//                        case "1":
-//                            Log.i("TAG","toastin");
-//                            Toast.makeText(getApplicationContext(), "Password가 틀렸습니다.", Toast.LENGTH_SHORT).show();
-//                            break;
-//                        case "2":
-//                            Log.i("TAG","toastin");
-//                            Toast.makeText(LOGIN.this, "회원이 아닙니다.", Toast.LENGTH_SHORT).show();
-//                            break;
-//                    }
+
+                    //Intent intent=new Intent(LOGIN.this,MainActivity.class);
+
+                    //LOGIN.this.startActivity(intent);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -143,6 +134,28 @@ public class LOGIN extends AppCompatActivity {
                 e.printStackTrace();
             }
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+
+            /*결과에 따른 이벤트*/
+            switch (messsage) {
+                case "0":
+                    Log.i("TEST", "0");
+                    Intent intent =new Intent(LOGIN.this,MainActivity.class);
+                    LOGIN.this.startActivity(intent);
+                    break;
+                case "1":
+                    Log.i("TAG","1");
+                    Toast.makeText(getApplicationContext(), "Password가 틀렸습니다.", Toast.LENGTH_SHORT).show();
+                    break;
+                case "2":
+                    Log.i("TAG","2");
+                    Toast.makeText(LOGIN.this, "회원이 아닙니다.", Toast.LENGTH_SHORT).show();
+                    break;
+            }
         }
     }
 }
