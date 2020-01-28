@@ -74,7 +74,7 @@ $app->get('/maps', 'App\Controller\WebController:maps')
     ->setName('verify');
 
     // EMAIL로 인증 유무 확인 (APP)    
-    $app->get('/verify/check', 'App\Controller\UserManagementController:checkCertification')
+    $app->post('/verify/check/certification', 'App\Controller\UserManagementController:checkCertification')
     ->setName('check_certification');
 
     // CERTIFICATION_STATE 변경 (WEB)    

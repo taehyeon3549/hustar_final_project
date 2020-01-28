@@ -4,12 +4,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,11 +31,9 @@ public class Email_check extends AppCompatActivity {
     EditText email_write;
     Button email_send_but;
 
-    HttpURLConnection conn = null;
+    public static int flag = -1;
+    public static Email email;
 
-    OutputStream os = null;
-    InputStream is = null;
-    ByteArrayOutputStream baos = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,18 +51,33 @@ public class Email_check extends AppCompatActivity {
         email_send_but.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                semail=email_write.getText().toString();
-                Email email = new Email();
+                semail = email_write.getText().toString();
+
+                email = new Email();
                 email.execute();
+
+                /*test tt = new test();
+                tt.execute();*/
+
+                certificationCheck certificationCheck = new certificationCheck();
+                certificationCheck.execute();
             }
         });
     }
 
     public class Email extends AsyncTask<String, Void, Void> {
+        public String header;
+        public String message;
 
         @Override
         protected Void doInBackground(String... strings) {
+            Log.i("TEST", "이메일 전송 한다이");
+
             String loging = server_root + "/verify/1";
+            HttpURLConnection conn = null;
+            OutputStream os = null;
+            InputStream is = null;
+            ByteArrayOutputStream baos = null;
 
             try {
                 URL url = new URL(loging);
@@ -77,7 +92,6 @@ public class Email_check extends AppCompatActivity {
                 conn.setDoInput(true);
 
                 JSONObject job = new JSONObject();
-                Log.i("TAG", semail);
                 job.put("EMAIL", semail);
 
                 os = conn.getOutputStream();
@@ -103,21 +117,120 @@ public class Email_check extends AppCompatActivity {
                     response = new String(byteData);
                     JSONObject responseJSON = new JSONObject(response);
 
-                    String header = (String) responseJSON.get("header");
-                    String messsage = responseJSON.get("message").toString();
-                    Log.i("TEST", "header 는 " + header + "message 는" + messsage);
-                    result = "header 는 " + header + "message 는" + messsage;
-                    Log.i("TAG", "DATA response = " + response);
-
-                    if (header.equals("Send email success")){
-                        Log.d("TAG","message");
-
-                    }
+                    header = (String) responseJSON.get("header");
+                    message = responseJSON.get("message").toString();
                 }
+                conn.disconnect();
+
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (JSONException e) {
                 e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            Log.i("TEST", "\n전송 Email : " + semail + "\n 결과 헤더 : " + header);
+
+            if(message != null){
+                if (message.equals("0")) {
+                    Toast.makeText(Email_check.this, "이메일을 확인해 주세요", Toast.LENGTH_SHORT).show();
+                    flag = 0;
+                    email.cancel(true);
+                    Log.i("TEST", "FLAG 변경");
+
+                }else if(message.equals("1")) {
+                    Toast.makeText(Email_check.this, "이미 Hustar 회원 입니다", Toast.LENGTH_SHORT).show();
+                }else if(message.equals("2")){
+                    Toast.makeText(Email_check.this, "이메일 전송에 실패하였습니다. \n다시 시도해주세요", Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(Email_check.this, "DB오류 \n다시 시도해주세요", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+        }
+    }
+
+
+    public class certificationCheck extends AsyncTask<String, Void, Void> {
+        public String message;
+
+        @Override
+        protected Void doInBackground(String... strings) {
+            email.cancel(true);
+
+            String checkurl = server_root + "/verify/check/certification";
+            HttpURLConnection connection = null;
+            OutputStream outputStream = null;
+            InputStream inputStream = null;
+            ByteArrayOutputStream byteArrayOutputStream = null;
+
+            while(isCancelled() == false) {
+                try {
+                    Log.i("TEST", "체크 하는중....");
+
+                    URL checkUrl = new URL(checkurl);
+                    Log.i("TEST", "실행 주소 : " + checkUrl.toString());
+
+                    connection = (HttpURLConnection) checkUrl.openConnection();
+                    connection.setRequestMethod("POST");
+                    connection.setRequestProperty("Cache-Control", "no-cache");
+                    connection.setRequestProperty("Content-Type", "application/json");
+                    connection.setRequestProperty("Accept", "application/json");
+
+                    connection.setDoOutput(true);
+                    connection.setDoInput(true);
+
+                    JSONObject job = new JSONObject();
+                    job.put("EMAIL", semail);
+
+                    outputStream = connection.getOutputStream();
+                    outputStream.write(job.toString().getBytes());
+                    outputStream.flush();
+                    outputStream.close();
+
+                    String response;
+                    int responseCode = connection.getResponseCode();
+
+                    if (responseCode == HttpURLConnection.HTTP_OK) {
+
+                        inputStream = connection.getInputStream();
+                        byteArrayOutputStream = new ByteArrayOutputStream();
+                        byte[] byteBuffer = new byte[1024];
+                        byte[] byteData = null;
+                        int nLength = 0;
+                        while ((nLength = inputStream.read(byteBuffer, 0, byteBuffer.length)) != -1) {
+                            byteArrayOutputStream.write(byteBuffer, 0, nLength);
+                        }
+                        byteData = byteArrayOutputStream.toByteArray();
+
+                        response = new String(byteData);
+                        JSONObject responseJSON = new JSONObject(response);
+
+                        String header = (String) responseJSON.get("header");
+                        message = responseJSON.get("message").toString();
+
+
+                    }
+
+                    connection.disconnect();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                Log.i("TEST", message);
+
+                if(message.equals("0")){
+                    Intent intent = new Intent(Email_check.this, Join.class);
+                    startActivity(intent);
+
+                    this.cancel(true);
+                }
             }
             return null;
         }
