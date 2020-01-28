@@ -1,4 +1,4 @@
-package com.example.hustar_project;
+package com.hustarproject;
 
 import android.os.Bundle;
 import android.util.Log;

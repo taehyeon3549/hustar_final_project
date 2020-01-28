@@ -1,26 +1,16 @@
-package com.example.myapplication;
+package com.hustarproject;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.Map;
 
 public class Join extends AppCompatActivity {
     EditText idText,password_Text,password_recheck_Text,user_name,edit_phone;

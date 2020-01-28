@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.hustarproject;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -25,5 +25,4 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
 }
