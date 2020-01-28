@@ -1,6 +1,7 @@
 package com.hustarproject;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -24,12 +25,12 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class LOGIN extends AppCompatActivity {
-    EditText idText,passwordText;
+    EditText idText, passwordText;
     TextView new_join;
     Button login_Button;
     String server_root = "http://54.180.159.207";
     String result = null;
-    String sid,spw;
+    String sid, spw;
 
     HttpURLConnection conn = null;
 
@@ -42,30 +43,42 @@ public class LOGIN extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        idText=(EditText)findViewById(R.id.idText);
-        passwordText=(EditText)findViewById(R.id.passwordText);
-        login_Button=(Button)findViewById(R.id.login_Button);
-        new_join=(TextView)findViewById(R.id.new_join);
+        idText = (EditText) findViewById(R.id.idText);
+        passwordText = (EditText) findViewById(R.id.passwordText);
+        login_Button = (Button) findViewById(R.id.login_Button);
+        new_join = (TextView) findViewById(R.id.new_join);
+        startService();
 
+        /*서비스 연결*/
+//        if (RealService.serviceIntent == null) {
+//            serviceIntent = new Intent(this, RealService.class);
+//            startService(serviceIntent);
+//        } else {
+//            serviceIntent = RealService.serviceIntent;//getInstance().getApplication();
+//            Toast.makeText(getApplicationContext(), "already", Toast.LENGTH_LONG).show();
+//        }
 
         new_join.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent joinIntent=new Intent(LOGIN.this,Email_check.class);
+
+                Intent joinIntent = new Intent(LOGIN.this, Email_check.class);
                 LOGIN.this.startActivity(joinIntent);
+
             }
         });
 
         login_Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sid=idText.getText().toString();
-                spw=passwordText.getText().toString();
+                sid = idText.getText().toString();
+                spw = passwordText.getText().toString();
                 login login = new login();
                 login.execute();
             }
         });
     }
+
 
     public class login extends AsyncTask<String, Void, Void> {
 
@@ -107,7 +120,7 @@ public class LOGIN extends AppCompatActivity {
                     is = conn.getInputStream();
                     baos = new ByteArrayOutputStream();
                     byte[] byteBuffer = new byte[1024];
-                    byte[] byteData = null;
+                    byte[] byteData;
                     int nLength = 0;
                     while ((nLength = is.read(byteBuffer, 0, byteBuffer.length)) != -1) {
                         baos.write(byteBuffer, 0, nLength);
@@ -123,10 +136,6 @@ public class LOGIN extends AppCompatActivity {
                     Log.i("TEST", "header 는 " + header + "message 는" + messsage);
                     result = "header 는 " + header + "message 는" + messsage;
                     Log.i("TAG", "DATA response = " + response);
-
-                    //Intent intent=new Intent(LOGIN.this,MainActivity.class);
-
-                    //LOGIN.this.startActivity(intent);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -144,19 +153,23 @@ public class LOGIN extends AppCompatActivity {
             switch (messsage) {
                 case "0":
                     Log.i("TEST", "0");
-                    Intent intent =new Intent(LOGIN.this,MainActivity.class);
+                    Intent intent = new Intent(LOGIN.this, MainActivity.class);
                     LOGIN.this.startActivity(intent);
                     break;
                 case "1":
-                    Log.i("TAG","1");
+                    Log.i("TAG", "1");
                     Toast.makeText(getApplicationContext(), "Password가 틀렸습니다.", Toast.LENGTH_SHORT).show();
                     break;
                 case "2":
-                    Log.i("TAG","2");
-                    Toast.makeText(LOGIN.this, "회원이 아닙니다.", Toast.LENGTH_SHORT).show();
+                    Log.i("TAG", "2");
+                    Toast.makeText(LOGIN.this, "정보를 입력해 주세요.", Toast.LENGTH_SHORT).show();
                     break;
             }
         }
     }
+    public void startService() {
+        Intent serviceIntent = new Intent(this, ForgroundService.class);
+        serviceIntent.putExtra("inputExtra", "Foreground Service Example in Android");
+        ContextCompat.startForegroundService(this, serviceIntent);
+    }
 }
-

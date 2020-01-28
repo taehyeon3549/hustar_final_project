@@ -4,12 +4,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,6 +42,9 @@ public class Email_check extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_email_check);
 
+        /*ForeGroundService start*/
+
+
         Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.auth_dialog);
         //툴바 설정
@@ -59,7 +65,7 @@ public class Email_check extends AppCompatActivity {
     }
 
     public class Email extends AsyncTask<String, Void, Void> {
-
+        public String messsage;
         @Override
         protected Void doInBackground(String... strings) {
             String loging = server_root + "/verify/1";
@@ -104,15 +110,11 @@ public class Email_check extends AppCompatActivity {
                     JSONObject responseJSON = new JSONObject(response);
 
                     String header = (String) responseJSON.get("header");
-                    String messsage = responseJSON.get("message").toString();
+                    messsage = responseJSON.get("message").toString();
                     Log.i("TEST", "header 는 " + header + "message 는" + messsage);
                     result = "header 는 " + header + "message 는" + messsage;
                     Log.i("TAG", "DATA response = " + response);
 
-                    if (header.equals("Send email success")){
-                        Log.d("TAG","message");
-
-                    }
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -121,5 +123,34 @@ public class Email_check extends AppCompatActivity {
             }
             return null;
         }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+
+            /*결과에 따른 이벤트*/
+            switch (messsage) {
+                case "0":
+                    Log.i("TAG","0");
+                    Toast.makeText(getApplicationContext(), "메일을 전송하였습니다. 확인해 주세요", Toast.LENGTH_SHORT).show();
+                    break;
+                case "1":
+                    Log.i("TAG","1");
+                    Toast.makeText(getApplicationContext(), "이미 등록된 메일 입니다.", Toast.LENGTH_SHORT).show();
+                    break;
+                case "2":
+                    Log.i("TAG","2");
+                    Toast.makeText(Email_check.this, "이메일 전송에 실패하였습니다.", Toast.LENGTH_SHORT).show();
+                    break;
+                case "3":
+                    Log.i("TAG","3");
+                    Toast.makeText(Email_check.this, "이메일 전송에 실패하였습니다.", Toast.LENGTH_SHORT).show();
+                    break;
+                case "4":
+                    Log.i("TAG","4");
+                    Toast.makeText(Email_check.this, "이메일 전송에 실패하였습니다.", Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        }
     }
+
 }

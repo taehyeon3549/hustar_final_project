@@ -20,7 +20,6 @@ public class  Calendar_check extends AppCompatActivity{
 
         private CalendarView calendarView;
 
-
         @Override
         protected void onCreate(@Nullable Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
