@@ -1,4 +1,4 @@
-package com.example.hustar_project;
+package com.example.myapplication;
 
 import org.junit.Test;
 

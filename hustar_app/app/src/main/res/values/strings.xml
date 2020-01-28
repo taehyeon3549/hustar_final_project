@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Hustar_Project</string>
+    <string name="Calendar_Title">Hustar 출결 현황</string>
+    <string name="Email_Title">E-Mail 확인</string>
+    <string name="Join_Title">Hustar 회원 가입</string>
 </resources>
