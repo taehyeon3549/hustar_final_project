@@ -56,9 +56,6 @@ public class Email_check extends AppCompatActivity {
                 email = new Email();
                 email.execute();
 
-                /*test tt = new test();
-                tt.execute();*/
-
                 certificationCheck certificationCheck = new certificationCheck();
                 certificationCheck.execute();
             }
@@ -133,15 +130,12 @@ public class Email_check extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            Log.i("TEST", "\n전송 Email : " + semail + "\n 결과 헤더 : " + header);
 
             if(message != null){
                 if (message.equals("0")) {
                     Toast.makeText(Email_check.this, "이메일을 확인해 주세요", Toast.LENGTH_SHORT).show();
                     flag = 0;
                     email.cancel(true);
-                    Log.i("TEST", "FLAG 변경");
-
                 }else if(message.equals("1")) {
                     Toast.makeText(Email_check.this, "이미 Hustar 회원 입니다", Toast.LENGTH_SHORT).show();
                 }else if(message.equals("2")){
@@ -170,10 +164,7 @@ public class Email_check extends AppCompatActivity {
 
             while(isCancelled() == false) {
                 try {
-                    Log.i("TEST", "체크 하는중....");
-
                     URL checkUrl = new URL(checkurl);
-                    Log.i("TEST", "실행 주소 : " + checkUrl.toString());
 
                     connection = (HttpURLConnection) checkUrl.openConnection();
                     connection.setRequestMethod("POST");
@@ -212,8 +203,6 @@ public class Email_check extends AppCompatActivity {
 
                         String header = (String) responseJSON.get("header");
                         message = responseJSON.get("message").toString();
-
-
                     }
 
                     connection.disconnect();
@@ -222,8 +211,6 @@ public class Email_check extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
-                Log.i("TEST", message);
 
                 if(message.equals("0")){
                     Intent intent = new Intent(Email_check.this, Join.class);
