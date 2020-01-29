@@ -212,12 +212,18 @@ public class Email_check extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-                if(message.equals("0")){
-                    Intent intent = new Intent(Email_check.this, Join.class);
-                    startActivity(intent);
+                if(message != null){
+                    Log.i("test", message);
+                    if(message.equals("0")){
+                        Intent intent = new Intent(Email_check.this, Join.class);
+                        intent.putExtra("string",semail);
+                        Log.i("TAG",semail);
+                        startActivity(intent);
 
-                    this.cancel(true);
+                        this.cancel(true);
+                    }
                 }
+
             }
             return null;
         }
