@@ -176,3 +176,11 @@ $app->get('/maps', 'App\Controller\WebController:maps')
     // 기기 수정
     $app->post('/device/update', 'App\Controller\DeviceManagementController:deviceUpdate')
         ->setName('deviceUpdate');
+
+    /****************************************/
+    /*             관리자 기능               */
+    /****************************************/
+
+    // 회원 목록 출력
+    $app->get('/admin/user/list', 'App\Controller\AdminController:printUserList')
+        ->setName('userList');    

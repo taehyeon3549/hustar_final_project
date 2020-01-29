@@ -31,7 +31,9 @@ $container['view'] = function ($c) {
 
     // Add extensions
     $view->addExtension(new Slim\Views\TwigExtension($c->get('router'), $c->get('request')->getUri()));
-    $view->addExtension(new Twig_Extension_Debug());
+    
+    //없데이트 이후 Twig_Extension_Debug() 사라짐
+    //$view->addExtension(new Twig_Extension_Debug());
 
     return $view;
 };
@@ -111,6 +113,13 @@ $container['deviceManagementModel'] = function ($container) {
     return $deviceManagementModel;
 };
 
+$container['adminModel'] = function ($container) {
+    $settings = $container->get('settings');
+    $adminModel = new App\Model\AdminModel($container->get('db'));
+	
+    return $adminModel;
+};
+
 
 // -----------------------------------------------------------------------------
 // Controller factories
@@ -154,4 +163,13 @@ $container['App\Controller\DeviceManagementController'] = function ($container) 
     $view = $container->get('view');    
     
     return new App\Controller\DeviceManagementController($logger, $deviceManagementModel, $view);
+};
+
+//Admin Controller
+$container['App\Controller\AdminController'] = function ($container) {
+	$logger = $container->get('logger');
+    $adminModel = $container->get('adminModel');
+    $view = $container->get('view');    
+    
+    return new App\Controller\AdminController($logger, $adminModel, $view);
 };
