@@ -47,7 +47,7 @@ public class LOGIN extends AppCompatActivity {
         passwordText = (EditText) findViewById(R.id.passwordText);
         login_Button = (Button) findViewById(R.id.login_Button);
         new_join = (TextView) findViewById(R.id.new_join);
-        startService();
+//        startService();
 
         /*서비스 연결*/
 //        if (RealService.serviceIntent == null) {
@@ -167,9 +167,9 @@ public class LOGIN extends AppCompatActivity {
             }
         }
     }
-    public void startService() {
-        Intent serviceIntent = new Intent(this, ForgroundService.class);
-        serviceIntent.putExtra("inputExtra", "Foreground Service Example in Android");
-        ContextCompat.startForegroundService(this, serviceIntent);
-    }
+//    public void startService() {
+//        Intent serviceIntent = new Intent(this, ForgroundService.class);
+//        serviceIntent.putExtra("inputExtra", "Foreground Service Example in Android");
+//        ContextCompat.startForegroundService(this, serviceIntent);
+//    }
 }
