@@ -196,6 +196,11 @@ $app->get('/maps', 'App\Controller\WebController:maps')
     // 공지사항 삭제
     $app->post('/admin/notice/delete', 'App\Controller\AdminController:noticeDelete')
         ->setName('noticeDelete'); 
+
+    // 공지사항 출력
+    $app->post('/admin/notice/list', 'App\Controller\AdminController:noticeList')
+        ->setName('noticeList'); 
+    
     
     // test
     $app->get('/admin/user/temp', 'App\Controller\AdminController:temp')

@@ -97,6 +97,24 @@ public function noticeDelete($notice){
 	return $val;
 }
 
+/*****************************
+ * 공지 사항 출력
+ *****************************/
+public function noticeList(){
+	$sql = "SELECT NOTICE_NO, NOTICE_TITLE, NOTICE_BODY, USER_NAME, NOTICE_DATE, NOTICE_STATE
+			FROM hustar_final.NOTICE
+			LEFT OUTER JOIN hustar_final.USER
+			ON NOTICE_USN = USER_USN";
+
+	$sth = $this->db->prepare($sql);
+	$sth->execute();	
+	$result = $sth->fetchAll();
+
+	//print_r($result);
+
+	return $result;
+}
+
 	/*****************************
 	 * USN 회원 정보 가져오기
 	 *****************************/

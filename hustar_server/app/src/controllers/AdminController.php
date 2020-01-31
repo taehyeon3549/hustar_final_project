@@ -301,4 +301,30 @@ final class AdminController extends BaseController
 		->withHeader('Content-Type', 'application/json')
 		->write(json_encode($result, JSON_NUMERIC_CHECK));
     }
+
+    /***************************************
+     * 공지사항 출력     
+     * return 
+     * 정보
+     ***************************************/
+    public function noticeList(Request $request, Response $response, $args)
+    {     
+        $noticeInfo = $this->AdminModel->noticeList();
+
+        $count = count($noticeInfo);
+
+        for($i = 0; $i < $count; $i++){
+            $result[$i]['NOTICE_NO'] = $noticeInfo[$i]['NOTICE_NO'];
+            $result[$i]['NOTICE_TITLE'] = $noticeInfo[$i]['NOTICE_TITLE'];
+            $result[$i]['NOTICE_BODY'] = $noticeInfo[$i]['NOTICE_BODY'];
+            $result[$i]['NOTICE_NAME'] = $noticeInfo[$i]['USER_NAME'];
+            $result[$i]['NOTICE_DATE'] = $noticeInfo[$i]['NOTICE_DATE'];
+            $result[$i]['NOTICE_STATE'] = $noticeInfo[$i]['NOTICE_STATE'];
+        }
+        
+
+        return $response->withStatus(200)
+		->withHeader('Content-Type', 'application/json')
+		->write(json_encode($result, JSON_NUMERIC_CHECK));
+    }
 }
