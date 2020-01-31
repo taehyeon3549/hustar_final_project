@@ -31,7 +31,9 @@ $container['view'] = function ($c) {
 
     // Add extensions
     $view->addExtension(new Slim\Views\TwigExtension($c->get('router'), $c->get('request')->getUri()));
-    $view->addExtension(new Twig_Extension_Debug());
+    
+    //없데이트 이후 Twig_Extension_Debug() 사라짐
+    //$view->addExtension(new Twig_Extension_Debug());
 
     return $view;
 };
@@ -80,6 +82,45 @@ $container['logger'] = function ($c) {
     return $logger;
 };
 
+//-----------------------------------------------------------------------------
+// Model factories
+// -----------------------------------------------------------------------------
+$container['webModel'] = function ($container) {
+    $settings = $container->get('settings');
+    $webModel = new App\Model\WebModel($container->get('db'));
+	
+    return $webModel;
+};
+
+$container['backendModel'] = function ($container) {
+    $settings = $container->get('settings');
+    $backendModel = new App\Model\BackendModel($container->get('db'));
+	
+    return $backendModel;
+};
+
+$container['userManagementModel'] = function ($container) {
+    $settings = $container->get('settings');
+    $userManagementModel = new App\Model\UserManagementModel($container->get('db'));
+	
+    return $userManagementModel;
+};
+
+$container['deviceManagementModel'] = function ($container) {
+    $settings = $container->get('settings');
+    $deviceManagementModel = new App\Model\DeviceManagementModel($container->get('db'));
+	
+    return $deviceManagementModel;
+};
+
+$container['adminModel'] = function ($container) {
+    $settings = $container->get('settings');
+    $adminModel = new App\Model\AdminModel($container->get('db'));
+	
+    return $adminModel;
+};
+
+
 // -----------------------------------------------------------------------------
 // Controller factories
 // -----------------------------------------------------------------------------
@@ -115,33 +156,20 @@ $container['App\Controller\UserManagementController'] = function ($container) {
     return new App\Controller\UserManagementController($logger, $userManagementModel, $view);
 };
 
-//-----------------------------------------------------------------------------
-// Model factories
-// -----------------------------------------------------------------------------
-$container['webModel'] = function ($container) {
-    $settings = $container->get('settings');
-    $webModel = new App\Model\WebModel($container->get('db'));
-	
-    return $webModel;
+//DeviceManagement Controller
+$container['App\Controller\DeviceManagementController'] = function ($container) {
+	$logger = $container->get('logger');
+    $deviceManagementModel = $container->get('deviceManagementModel');
+    $view = $container->get('view');    
+    
+    return new App\Controller\DeviceManagementController($logger, $deviceManagementModel, $view);
 };
 
-$container['backendModel'] = function ($container) {
-    $settings = $container->get('settings');
-    $backendModel = new App\Model\BackendModel($container->get('db'));
-	
-    return $backendModel;
-};
-
-$container['userManagementModel'] = function ($container) {
-    $settings = $container->get('settings');
-    $userManagementModel = new App\Model\UserManagementModel($container->get('db'));
-	
-    return $userManagementModel;
-};
-
-$container['sensorManagementModel'] = function ($container) {
-    $settings = $container->get('settings');
-    $sensorManagementModel = new App\Model\SensorManagementModel($container->get('db'));
-	
-    return $sensorManagementModel;
+//Admin Controller
+$container['App\Controller\AdminController'] = function ($container) {
+	$logger = $container->get('logger');
+    $adminModel = $container->get('adminModel');
+    $view = $container->get('view');    
+    
+    return new App\Controller\AdminController($logger, $adminModel, $view);
 };

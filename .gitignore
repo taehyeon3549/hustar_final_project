@@ -1,4 +1,4 @@
-﻿// AWS_key 예외처리
+// AWS_key 예외처리
 
 .aws_key/
 .aws_key/hustar_final_project.pem
@@ -16,4 +16,5 @@ hustar_app/.idea/.name
 hustar_server/server_기능_설명.xlsx
 hustar_server/~$server_기능_설명.xlsx
 hustar_server/vendor/
-/.metadata/
+~$server_기능_설명.xlsx
+server_기능_설명.xlsx

@@ -44,7 +44,7 @@ final class UserManagementController extends BaseController
 	// who : send to address,  code : certicate code,  client: web or app(where clicked),  type: 0=certification, 1=resetpassword
  	***************************/
 	public function send_mail($who, $code, $client, $type){
-		$mail = new PHPMailer(true);		
+		$mail = new PHPMailer(true);			
 		try{
 			// SMTP 설정
 			$mail->SMTPDebug = 0;		//debugging setting 
@@ -55,6 +55,7 @@ final class UserManagementController extends BaseController
 			$mail->Password = 'hustar2019';
 			$mail->SMTPSecure = 'tls';
 			$mail->Port = 587;
+			$mail->CharSet = "UTF-8";
 
 			// 수신자
 			$mail->setFrom('hustar.ict.daegu@gmail.com', "hustar.ict.daegu");
@@ -156,11 +157,11 @@ final class UserManagementController extends BaseController
 
 			$mail -> SMTPOptions = array(
 				"ssl" => array("verify_peer" => false, "verify_peer_name" => false, "allow_self_signed" => true));
-			$mail->send();
+			$mail->send();			
 
 			return true;	
 		} catch (Exception $e){
-			print_r($e);
+			//print_r($e);
 			return false;
 		}
 	}
@@ -736,59 +737,196 @@ public function change_certification_app(Request $request, Response $response, $
 		return TRUE;
 	}
 
-
-//inssert sensor data	
-	public function insertSensor(Request $request, Response $response, $args)
+	/***********************
+	 * 내정보 보기
+	 * 
+	 * USN으로 검색
+	 * 
+	 * return
+	 * 1: 실패
+	 * 정보 : 성공
+	 ***********************/
+	public function userInfo(Request $request, Response $response, $args)
 	{
-		$senosr = [];
+		$USN = $request->getParsedBody()['USN'];
 
-		$sensor['ssn'] = $request->getParsedBody()['ssn'];
-		$sensor['pm2_5'] = $request->getParsedBody()['pm2_5'];
-		$sensor['pm10'] = $request->getParsedBody()['pm10'];
-		$sensor['o3'] = $request->getParsedBody()['o3'];
-		$sensor['co'] = $request->getParsedBody()['co'];
-		$sensor['no2'] = $request->getParsedBody()['no2'];
-		$sensor['so2'] = $request->getParsedBody()['so2'];
-		$sensor['temperture'] = $request->getParsedBody()['temperture'];
-		$sensor['latitude'] = $request->getParsedBody()['latitude'];
-		$sensor['longitude'] = $request->getParsedBody()['longitude'];
-		$sensor['time'] = $request->getParsedBody()['time'];
+		$userinfo = $this->UserManagementModel->getUserByUSN($USN);
+		
+		if(count($userinfo) != NULL){
+			$result['EMAIL'] = $userinfo['USER_EMAIL'];
+			$result['PHONE'] = $userinfo['USER_PHONE'];
+			$result['NAME'] = $userinfo['USER_NAME'];
+			
+			//성별 체크
+			if($userinfo['USER_GENDER'] == 0){
+				$result['GENDER'] = "Male";
+			}else{
+				$result['GENDER'] = "Female";
+			}
 
+			$result['BIRTH'] = $userinfo['USER_BIRTH'];
 
-		if($this->UserManagementModel->insertSensorData($sensor) > 0){
-			//Already exist the email, make response 1
-			$result['header'] = "Miss";
+			// 부서 정보 가져오기
+			$userClass = $this->UserManagementModel->getClass($userinfo['USER_CLASS']);
+			$result['CLASS'] = $userClass['HUSTAR_NAME'];
+
+			// 분반 정보 가져오기
+			$userSubClass = $this->UserManagementModel->getSubClass($userClass['HUSTAR_SUB_CLASS_NO']);
+			$result['SUBCLASS'] = $userSubClass['SUB_CLASS_NAME'];
+			$result['SUPERVISOR'] = $userSubClass['SUB_CLASS_CHARGER'];
+
+		}else{
+			$result['header'] = "Get My Info fail";
 			$result['message'] = "1";
-		}else{
-			//Not exist the eamil, make response 0
-			$result['header'] = "success";
-			$result['message'] = "0";	
-		}
-
+		}		
+		
 		return $response->withStatus(200)
 		->withHeader('Content-Type', 'application/json')
 		->write(json_encode($result, JSON_NUMERIC_CHECK));
 	}
-
-	//Get user info
-	public function userinfo(Request $request, Response $response, $args)
+	
+	/*********************************************
+	 * 출결
+	 * 
+	 * return 
+	 * 0 : 출근 성공
+	 * 1 : DB 에러
+	 * 2 : 지각
+	 * 3 : 퇴근 성공
+	 * 4 : 아직 수업 시간
+	 ***********************************************/
+	public function attendCheck(Request $request, Response $response, $args)
 	{
-		$usn = $args['usn'];
+		// 출근/퇴근 0/1
+		$flag = $args['what'];
+				
+		// code = 암호
+		$code = $request->getParsedBody()['code'];
+		$userInfo['USN'] = $request->getParsedBody()['usn'];
 
-		$userinfo = $this->UserManagementModel->getUserInfo_usn($usn);
+		$day = date("m-d");
+		$time = date("H:i:s");		
+
+		$result['Input'] = $code;
 		
-		$result['email'] = $userinfo['email'];
-		$result['name'] = $userinfo['name'];
-		if($userinfo['gender'] == 0){
-			$result['gender'] = "Male";
+		// 암호 해독
+		$temp = exec("/var/www/html/hustar/hustar-app/KISA/decode $code");
+		$result['Decode'] = $temp;
+
+		//문자열 자르고
+		$decode = explode(' ', $temp);
+
+		//날짜 체크
+		if($decode[1] == explode('-', $day)[0]  && $decode[2] == explode('-', $day)[1]){
+			if( ((int)$decode[5] - (int)date("s")) <= 10 && ((int)$decode[5] - (int)date("s")) >= 0){
+				printf(((int)$decode[5] - (int)date("s")));
+				if($flag == 0){				// 출근
+					// DB 삽입
+					$userInfo['GTW'] = date("yy-m-d H:i:s");
+					$attendInfo = $this->UserManagementModel->AttendanceGTW($userInfo);
+					if($attendInfo == 1){
+						$result['header'] = "DB error";
+						$result['message'] = "1";
+					}
+					
+					if($decode[3] == '10' && (int)$decode[4] <= 10){		//시간 체크					
+						if($attendInfo == 0){
+							$result['header'] = "Go to work";
+							$result['message'] = "0";
+						}else{
+							$result['header'] = "DB error";
+							$result['message'] = "1";
+						}				
+					}else{
+						$result['header'] = "Be late for work";
+						$result['message'] = "2";
+					}				
+				}else if($flag == 1){	// 퇴근		
+					if((int)$decode[3] >= 18){		//시간 체크
+						// DB 수정
+						$userInfo['GTH'] = date("yy-m-d H:i:s");
+
+						$attendInfo = $this->UserManagementModel->AttendanceGTH($userInfo);
+						if($attendInfo == 0){
+							$result['header'] = "Go to Home";
+							$result['message'] = "3";
+						}else{
+							$result['header'] = "DB error";
+							$result['message'] = "1";
+						}
+					}else{
+						$result['header'] = "It's still class time";
+						$result['message'] = "4";
+					}
+				}
+			}else{
+				$result['header'] = "Are you hacked now?";
+				$result['message'] = "5";
+			}
 		}else{
-			$result['gender'] = "Female";
+			$result['header'] = "Attendance Check";
+			$result['message'] = "Absent";
 		}
-		$result['birth'] = $userinfo['birth'];
-		$result['emergency'] = $userinfo['emergency_call'];
+		
+		//$result['result'] = exec("/var/www/html/hustar/hustar-app/KISA/decode $name");
 		
 		return $response->withStatus(200)
 		->withHeader('Content-Type', 'application/json')
 		->write(json_encode($result, JSON_NUMERIC_CHECK));
-	}
+		
+	}	
+
+/**********************
+ * 외출 복귀
+ * return
+ * 0: 복귀 성공 1: 복귀 실패 2: 외출 성공 3: 외출 실패
+ *********************/
+	public function outingCheck(Request $request, Response $response, $args)
+	{			
+		$userInfo['USN'] = $request->getParsedBody()['USN'];
+		$userInfo['TIME'] = date("yy-m-d H:i:s");
+		
+		$userOuting = $this->UserManagementModel->getOutingByUSN($userInfo['USN']);
+
+		if($userOuting != NULL){									// 외출이 처음이 아니라면
+			$lastOuting = count($userOuting) - 1;					//맨 마지막 외출 확인
+			//print_r($userOuting);
+			//print_r($userOuting[$lastOuting]);
+	
+			if($userOuting[$lastOuting]['OUTING_BACK'] == ""){		// 복귀 안한게 있음
+				$userInfo['last'] = $userOuting[$lastOuting]['OUTING_NO'];
+				$check = $this->UserManagementModel->OuttingBack($userInfo);
+				if($check == 0){
+					$result['header'] = "Outing update success";
+					$result['message'] = "0";
+				}else{
+					$result['header'] = "Outing update fail";
+					$result['message'] = "1";
+				}
+			}else{													// 복귀 다 했음
+				$check = $this->UserManagementModel->OuttingOut($userInfo);
+				if($check == 0){
+					$result['header'] = "Outing insert success";
+					$result['message'] = "2";
+				}else{
+					$result['header'] = "Outing insert fail";
+					$result['message'] = "3";
+				}
+			}
+		}else{
+			$check = $this->UserManagementModel->OuttingOut($userInfo);
+			if($check == 0){
+				$result['header'] = "Outing insert success";
+				$result['message'] = "2";
+			}else{
+				$result['header'] = "Outing insert fail";
+				$result['message'] = "3";
+			}	
+		}
+		
+		return $response->withStatus(200)
+		->withHeader('Content-Type', 'application/json')
+		->write(json_encode($result, JSON_NUMERIC_CHECK));	
+
+	}	
 }

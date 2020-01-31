@@ -1,7 +1,5 @@
 <?php
 
-// Routes
-
 /****************************************/
 /*              web page                */
 /****************************************/
@@ -76,7 +74,7 @@ $app->get('/maps', 'App\Controller\WebController:maps')
     ->setName('verify');
 
     // EMAIL로 인증 유무 확인 (APP)    
-    $app->get('/verify/check', 'App\Controller\UserManagementController:checkCertification')
+    $app->post('/verify/check/certification', 'App\Controller\UserManagementController:checkCertification')
     ->setName('check_certification');
 
     // CERTIFICATION_STATE 변경 (WEB)    
@@ -115,8 +113,8 @@ $app->get('/maps', 'App\Controller\WebController:maps')
     $app->post('/delete_account', 'App\Controller\UserManagementController:delete_account')
     ->setName('delete_account');
 
-    //get user info
-    $app->get('/userinfo/{usn}', 'App\Controller\UserManagementController:userinfo')
+    // 내정보 보기
+    $app->post('/userinfo', 'App\Controller\UserManagementController:userInfo')
     ->setName('userinfo');
 
     //logo_img
@@ -145,3 +143,44 @@ $app->get('/maps', 'App\Controller\WebController:maps')
     // sign_in
     $app->get('/ucsd/sign_in', 'App\Controller\UserController:sign_in')
         ->setName('sign_in');
+
+    /****************************************/
+    /*               출결                   */
+    /****************************************/
+
+    // 출석 체크 - test
+    $app->get('/check/{what}', 'App\Controller\UserManagementController:attendCheck')
+        ->setName('attendCheck');
+
+    // 외출 체크
+    $app->post('/outing', 'App\Controller\UserManagementController:outingCheck')
+        ->setName('outingCheck');
+
+    // 시간 동기화
+    $app->get('/gettime', 'App\Controller\DeviceManagementController:gettime')
+        ->setName('getTime');
+
+
+    /****************************************/
+    /*               기기 관리               */
+    /****************************************/
+        
+    // 기기 등록
+    $app->post('/device/register', 'App\Controller\DeviceManagementController:deviceRegistration')
+        ->setName('register');
+
+    // 기기 삭제
+    $app->post('/device/deregistration', 'App\Controller\DeviceManagementController:deviceDeregistration')
+        ->setName('deviceDeregistration');
+
+    // 기기 수정
+    $app->post('/device/update', 'App\Controller\DeviceManagementController:deviceUpdate')
+        ->setName('deviceUpdate');
+
+    /****************************************/
+    /*             관리자 기능               */
+    /****************************************/
+
+    // 회원 목록 출력
+    $app->get('/admin/user/list', 'App\Controller\AdminController:printUserList')
+        ->setName('userList');    
