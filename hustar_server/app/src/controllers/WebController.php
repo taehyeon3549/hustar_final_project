@@ -181,6 +181,19 @@ final class WebController extends BaseController
 
         $this->view->render($response, 'google_geolocation.html');
         return $response;
+    }
+
+
+    //calendar
+    public function calendar(Request $request, Response $response, $args)
+    {
+        $this->logger->info("calendar page action dispatched");
+
+        //$this->flash->addMessage('info', 'calendar page load');
+
+        $this->view->render($response, 'calendar.html');
+        return $response;
+
     }      
 
     //test1

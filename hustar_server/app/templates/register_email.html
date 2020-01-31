@@ -9,7 +9,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>Sign Up</title>
+  <title>회원가입</title>
 
   <!-- Custom fonts for this template-->
   <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -17,13 +17,26 @@
   <!-- Custom styles for this template-->
   <link href="/css/sb-admin.css" rel="stylesheet">
 
+  <style>
+
+    body {
+      background-image: url("https://ifh.cc/g/Zzv5w.jpg");
+      background: url(https://ifh.cc/g/Zzv5w.jpg) no-repeat center center fixed; 
+      -webkit-background-size: cover;
+      -moz-background-size: cover;
+      -o-background-size: cover;
+      background-size: cover;
+      opacity: 0.7;
+    } 
+    
+    </style>
+
 </head>
 
-<body class="bg-dark">
+<body>
+  
   <div class="container">
-    <div class="card card-login mx-auto mt-5" style="border-color: #01E1A5;">
-      <img src="http://teamc-iot.calit2.net/mail_iconn.png" style="height: 200px;background-color: #01dea5;">
-    </div>
+  
     <div class="card card-login mx-auto mt-5" style="margin-top: 5px;">
       <div class="card-header">회원가입</div>
       <div class="card-body">
@@ -36,10 +49,10 @@
           <div class="form-group">
             <div class="form-label-group">
               <input type="email" name= "email" id="inputEmail" class="form-control" placeholder="Email address" required="required">
-              <label for="inputEmail">Email address</label>
+              <label for="inputEmail">이메일 주소</label>
             </div>
           </div>
-          <a class="btn btn-primary btn-block" id="verifyb">Verify</a>   
+          <a class="btn btn-primary btn-block" id="verifyb">인증</a>   
         </form>
 
         <script type="text/javascript">
@@ -75,8 +88,8 @@
         </script>
 
         <div class="text-center">
-          <a class="d-block small mt-3" href="/">로그인</a>
-          <a class="d-block small" href="/forgot-password">비밀번호를 잃어버렸어요....</a>
+          <a class="d-block small mt-3" href="/">로그인 페이지</a>
+          
         </div>
       </div>
     </div>
