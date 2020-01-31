@@ -24,7 +24,10 @@ final class AdminModel extends BaseModel
 
 	//회원 목록 조회
 	public function userList(){
-		$sql = "SELECT HUSTAR_NAME, HUSTAR_ADDRESS, USER_NAME, USER_EMAIL, USER_PHONE, USER_BIRTH, USER_GENDER , SUB_CLASS_NAME, SUB_CLASS_CHARGER
+		$sql = "SELECT HUSTAR_NAME, HUSTAR_ADDRESS, USER_NAME, USER_EMAIL, 
+						USER_UNIV, USER_MAJOR, USER_SUBMAJOR, USER_DEGREE, 
+						USER_PHONE, USER_BIRTH, USER_GENDER , SUB_CLASS_NAME, 
+						SUB_CLASS_CHARGER
                 FROM hustar_final.USER 
                 LEFT OUTER JOIN 
                     (	SELECT *

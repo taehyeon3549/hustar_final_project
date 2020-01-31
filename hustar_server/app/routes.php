@@ -184,3 +184,19 @@ $app->get('/maps', 'App\Controller\WebController:maps')
     // 회원 목록 출력
     $app->get('/admin/user/list', 'App\Controller\AdminController:printUserList')
         ->setName('userList');    
+    
+    // 템플릿 출력
+    $app->get('/admin/user/temp', 'App\Controller\AdminController:temp')
+        ->setName('temp');    
+
+
+    /****************************************/
+    /*             지훈이 형 WEB 테스트               */
+    /****************************************/
+    $app->get('/test1', 'App\Controller\WebController:test1')
+        ->setName('test1'); 
+
+    // calendar
+    $app->post('/calendar', 'App\Controller\WebController:calendar')
+        ->setName('calendar');
+

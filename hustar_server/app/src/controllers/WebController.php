@@ -182,4 +182,11 @@ final class WebController extends BaseController
         $this->view->render($response, 'google_geolocation.html');
         return $response;
     }      
+
+    //test1
+    public function test1(Request $request, Response $response, $args)
+    {
+        $this->view->render($response, '404.html');
+        return $response;
+    }
 }
