@@ -800,9 +800,12 @@ public function change_certification_app(Request $request, Response $response, $
 		// 출근/퇴근 0/1
 		$flag = $args['what'];
 				
+		//이후 MAC 주소 받아서 USN을 찾고 출석 되게끔 만듬
+
 		// code = 암호
-		$code = $request->getParsedBody()['code'];
-		$userInfo['USN'] = $request->getParsedBody()['usn'];
+		$code = $request->getParsedBody()['CODE'];
+		//$userInfo['USN'] = $request->getParsedBody()['USN'];
+		$userInfo['USN'] = "1";
 
 		$day = date("m-d");
 		$time = date("H:i:s");		

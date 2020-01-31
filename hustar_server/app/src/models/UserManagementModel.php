@@ -240,7 +240,9 @@ final class UserManagementModel extends BaseModel
 		}
 	}
 
-	// 인증 받은 회원인지 체크
+/****************************
+ * 인증 받은 회원인지 체크
+ *****************************/
 	public function checkCertifiByEmail($email) {  
 		$sql = "SELECT * FROM CERTIFICATION WHERE CERTIFICATION_EMAIL = ?";
 		$sth = $this->db->prepare($sql);
@@ -432,7 +434,5 @@ public function getOutingByUSN($userInfo) {
 
 	return $result;
 }
-
-
 
 }

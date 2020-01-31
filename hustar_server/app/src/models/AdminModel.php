@@ -44,4 +44,70 @@ final class AdminModel extends BaseModel
 		return $result;
 	}
 
+/*****************************
+ * 공지 사항 추가
+ *****************************/
+	public function noticeAdd($notice){
+		$sql = "INSERT INTO `hustar_final`.`NOTICE` 
+				(`NOTICE_TITLE`, `NOTICE_BODY`, `NOTICE_USN`, `NOTICE_DATE`, 
+				`NOTICE_STATE`) VALUES (?, ?, ?, ?, '1');";
+        
+		$sth = $this->db->prepare($sql);
+		if($sth->execute(array($notice['TITLE'], $notice['BODY'], $notice['USN'], $notice['DATE']))){
+			$val = 0;
+		}else{
+			$val = 1;
+		}		
+
+		return $val;
+	}
+
+/*****************************
+ * 공지 사항 수정
+ *****************************/
+	public function noticeUpdate($notice){
+		$sql = "UPDATE `hustar_final`.`NOTICE` SET `NOTICE_TITLE` = ?, `NOTICE_BODY` = ?, `NOTICE_DATE` = ? 
+				WHERE (`NOTICE_NO` = ?) and (`NOTICE_USN` = ?);";
+
+		$sth = $this->db->prepare($sql);
+		if($sth->execute(array($notice['TITLE'],$notice['BODY'], 
+			$notice['DATE'], $notice['NO'], $notice['USN']))){
+				$val = 0;
+		}else{
+				$val = 1;
+		}
+
+		return $val;
+	}
+
+/*****************************
+ * 공지 사항 삭제
+ *****************************/
+public function noticeDelete($notice){
+	$sql = "DELETE FROM `hustar_final`.`NOTICE` 
+			WHERE (`NOTICE_NO` = ?) and (`NOTICE_USN` = ?);";
+
+	$sth = $this->db->prepare($sql);
+	if($sth->execute(array($notice['NO'],$notice['USN']))){
+			$val = 0;
+	}else{
+			$val = 1;
+	}
+
+	return $val;
+}
+
+	/*****************************
+	 * USN 회원 정보 가져오기
+	 *****************************/
+	public function getUserByUSN($USN) {  
+		$sql = "SELECT * FROM USER WHERE USER_USN = ?";
+		$sth = $this->db->prepare($sql);
+		
+		$sth->execute(array($USN));
+		$result = $sth->fetchAll();
+
+		return $result[0];
+	}
+
 }

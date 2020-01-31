@@ -26,7 +26,7 @@ final class AdminController extends BaseController
 		$this->view = $view;
     }
     
-    public function printUserList(Request $request, Response $response, $args)
+    public function temp(Request $request, Response $response, $args)
     {
         $userinfo = $this->AdminModel->userList();
         
@@ -63,10 +63,16 @@ final class AdminController extends BaseController
                         ->setCellValue("J$i", $userinfo[$i-8]['USER_SUBMAJOR'])
                         ->setCellValue("K$i", $userinfo[$i-8]['USER_DEGREE'])
                         ->setCellValue("L$i", $userinfo[$i-8]['USER_PHONE'])
-                        ->setCellValue("M$i", $userinfo[$i-8]['USER_BIRTH'])
-                        ->setCellValue("N$i", $userinfo[$i-8]['USER_GENDER'])
+                        ->setCellValue("M$i", $userinfo[$i-8]['USER_BIRTH'])                        
                         ->setCellValue("O$i", $userinfo[$i-8]['SUB_CLASS_NAME'])
                         ->setCellValue("P$i", $userinfo[$i-8]['SUB_CLASS_CHARGER']);
+            if($userinfo[$i-8]['USER_GENDER'] == 0){
+                $excel->setActiveSheetIndex(0)
+                    ->setCellValue("N$i", "남");
+            }else{
+                $excel->setActiveSheetIndex(0)
+                    ->setCellValue("N$i", "여");
+            }
         }
 
         // 워크시트 이름 붙이기
@@ -74,68 +80,47 @@ final class AdminController extends BaseController
 
         $excel->getActiveSheet()
                     ->getColumnDimension('C')
-                    ->setWidth(5)
+                    ->setWidth(5);
+
+        $excel->getActiveSheet()
                     ->getColumnDimension('D')
-                    ->setWidth(20)
+                    ->setWidth(20);
+        $excel->getActiveSheet()
                     ->getColumnDimension('E')
-                    ->setWidth(25)
-                    ->getColumnDimension('F')
-                    ->setWidth(10)
-                    ->getColumnDimension('G')
-                    ->setWidth(25)
-                    ->getColumnDimension('H')
-                    ->setWidth(25)
-                    ->getColumnDimension('I')
-                    ->setWidth(25)
-                    ->getColumnDimension('J')
-                    ->setWidth(25)
-                    ->getColumnDimension('K')
-                    ->setWidth(25)
-                    ->getColumnDimension('L')
-                    ->setWidth(25)
-                    ->getColumnDimension('M')
-                    ->setWidth(25)
-                    ->getColumnDimension('N')
-                    ->setWidth(25)
-                    ->getColumnDimension('O')
-                    ->setWidth(25)
-                    ->getColumnDimension('P')
                     ->setWidth(25);
-
-        // $excel->getActiveSheet()
-        //             ->getColumnDimension('B')
-        //             ->setWidth(25);
-
-        // $excel->getActiveSheet()
-        //             ->getColumnDimension('C')
-        //             ->setWidth(15);
-        // $excel->getActiveSheet()
-        //             ->getColumnDimension('D')
-        //             ->setWidth(30);
-
-        // $excel->getActiveSheet()
-        //             ->getColumnDimension('E')
-        //             ->setWidth(15);
-
-        // $excel->getActiveSheet()
-        //             ->getColumnDimension('F')
-        //             ->setWidth(15);
-
-        // $excel->getActiveSheet()
-        //             ->getColumnDimension('G')
-        //             ->setWidth(15);
-
-        // $excel->getActiveSheet()
-        //             ->getColumnDimension('H')
-        //             ->setWidth(15);
-
-        // $excel->getActiveSheet()
-        //             ->getColumnDimension('I')
-        //             ->setWidth(15);
-
-
-
-        
+        $excel->getActiveSheet()
+                    ->getColumnDimension('F')
+                    ->setWidth(10);
+        $excel->getActiveSheet()
+                    ->getColumnDimension('G')
+                    ->setWidth(25);
+        $excel->getActiveSheet()
+                    ->getColumnDimension('H')
+                    ->setWidth(25);
+        $excel->getActiveSheet()
+                    ->getColumnDimension('I')
+                    ->setWidth(25);
+        $excel->getActiveSheet()
+                    ->getColumnDimension('J')
+                    ->setWidth(25);
+        $excel->getActiveSheet()
+                    ->getColumnDimension('K')
+                    ->setWidth(25);
+        $excel->getActiveSheet()
+                    ->getColumnDimension('L')
+                    ->setWidth(25);
+        $excel->getActiveSheet()
+                    ->getColumnDimension('M')
+                    ->setWidth(25);
+        $excel->getActiveSheet()
+                    ->getColumnDimension('N')
+                    ->setWidth(25);
+        $excel->getActiveSheet()
+                    ->getColumnDimension('O')
+                    ->setWidth(25);
+        $excel->getActiveSheet()
+                    ->getColumnDimension('P')
+                    ->setWidth(25);       
         
         $excel->setActiveSheetIndex(0);
         ob_end_clean();
@@ -157,7 +142,10 @@ final class AdminController extends BaseController
         return $response->withBody(new \Slim\Http\Stream($stream));        
     }
 
-    public function temp(Request $request, Response $response, $args)
+    /*************************************************
+     * Hustar user 테이블 전체 기록 Excel 파일로 출력
+     *************************************************/
+    public function printUserList(Request $request, Response $response, $args)
     {
         //$helper->log('Load from Xls template');
         $reader = IOFactory::createReader('Xlsx');
@@ -180,42 +168,18 @@ final class AdminController extends BaseController
                         ->setCellValue("J$i", $userinfo[$i-9]['USER_SUBMAJOR'])
                         ->setCellValue("K$i", $userinfo[$i-9]['USER_DEGREE'])
                         ->setCellValue("L$i", $userinfo[$i-9]['USER_PHONE'])
-                        ->setCellValue("M$i", $userinfo[$i-9]['USER_BIRTH'])
-                        ->setCellValue("N$i", $userinfo[$i-9]['USER_GENDER'])
+                        ->setCellValue("M$i", $userinfo[$i-9]['USER_BIRTH'])                        
                         ->setCellValue("O$i", $userinfo[$i-9]['SUB_CLASS_NAME'])
                         ->setCellValue("P$i", $userinfo[$i-9]['SUB_CLASS_CHARGER']);
+
+            if($userinfo[$i-9]['USER_GENDER'] == 0){
+                $spreadsheet->setActiveSheetIndex(0)
+                      ->setCellValue("N$i", "남");
+            }else{
+                $spreadsheet->setActiveSheetIndex(0)
+                      ->setCellValue("N$i", "여");
+            }            
         }
-
-
-        // //$helper->log('Add new data to the template');
-        // $data = [['title' => 'Excel for dummies',
-        //         'price' => 17.99,
-        //         'quantity' => 2,
-        //     ],
-        //     ['title' => 'PHP for dummies',
-        //         'price' => 15.99,
-        //         'quantity' => 1,
-        //     ],
-        //     ['title' => 'Inside OOP',
-        //         'price' => 12.95,
-        //         'quantity' => 1,
-        //     ],
-        // ];
-
-        // $spreadsheet->getActiveSheet()->setCellValue('D1', date("m-d"));
-
-        // $baseRow = 5;
-        // foreach ($data as $r => $dataRow) {
-        //     $row = $baseRow + $r;
-        //     $spreadsheet->getActiveSheet()->insertNewRowBefore($row, 1);
-
-        //     $spreadsheet->getActiveSheet()->setCellValue('A' . $row, $r + 1)
-        //         ->setCellValue('B' . $row, $dataRow['title'])
-        //         ->setCellValue('C' . $row, $dataRow['price'])
-        //         ->setCellValue('D' . $row, $dataRow['quantity'])
-        //         ->setCellValue('E' . $row, '=C' . $row . '*D' . $row);
-        // }
-        // $spreadsheet->getActiveSheet()->removeRow($baseRow - 1, 1);
 
         $excelWriter = new Xlsx($spreadsheet);
         $tempFile = tempnam(File::sysGetTempDir(), 'phpxltmp');
@@ -231,5 +195,110 @@ final class AdminController extends BaseController
 
         // // Save
         // $helper->write($spreadsheet, __FILE__);
+    }
+
+    /***************************************
+     * 공지사항 입력
+     * TITLE, BODY, USN
+     * return 
+     * 0 DB 입력 성공
+     * 1 DB 입력 실패
+     * 2 관리자 계정이 아님
+     ***************************************/
+    public function noticeAdd(Request $request, Response $response, $args)
+    {
+        $notice['TITLE'] = $request->getParsedBody()['TITLE'];
+        $notice['BODY'] = $request->getParsedBody()['BODY'];
+        $notice['USN'] = $request->getParsedBody()['USN'];
+        $notice['DATE'] = date("yy-m-d H:i:s");
+
+        $userinfo = $this->AdminModel->getUserByUSN($notice['USN']);
+
+        if($userinfo['USER_ADMIN'] == 1){       //입력한 사용자가 관리자라면
+            if($this->AdminModel->noticeAdd($notice) == 0){
+                $result['header'] = "Add the Notice is success";
+                $result['message'] = "0";
+            }else{
+                $result['header'] = "Add the Notice is fail";
+                $result['message'] = "1";
+            }
+        }else{
+            $result['header'] = "Not admin";
+            $result['message'] = "2";
+        }
+        
+
+        return $response->withStatus(200)
+		->withHeader('Content-Type', 'application/json')
+		->write(json_encode($result, JSON_NUMERIC_CHECK));
+    }
+
+    /***************************************
+     * 공지사항 수정
+     * NO, TITLE, BODY, USN
+     * return 
+     * 0 DB 수정 성공
+     * 1 DB 수정 실패
+     * 2 관리자 계정이 아님
+     ***************************************/
+    public function noticeUpdate(Request $request, Response $response, $args)
+    {
+        $notice['NO'] = $request->getParsedBody()['NO'];
+        $notice['TITLE'] = $request->getParsedBody()['TITLE'];
+        $notice['BODY'] = $request->getParsedBody()['BODY'];
+        $notice['USN'] = $request->getParsedBody()['USN'];
+        $notice['DATE'] = date("yy-m-d H:i:s");
+
+        $userinfo = $this->AdminModel->getUserByUSN($notice['USN']);
+
+        if($userinfo['USER_ADMIN'] == 1){       //입력한 사용자가 관리자라면
+            if($this->AdminModel->noticeUpdate($notice) == 0){
+                $result['header'] = "Update the Notice is success";
+                $result['message'] = "0";
+            }else{
+                $result['header'] = "Update the Notice is fail";
+                $result['message'] = "1";
+            }
+        }else{
+            $result['header'] = "Not admin";
+            $result['message'] = "2";
+        }
+
+        return $response->withStatus(200)
+		->withHeader('Content-Type', 'application/json')
+		->write(json_encode($result, JSON_NUMERIC_CHECK));
+    }
+
+    /***************************************
+     * 공지사항 삭제
+     * NO, USN
+     * return 
+     * 0 DB 삭제 성공
+     * 1 DB 삭제 실패
+     * 2 관리자 계정이 아님
+     ***************************************/
+    public function noticeDelete(Request $request, Response $response, $args)
+    {
+        $notice['NO'] = $request->getParsedBody()['NO'];        
+        $notice['USN'] = $request->getParsedBody()['USN'];
+
+        $userinfo = $this->AdminModel->getUserByUSN($notice['USN']);
+
+        if($userinfo['USER_ADMIN'] == 1){       //입력한 사용자가 관리자라면
+            if($this->AdminModel->noticeDelete($notice) == 0){
+                $result['header'] = "Delete the Notice is success";
+                $result['message'] = "0";
+            }else{
+                $result['header'] = "Delete the Notice is fail";
+                $result['message'] = "1";
+            }
+        }else{
+            $result['header'] = "Not admin";
+            $result['message'] = "2";
+        }
+
+        return $response->withStatus(200)
+		->withHeader('Content-Type', 'application/json')
+		->write(json_encode($result, JSON_NUMERIC_CHECK));
     }
 }

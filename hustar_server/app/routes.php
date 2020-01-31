@@ -184,8 +184,20 @@ $app->get('/maps', 'App\Controller\WebController:maps')
     // 회원 목록 출력
     $app->get('/admin/user/list', 'App\Controller\AdminController:printUserList')
         ->setName('userList');    
+
+    // 공지사항 입력
+    $app->post('/admin/notice/add', 'App\Controller\AdminController:noticeAdd')
+        ->setName('noticeAdd');    
     
-    // 템플릿 출력
+    // 공지사항 수정
+    $app->post('/admin/notice/update', 'App\Controller\AdminController:noticeUpdate')
+        ->setName('noticeUpdate');    
+
+    // 공지사항 삭제
+    $app->post('/admin/notice/delete', 'App\Controller\AdminController:noticeDelete')
+        ->setName('noticeDelete'); 
+    
+    // test
     $app->get('/admin/user/temp', 'App\Controller\AdminController:temp')
         ->setName('temp');    
 
@@ -197,6 +209,7 @@ $app->get('/maps', 'App\Controller\WebController:maps')
         ->setName('test1'); 
 
     // calendar
-    $app->post('/calendar', 'App\Controller\WebController:calendar')
+    $app->get('/calendar', 'App\Controller\WebController:calendar')
         ->setName('calendar');
+
 
