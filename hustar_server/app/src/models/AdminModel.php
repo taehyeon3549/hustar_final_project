@@ -22,7 +22,10 @@ final class AdminModel extends BaseModel
 		}
 	}
 
-	//회원 목록 조회
+
+/*****************************
+ * 회원 목록 조회
+ *****************************/
 	public function userList(){
 		$sql = "SELECT HUSTAR_NAME, HUSTAR_ADDRESS, USER_NAME, USER_EMAIL, 
 						USER_UNIV, USER_MAJOR, USER_SUBMAJOR, USER_DEGREE, 
@@ -37,6 +40,35 @@ final class AdminModel extends BaseModel
                     ) AS a1
                 ON USER.USER_CLASS = a1.HUSTAR_NO";
         // printf($sql);
+		$sth = $this->db->prepare($sql);
+		$sth->execute();
+		$result = $sth->fetchAll();
+
+		return $result;
+	}
+
+/*****************************
+ * 회원 출결 목록 조회
+ *****************************/
+	public function attendanceList(){
+		$sql = "SELECT *
+				FROM hustar_final.ATTENDANCE";
+		// printf($sql);
+		$sth = $this->db->prepare($sql);
+		$sth->execute();
+		$result = $sth->fetchAll();
+
+		return $result;
+	}
+
+/*****************************
+ * 교육생 이름 조회
+ ******************************/
+	public function userNameList(){
+		$sql = "SELECT USER_NAME
+				FROM hustar_final.USER
+				WHERE USER_AMDIN = 0";
+		// printf($sql);
 		$sth = $this->db->prepare($sql);
 		$sth->execute();
 		$result = $sth->fetchAll();

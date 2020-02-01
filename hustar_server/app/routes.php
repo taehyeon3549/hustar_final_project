@@ -49,9 +49,12 @@ $app->get('/charts', 'App\Controller\WebController:charts')
     ->setName('charts');
 
 // maps
+$app->get('/admin/notice', 'App\Controller\WebController:memo')
+    ->setName('notice');
+
+// maps
 $app->get('/maps', 'App\Controller\WebController:maps')
     ->setName('maps');
-
 
 /****************************************/
 /*          User Management             */
@@ -200,6 +203,10 @@ $app->get('/maps', 'App\Controller\WebController:maps')
     // 공지사항 출력
     $app->post('/admin/notice/list', 'App\Controller\AdminController:noticeList')
         ->setName('noticeList'); 
+       
+    // Hustar 출결 출력
+    $app->post('/admin/user/attendance', 'App\Controller\AdminController:printUserAttendance')
+        ->setName('attendance'); 
     
     
     // test

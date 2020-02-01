@@ -197,6 +197,66 @@ final class AdminController extends BaseController
         // $helper->write($spreadsheet, __FILE__);
     }
 
+     /*************************************************
+     * Hustar 출결 기록 Excel 파일로 출력
+     *************************************************/
+    public function printUserAttendance(Request $request, Response $response, $args)
+    {
+        // 년, 월 입력 받음
+        $year = $request->getParsedBody()['YEAR'];
+        $month = $request->getParsedBody()['MONTH'];
+
+        $time = mktime(0,0,0,$month, 1, $year);
+
+        $yoil = array("일","월","화","수","목","금","토");        
+
+        // 해당 월에 해당하는 주말 빼고 날짜 가지고 옴
+        while($month == date('m', $time)){
+            if(date('w', $time) != 6 && date('w', $time) != 0){
+                
+                printf(date("m-d",$time)."\n");
+                printf($yoil[date('w', $time)]."\n");
+            }            
+            
+            $time = strtotime("+1 days",$time);                     
+        }
+
+        // //$helper->log('Load from Xls template');
+        // $reader = IOFactory::createReader('Xlsx');
+        // $spreadsheet = $reader->load(__DIR__.'/Hustar_attendance_template.xlsx');
+        
+        // // 교육생 이름만 가져오기
+        // $userinfo = $this->AdminModel->userNameList();
+
+        // //반복문을 돌며 각 row의 cell에 데이터 추가
+        // for($i=9; $i<count($userinfo)+9; $i++) {            
+        //     $spreadsheet->getActiveSheet()
+        //                 // ->setCellValue("A$i", $userinfo[i-3]['HUSTAR_NAME'])
+        //                 ->setCellValue("C$i", ($i - 8));
+
+        //     if($userinfo[$i-9]['USER_GENDER'] == 0){
+        //         $spreadsheet->setActiveSheetIndex(0)
+        //               ->setCellValue("N$i", "남");
+        //     }else{
+        //         $spreadsheet->setActiveSheetIndex(0)
+        //               ->setCellValue("N$i", "여");
+        //     }            
+        // }
+
+        // $excelWriter = new Xlsx($spreadsheet);
+        // $tempFile = tempnam(File::sysGetTempDir(), 'phpxltmp');
+        // $tempFile = $tempFile ?: __DIR__ . '/temp.xlsx';
+        // $excelWriter->save($tempFile);
+
+        // $response = $response->withHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        // $response = $response->withHeader('Content-Disposition', 'attachment; filename="Hustar_교육생명단.xlsx"');
+
+        // $stream = fopen($tempFile, 'r+');
+
+        // return $response->withBody(new \Slim\Http\Stream($stream));          
+        
+    }
+
     /***************************************
      * 공지사항 입력
      * TITLE, BODY, USN
