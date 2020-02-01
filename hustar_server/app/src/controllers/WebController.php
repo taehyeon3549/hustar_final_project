@@ -194,7 +194,19 @@ final class WebController extends BaseController
         $this->view->render($response, 'calendar.html');
         return $response;
 
-    }      
+    }    
+    
+    //memo
+    public function memo(Request $request, Response $response, $args)
+    {
+        $this->logger->info("memo page action dispatched");
+
+        //$this->flash->addMessage('info', 'memo page load');
+
+        $this->view->render($response, 'memo.html');
+        return $response;
+
+    }    
 
     //test1
     public function test1(Request $request, Response $response, $args)
