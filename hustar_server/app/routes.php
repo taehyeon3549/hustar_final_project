@@ -205,12 +205,16 @@ $app->get('/maps', 'App\Controller\WebController:maps')
         ->setName('noticeList'); 
        
     // Hustar 출결 출력
-    $app->post('/admin/user/attendance', 'App\Controller\AdminController:printUserAttendance')
+    $app->get('/admin/user/attendance', 'App\Controller\AdminController:printUserAttendance')
         ->setName('attendance'); 
+
+     // Hustar 출결 출력 test 
+     $app->post('/admin/user/test', 'App\Controller\AdminController:testest')
+     ->setName('testest'); 
     
     
     // test
-    $app->get('/admin/user/temp', 'App\Controller\AdminController:temp')
+    $app->get('/admin/user/temp', 'App\Controller\AdminController:printUserAttendance')
         ->setName('temp');    
 
 
@@ -224,4 +228,11 @@ $app->get('/maps', 'App\Controller\WebController:maps')
     $app->get('/calendar', 'App\Controller\WebController:calendar')
         ->setName('calendar');
 
+    // memo
+    $app->get('/memo', 'App\Controller\WebController:memo')
+        ->setName('memo');
+    
+    // PI
+    $app->get('/pi', 'App\Controller\WebController:PI')
+        ->setName('PI');
 

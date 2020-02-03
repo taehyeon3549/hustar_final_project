@@ -50,14 +50,43 @@ final class AdminModel extends BaseModel
 /*****************************
  * 회원 출결 목록 조회
  *****************************/
-	public function attendanceList(){
-		$sql = "SELECT *
-				FROM hustar_final.ATTENDANCE";
-		// printf($sql);
-		$sth = $this->db->prepare($sql);
-		$sth->execute();
-		$result = $sth->fetchAll();
+	// public function attendanceList($USN){
+	// 	$sql = "SELECT *
+	// 			FROM hustar_final.ATTENDANCE
+	// 			WHERE ATTENDANCDE_USN = ?";
+	// 	// printf($sql);
+	// 	$sth = $this->db->prepare($sql);
+	// 	$sth->execute(array($USN));
+	// 	$result = $sth->fetchAll();
 
+	// 	return $result;
+	// }
+
+	// public function attendanceList($user){
+	// 	$sql = "SELECT *
+	// 		FROM hustar_final.ATTENDANCE
+	// 		WHERE ATTENDANCE_USN = ?
+	// 		ORDER BY ATTENDANCE_GTW";
+	// 	// printf($sql);
+	// 	// print_r($user);
+	// 	$sth = $this->db->prepare($sql);
+	// 	$sth->execute(array($user['USN']));
+	// 	$result = $sth->fetchAll();
+	// 	// print_r($result);
+	// 	return $result;
+	// }
+
+	public function attendanceList($user){
+		$sql = "SELECT *
+			FROM hustar_final.ATTENDANCE
+			WHERE ATTENDANCE_USN = ?
+			AND ATTENDANCE_GTW >= ? AND ATTENDANCE_GTH <=?";
+		// printf($sql);
+		// print_r($user);
+		$sth = $this->db->prepare($sql);
+		$sth->execute(array($user['USN'],$user['DAYFRONT'],$user['DAYEND']));
+		$result = $sth->fetchAll();
+		// print_r($result);
 		return $result;
 	}
 
@@ -65,9 +94,9 @@ final class AdminModel extends BaseModel
  * 교육생 이름 조회
  ******************************/
 	public function userNameList(){
-		$sql = "SELECT USER_NAME
+		$sql = "SELECT USER_NAME, USER_USN
 				FROM hustar_final.USER
-				WHERE USER_AMDIN = 0";
+				WHERE USER_ADMIN = 0;";
 		// printf($sql);
 		$sth = $this->db->prepare($sql);
 		$sth->execute();
