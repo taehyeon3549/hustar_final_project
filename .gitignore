@@ -3,7 +3,8 @@
 .aws_key/
 .aws_key/hustar_final_project.pem
 .aws_key/hustar_final_project.ppk
-
+.hustar_server/vendor/*
+hustar_server/log/*
 *.pem
 *.ppk
 
