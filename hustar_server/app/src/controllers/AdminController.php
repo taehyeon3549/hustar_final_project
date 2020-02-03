@@ -10,6 +10,7 @@ use PhpOffice\PhpSpreadsheet\Shared\File;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Style\Color;
 
 
 
@@ -206,7 +207,7 @@ final class AdminController extends BaseController
         // $year = $request->getParsedBody()['YEAR'];
         // $month = $request->getParsedBody()['MONTH'];
         // $ctime = $request->getParsedBody()['CLASSTIME'];
-        $ctime = "8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,";
+        $ctime = "8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8";
         $daytime = explode(',',$ctime);
 
         $year = "2020";
@@ -228,9 +229,9 @@ final class AdminController extends BaseController
         
         // 출력 년 월 입력
         $spreadsheet->getActiveSheet()
-                    ->setCellvalue("T3",$year);
+                    ->setCellvalue("T3",$year."년");
         $spreadsheet->getActiveSheet()
-                    ->setCellvalue("U3",$month);
+                    ->setCellvalue("U3",$month."월");
 
         // 날짜 부분 입력
         while($month == date('m', $time)){
@@ -302,16 +303,17 @@ final class AdminController extends BaseController
                                 ->setCellvalue($cellborder[$row].$column,"출석(".$daytime[$row].")");
                             // 색깔 변경
                             $spreadsheet->getActiveSheet()->getStyle($cellborder[$row].$column)->getFill()
-                                ->setFillType(PHPExcel_Style_Fill::FILL_SOLD)->getStartColor()->setARGB("FF90EE90");
+                                ->setFillType('solid')->getStartColor()->setARGB("FF90EE90");
 
                             // 총 이수시간 더하기
                             $totalTime += $daytime[$row];
                         }else{                        
                             $spreadsheet->getActiveSheet()
-                                ->setCellvalue($cellborder[$row].$column,"지각(".(int)$HourGab).")";
+                                ->setCellvalue($cellborder[$row].$column,"지각(".(int)$HourGab.")");
+                                //->setCellvalue($cellborder[$row].$column,(int)$HourGab);
                             // 색깔 변경
                             $spreadsheet->getActiveSheet()->getStyle($cellborder[$row].$column)->getFill()
-                                ->setFillType(PHPExcel_Style_Fill::FILL_SOLD)->getStartColor()->setARGB("FFFAFAD2");                            
+                                ->setFillType("solid")->getStartColor()->setARGB("FFFAFAD2");                            
                             
 
                             // 총 이수시간 더하기
@@ -324,7 +326,7 @@ final class AdminController extends BaseController
                                 ->setCellvalue($cellborder[$row].$column,"결석(0)");
                         // 색깔 변경
                         $spreadsheet->getActiveSheet()->getStyle($cellborder[$row].$column)->getFill()
-                            ->setFillType(PHPExcel_Style_Fill::FILL_SOLD)->getStartColor()->setARGB("FFFFB6C1");
+                            ->setFillType("solid")->getStartColor()->setARGB("FFFFB6C1");
                         // 차감 시간 더하기
                         $minusTime += $daytime[$row];
                     }
@@ -332,20 +334,20 @@ final class AdminController extends BaseController
             }
             // 총 강의시간 출력
             $spreadsheet->getActiveSheet()
-                                ->setCellvalue("X".$column,$totalClassTime);
+                                ->setCellvalue($cellborder[$row].$column,$totalClassTime);
             // 차감 시간 출력
             $spreadsheet->getActiveSheet()
-                                ->setCellvalue("Y".$column,$minusTime);
+                                ->setCellvalue($cellborder[$row+1].$column,$minusTime);
             // 총 이수시간 출력
             $spreadsheet->getActiveSheet()
-                                ->setCellvalue("Z".$column,$totalTime);
-            $spreadsheet->getActiveSheet()->getStyle("Z".$column)->getFill()
-                                ->setFillType(PHPExcel_Style_Fill::FILL_SOLD)->getStartColor()->setARGB("FFFFFF00");  
+                                ->setCellvalue($cellborder[$row+2].$column,$totalTime);
+            $spreadsheet->getActiveSheet()->getStyle($cellborder[$row+2].$column)->getFill()
+                                ->setFillType("solid")->getStartColor()->setARGB("FFFFFF00");  
             // 출석률 출력 
             $spreadsheet->getActiveSheet()
-                                ->setCellvalue("AA".$column,($totalTime/$totalClassTime)*100);
-            $spreadsheet->getActiveSheet()->getStyle("AA".$column)->getFill()
-                                ->setFillType(PHPExcel_Style_Fill::FILL_SOLD)->getStartColor()->setARGB("FFFFFF00");  
+                                ->setCellvalue($cellborder[$row+3].$column,($totalTime/$totalClassTime)*100);
+            $spreadsheet->getActiveSheet()->getStyle($cellborder[$row+3].$column)->getFill()
+                                ->setFillType("solid")->getStartColor()->setARGB("FFFFFF00");  
 
         }
 
