@@ -56,6 +56,10 @@ $app->get('/admin/notice', 'App\Controller\WebController:memo')
 $app->get('/maps', 'App\Controller\WebController:maps')
     ->setName('maps');
 
+// 출결 정보 표시
+$app->get('/admin/user/attendance/page', 'App\Controller\WebController:userAttendance')
+    ->setName('userAttendance');
+
 /****************************************/
 /*          User Management             */
 /****************************************/
