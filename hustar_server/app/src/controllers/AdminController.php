@@ -290,14 +290,15 @@ final class AdminController extends BaseController
                     // USN 에 해당하는 출결 정보 가져오고
                     $userAttendace = $this->AdminModel->attendanceList($user);
                     if(count($userAttendace) != 0){
-                        $GTW_time_H = date("H:m:s", strtotime( $userAttendace[0]["ATTENDANCE_GTW"] ) );
-                        $GTH_time_H = date("H:m:s", strtotime( $userAttendace[0]["ATTENDANCE_GTH"] ) );
+                        $GTW_time_H = date("H:i:s", strtotime( $userAttendace[0]["ATTENDANCE_GTW"] ) );
+                        //$GTH_time_H = date("H:m:s", strtotime( $userAttendace[0]["ATTENDANCE_GTH"] ) );
+                        $GTH_time_H = date("H:i:s", strtotime("2020-02-02 18:00:00" ));
 
                         $HourGab = (strtotime($GTH_time_H) - strtotime($GTW_time_H))/3600;
                         $MinGab = (strtotime($GTH_time_H) - strtotime($GTW_time_H))/60;
                         
                         // 정상 출결이라면 그날 하루 시간을 표시1
-                        if($MinGab >=480.0){                       
+                        if($MinGab >=470.0){                       
                             //print_r("정상");
                             $spreadsheet->getActiveSheet()
                                 ->setCellvalue($cellborder[$row].$column,"출석(".$daytime[$row].")");
@@ -367,11 +368,22 @@ final class AdminController extends BaseController
 
 
     public function testest(Request $request, Response $response, $args){
-        $ctime = $request->getParsedBody()['CLASSTIME'];
+        $GTW_time_H = date("H:i:s", strtotime("2020-02-02 10:00:11" ));        
+        $GTH_time_H = date("H:i:s", strtotime("2020-02-02 18:00:00" ));
 
-        $daytime = explode(',',$ctime);
+        print_r($GTW_time_H."\n");
+        print_r($GTH_time_H."\n");
 
-        print_r($daytime);
+        $HourGab = (strtotime($GTH_time_H) - strtotime($GTW_time_H))/3600;
+        $MinGab = (strtotime($GTH_time_H) - strtotime($GTW_time_H))/60;
+        
+        // 정상 출결이라면 그날 하루 시간을 표시1
+        if($MinGab >=470.0){                       
+            //print_r("정상");
+            print_r("\n정상 시간차이 (".(int)$HourGab.") :: 분 차이 (".$MinGab.")\n");            
+        }else{
+            print_r("\n지각 시간차이 (".(int)$HourGab.") :: 분 차이 (".$MinGab.")\n");            
+        }
         
 
     }
