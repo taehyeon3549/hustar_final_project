@@ -1,357 +1,452 @@
 <!DOCTYPE html>
 <html lang="kr">
 
-<head>
- 
+    <head>
 
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="">
-  <meta name="author" content="">
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="">
+        <meta name="author" content="">
 
+        <title>Hustar 교육생 출석 현황</title>
 
-  <title>Hustar 교육생 출석 현황</title>
+        <link rel="shortcut icon" href="/icon/hustar.ico" type="image/x-icon"/>
 
-  <link rel="shortcut icon" href="/icon/hustar.ico" type="image/x-icon"/>
+        <!-- Custom fonts for this template-->
+        <link
+            href="/vendor/fontawesome-free/css/all.min.css"
+            rel="stylesheet"
+            type="text/css">
 
-  <!-- Custom fonts for this template-->
-  <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+        <!-- Page level plugin CSS-->
+        <link href="/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
 
-  <!-- Page level plugin CSS-->
-  <link href="/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
+        <!-- Custom styles for this template-->
+        <link href="/css/sb-admin.css" rel="stylesheet">
 
-  <!-- Custom styles for this template-->
-  <link href="/css/sb-admin.css" rel="stylesheet">  
-  
-  <!-- 팝업 테이블 css -->
-  <style>
-    .mytable {
-      border-collapse: collapse;
-    }
+        <!-- 팝업 테이블 css -->
+        <style>
+            .mytable {
+                border-collapse: collapse;
+            }
+            .mytable td,
+            .mytable th {
+                border: 1px solid black;
+            }
+        </style>
 
-    .mytable th,
-    .mytable td {
-      border: 1px solid black;
-    }
-  </style>
-</head>
+        <!-- 달력 검색 부분 -->
+        <link
+            rel="stylesheet"
+            type="text/css"
+            href="https://cdnjs.cludflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
 
-<body id="page-top">  
-  <!-- 로그인 SESSION이 없으면 로그인 페이지로 이동-->
-  <script>    
-    if (sessionStorage.getItem('usn') == null) {
-      location.href = "/";
-    }
-  </script>
+        <style>
+            input[id="monthPicker"] {
+                widows: 100;
+                border: 2px solid dodgerblue;
+                border-radius: 4px;
 
+                outline: none;
+                padding: 8px;
+                box-sizing: border-box;
+                transition: 0.3s;
+            }
 
-  <nav class="navbar navbar-expand navbar-dark bg-dark static-top">  
-    <a class="navbar-brand mr-1" href="/main">HUSTAR</a>
-    <button class="btn btn-link btn-sm text-white order-1 order-sm-0" id="sidebarToggle" href="#">
-      <i class="fas fa-bars"></i>
-    </button>
+            input[id="monthPicker"]:focus {
+                border-color: dodgerblue;
+            }
 
-    <!-- Navbar Search -->
-    <form class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
-      <div class="input-group">
-        <div class="input-group-append">
-          <i><script>sessionStorage.getItem('name')</script>   ('name')</i>
-        </div>
-      </div>
-    </form>
+            .inputWithIcon input[type=test] {
+                padding-left: 40px;
+            }
 
-    <!-- Navbar -->
-    <ul class="navbar-nav ml-auto ml-md-0">
-      <li class="nav-item dropdown no-arrow">
-        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
-          aria-haspopup="true" aria-expanded="false">
-          <i class="fas fa-user-circle fa-fw"></i>
-        </a>
+            .inputWithIcon {
+                position: relative;
+            }
 
-        <!-- 회원 아이콘-->
-        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
-          <a>
-            &nbsp &nbsp &nbsp
-            <script>
-              var name = sessionStorage.getItem('name');
-              document.write(name);
-            </script>sessionStorage.getItem('name')</script>>
-          </a>
-          <div class="dropdown-divider"></div>
-          
-     
-          <a class="dropdown-item" id="signoutb" href="#" data-toggle="modal" data-target="#logoutModal">로그아웃</a>
-     
+            .inputWithIcon i {
+                position: absolute;
+                left: 0;
+                top: 8px;
+                padding: 9px 8px;
+                color: #aaa;
+            }
+        </style>
 
-        </div>
-      </li>
-    </ul>
-  </nav>
+    </head>
 
-  <div id="wrapper">
-    <!-- Sidebar -->
-    <ul class="sidebar navbar-nav">
+    <body id="page-top">
+        <!-- 로그인 SESSION이 없으면 로그인 페이지로 이동-->
+        <script>
+            if (sessionStorage.getItem('usn') == null) {
+                location.href = "/";
+            }
+        </script>
 
-       <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown"aria-haspopup="true" aria-expanded="false">
-          <i class="fas fa-fw fa-folder"></i>
-          
-          <span>메인</span>
-          
-        <div class="dropdown-menu" aria-labelledby="pagesDropdown">
-            <a class="dropdown-item" href="/calendar">달력</a>
-            <a class="dropdown-item" href="/memo">게시판</a>
-   
-        </a>
-      </li>
+        <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
+            <a class="navbar-brand mr-1" href="/main">HUSTAR</a>
+            <button
+                class="btn btn-link btn-sm text-white order-1 order-sm-0"
+                id="sidebarToggle"
+                href="#">
+                <i class="fas fa-bars"></i>
+            </button>
 
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown"
-          aria-haspopup="true" aria-expanded="false">
-          <i class="fas fa-fw fa-folder"></i>
+            <!-- Navbar Search -->
+            <form
+                class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
+                <div class="input-group">
+                    <div class="input-group-append">
+                        <i>
+                            <script>
+                                document.write(name)
+                            </script>
+                        </i>
+                    </div>
+                </div>
+            </form>
 
-          <span>교육생 현황</span>
+            <!-- Navbar -->
+            <ul class="navbar-nav ml-auto ml-md-0">
+                <!-- 회원 아이콘 -->
+                <li class="nav-item dropdown no-arrow">
+                    <a
+                        class="nav-link dropdown-toggle"
+                        href="#"
+                        id="userDropdown"
+                        role="button"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false">
+                        <i class="fas fa-user-circle fa-fw"></i>
+                    </a>
 
-          <div class="dropdown-menu" aria-labelledby="pagesDropdown">
-            <a class="dropdown-item" href="/PI">개인신상카드</a>
-            
-        </a>
-      </li>
+                    <!-- 메뉴 박스 -->
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                        <!-- 1번 메뉴-->
+                        <a class="dropdown-name">
+                            <script>
+                                var name = sessionStorage.getItem('name');
+                                document.write(name);
+                            </script>
+                        </a>
+                        <!-- 경계선 -->
+                        <div class="dropdown-divider"></div>
+                        <!-- 2번 선택 메뉴 -->
+                        <a
+                            class="dropdown-item"
+                            id="signoutb"
+                            href="#"
+                            data-toggle="modal"
+                            data-target="#logoutModal">로그아웃
+                        </a>
+                    </div>
 
-      <li class="nav-item">
-        <a class="nav-link" href="/charts">
-          <i class="fas fa-fw fa-chart-area"></i>
-          <span>출결 현황</span>
-        </a>
-      </li>
+                </li>
+            </ul>
+        </nav>
 
-      <li class="nav-item">
-        <a class="nav-link" href="/maps">
-          <i class="fas fa-fw fa-chart-area"></i>
-          <span>Map</span>
-        </a>
-      </li>
+        <div id="wrapper">
 
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown"
-          aria-haspopup="true" aria-expanded="false">
-          <i class="fas fa-fw fa-folder"></i>
-          <span>내 계정관리</span>
-        </a>
-        <div class="dropdown-menu" aria-labelledby="pagesDropdown">
-          <a class="dropdown-item" id="myaccountb" href="/myaccount">내 계정</a>
-          <a class="dropdown-item" href="/change_password">비밀번호 변경</a>
-          <a class="dropdown-item" id="signoutb" href="#" data-toggle="modal" data-target="#logoutModal">로그아웃</a>
-          <a class="dropdown-item" href="/change_idcancellation">회원 탈퇴</a>
+            <!-- 왼쪽 사이드바 -->
+            <ul class="sidebar navbar-nav">
+                <!-- 메인 메뉴 -->
+                <li class="nav-item dropdown">
+                    <a
+                        class="nav-link dropdown-toggle"
+                        href="#"
+                        id="pagesDropdown"
+                        role="button"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false">
+                        <i class="fas fa-fw fa-folder"></i>
+                        <span>메인</span>
+                    </a>
 
+                    <!-- 서브 메뉴-->
+                    <div class="dropdown-menu" aria-labelledby="pagesDropdown">
+                        <a class="dropdown-item" href="/calendar">달력</a>
+                        <a class="dropdown-item" href="/memo">게시판</a>
+                    </div>
+                </li>
 
-    </ul>
+                <!-- 교육생 현황 -->
+                <li class="nav-item dropdown">
+                    <a
+                        class="nav-link dropdown-toggle"
+                        href="#"
+                        id="pagesDropdown"
+                        role="button"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false">
+                        <i class="fas fa-fw fa-folder"></i>
+                        <span>교육생 현황</span>
+                    </a>
 
-    <div id="content-wrapper">
-      <div class="container-fluid">
-        <!-- Breadcrumbs-->
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item">
-            <a href="#">HUSTAR</a>
-          </li>
-          <li class="breadcrumb-item active">Overview</li>
-        </ol>
+                    <!-- 서브 메뉴-->
+                    <div class="dropdown-menu" aria-labelledby="pagesDropdown">
+                        <a class="dropdown-item" href="/PI">개인신상카드</a>
+                    </div>
+                </li>
 
-        <!-- Google map-->
-        <!-- 구글 맵은 이거 복붙-->
-        <div class="card mb-3">
-          <div class="card-header">              
-            <i class="fas fa-chart-area"></i>
-            AQI Map
-            <div>
-                <!-- <input type="date" id = "datechanger" name = "datechanger" onchange="mapchange(this);"> -->
+                <!-- 출결 현황 -->
+                <li class="nav-item active">
+                    <a class="nav-link" href="/charts">
+                        <i class="fas fa-fw fa-chart-area"></i>
+                        <span>출결 현황</span>
+                    </a>
+                </li>
+
+                <!-- Map -->
+                <li class="nav-item">
+                    <a class="nav-link" href="/maps">
+                        <i class="fas fa-fw fa-chart-area"></i>
+                        <span>Map</span>
+                    </a>
+                </li>
+
+                <!-- 내 계정관리 -->
+                <li class="nav-item dropdown">
+                    <a
+                        class="nav-link dropdown-toggle"
+                        href="#"
+                        id="pagesDropdown"
+                        role="button"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false">
+                        <i class="fas fa-fw fa-folder"></i>
+                        <span>내 계정관리</span>
+                    </a>
+
+                    <!-- 서브 메뉴-->
+                    <div class="dropdown-menu" aria-labelledby="pagesDropdown">
+                        <a class="dropdown-item" id="myaccountb" href="/myaccount">내 계정</a>
+                        <a class="dropdown-item" href="/change_password">비밀번호 변경</a>
+                        <a
+                            class="dropdown-item"
+                            id="signoutb"
+                            href="#"
+                            data-toggle="modal"
+                            data-target="#logoutModal">로그아웃</a>
+                        <a class="dropdown-item" href="/change_idcancellation">회원 탈퇴</a>
+                    </div>
+                </li>
+            </ul>
+
+            <!-- 우측 메인 화면 -->
+            <div id="content-wrapper">
+                <!-- 분할 1 -->
+                <div class="container-fluid">
+
+                    <!-- 맨위 상단 표시줄 -->
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item" style="padding-top: 8px;">
+                            <a href="#">HUSTAR</a>
+                        </li>
+                        <li class="breadcrumb-item active" style="padding-top: 8px;">교육생 출석 현황</li>      
+                    </ol>
+
+                    <!-- 출석 현황 -->
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <i class="fas fa-chart-area">12월 교육생 출석 현황</i>
+                            <!-- 검색 년월 -->                       
+                            <div class="inputWithIcon ml-auto mr-0 mr-md-3 my-2 my-md-0" style="width: 260px;">
+                              <input type="text" id="monthPicker" placeholder="선택하세요" style="text-align: right;">
+                              <i class="fa fa-calendar fa-lg fa-fw" aria-hidden="true"></i>
+                              <a class="btn btn-primary" name="search" id="search"> <b>조회</b></a>
+                            </div>  
+                        </div>
+
+                        <div class="card-body">
+                            <div id="map_canvas" style="position: relative;overflow: hidden;height: 500px;">
+                              map_canvas
+                            </div>
+                            
+                            <div class='myLinkContainer'>
+                              myLinkContainer
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- DataTables Example -->
+                    <br><br>
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <i class="fas fa-table"></i>
+                            Sensor List Table</div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>MAC</th>
+                                            <th>Sensor Name</th>
+                                            <th>State</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="senosr_list">
+                                        <!-- 센서 값 반복문-->
+                                        <script>
+                                            var usn = sessionStorage.usn;
+                                            //send json
+                                            $
+                                                .ajax({
+                                                    method: "POST",
+                                                    url: "/sensorList",
+                                                    'dataType': "json",
+                                                    data: {
+                                                        "usn": usn
+                                                    }
+                                                })
+                                                .done(function (msg) {
+                                                    var lenght = msg.message.length;
+                                                    var temp = JSON.stringify(msg.message);
+
+                                                    for (var i = 0; i < lenght; i++) {
+                                                        var tr = document.createElement('tr');
+
+                                                        if (JSON.parse(temp)[i].state == 1) 
+                                                            var text = '<th>' + JSON
+                                                                .parse(temp)[i]
+                                                                .mac + '</th><th>' + JSON
+                                                                .parse(temp)[i]
+                                                                .name + '</th><th>Active</th>';
+                                                        else 
+                                                            var text = '<th>' + JSON
+                                                                .parse(temp)[i]
+                                                                .mac + '</th><th>' + JSON
+                                                                .parse(temp)[i]
+                                                                .name + '</th><th>NotActive</th>';
+                                                        
+                                                        tr.innerHTML = text;
+                                                        document
+                                                            .getElementById('senosr_list')
+                                                            .appendChild(tr);
+                                                    }
+                                                });
+                                        </script>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
+                    </div>
+
+                </div>
             </div>
-          </div>
-          <div class="card-body">
-            <div id="map_canvas" style="position: relative;overflow: hidden;height: 500px;"></div>
-            <script async defer
-              src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCZ_5s3S4uTqhtcBNUndDLKvmvcD23QKvY&language=en&callback=initMap">
-              </script>
-            <div class='myLinkContainer'></div>
-          </div>
+            <!-- /.content-wrapper -->
+
         </div>
+        <!-- /#wrapper -->
 
-        <!-- Google Chart-->
-        <div class="card mb-3">
-          <div class="card-header">            
-            <i class="fas fa-chart-area"></i>
-            Real-Time Chart
-          </div>
-          <div class="card-body">
-            <!-- 차트 그림은 이거 복붙-->
-            <div id="dual_x_div" style="width: 900px; height: 500px;"></div>
-          </div>
-        </div>
+        <!-- 최상단으로 이동하는 버튼 -->
+        <a class="scroll-to-top rounded" href="#page-top">
+            <i class="fas fa-angle-up"></i>
+        </a>
 
-        <!-- DataTables Example -->
-        <br><br>
-        <div class="card mb-3">
-          <div class="card-header">
-            <i class="fas fa-table"></i>
-            Sensor List Table</div>
-          <div class="card-body">
-            <div class="table-responsive">
-              <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                <thead>
-                  <tr>
-                    <th>MAC</th>
-                    <th>Sensor Name</th>
-                    <th>State</th>
-                  </tr>
-                </thead>
-                <tbody id="senosr_list">
-                  <!-- 센서 값 반복문-->
-                  <script>
-                    var usn = sessionStorage.usn;
-                    //send json
-                    $.ajax({
-                      method: "POST",
-                      url: "/sensorList",
-                      'dataType': "json",
-                      data: {
-                        "usn": usn
-                      }
-                    }).done(function (msg) {
-                      var lenght = msg.message.length;
-                      var temp = JSON.stringify(msg.message);
-
-                      for (var i = 0; i < lenght; i++) {
-                        var tr = document.createElement('tr');
-
-                        if (JSON.parse(temp)[i].state == 1)
-                          var text = '<th>' + JSON.parse(temp)[i].mac + '</th>' + '<th>' + JSON.parse(temp)[i].name + '</th>' + '<th>' + "Active" + '</th>';
-                        else
-                          var text = '<th>' + JSON.parse(temp)[i].mac + '</th>' + '<th>' + JSON.parse(temp)[i].name + '</th>' + '<th>' + "NotActive" + '</th>';
-
-                        tr.innerHTML = text;
-                        document.getElementById('senosr_list').appendChild(tr);
-                      }
-                    });
-                  </script>
-                </tbody>
-              </table>
+        <!-- 로그아웃 모달 -->
+        <div
+            class="modal fade"
+            id="logoutModal"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">로그아웃</h5>
+                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">로그아웃 하실래요?</div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">닫기</button>
+                        <a class="btn btn-primary" id="logoutb">로그아웃</a>
+                        <!-- LogOut btn action -->
+                        <script type="text/javascript">
+                            document
+                                .getElementById("logoutb")
+                                .addEventListener('click', function () {
+                                    // Check the value are all filled
+                                    var usn = sessionStorage.getItem('usn');
+                                    //send json
+                                    $
+                                        .ajax({
+                                            method: "POST",
+                                            url: "/signout",
+                                            data: {
+                                                "USN": usn
+                                            }
+                                        })
+                                        .done(function (msg) {
+                                            if (msg.message == 0) {
+                                                //logout success sessionStorage clear
+                                                sessionStorage.clear();
+                                                location.href = "/";
+                                            }
+                                            if (msg.message == 1) {
+                                                alert("로그아웃 다시해주세요");
+                                            }
+                                        });
+                                });
+                        </script>
+                    </div>
+                </div>
             </div>
-          </div>
-          <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
         </div>
 
-      </div>
-      <!-- /.container-fluid -->
+        <!-- My Account-->
+        <!-- <div class="modal fade" id="MyaccountModal" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalLabel" aria-hidden="true"> <div
+        class="modal-dialog" role="document"> <div class="modal-content"> <div
+        class="modal-header"> <h5 class="modal-title" id="accountModalLabel">My
+        Account</h5> <button class="close" type="button" data-dismiss="modal"
+        aria-label="Close"> <span aria-hidden="true">×</span> </button> </div> <div
+        class="modal-body">Your Email: teamciot2019@gmail.com<br>Your Name: Jane</div>
+        <div class="modal-footer"> <button class="btn btn-secondary" type="button"
+        data-dismiss="modal">Cancel</button> <a class="btn btn-primary"
+        href="login.html">Change</a> </div> </div> </div> </div> -->
 
-      <!-- Sticky Footer -->
-      <footer class="sticky-footer">
-        <div class="container my-auto">
-          <div class="copyright text-center my-auto">
-            <span>HUSTAR</span>
-          </div>
-        </div>
-      </footer>
+        <!-- Bootstrap core JavaScript-->
+        <script src="/vendor/jquery/jquery.min.js"></script>
+        <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-    </div>
-    <!-- /.content-wrapper -->
+        <!-- Core plugin JavaScript-->
+        <script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
 
-  </div>
-  <!-- /#wrapper -->
+        <!-- Page level plugin JavaScript-->
+        <script src="/vendor/chart.js/Chart.min.js"></script>
+        <script src="/vendor/datatables/jquery.dataTables.js"></script>
+        <script src="/vendor/datatables/dataTables.bootstrap4.js"></script>
 
-  <!-- Scroll to Top Button-->
-  <a class="scroll-to-top rounded" href="#page-top">
-    <i class="fas fa-angle-up"></i>
-  </a>
+        <!-- Custom scripts for all pages-->
+        <script src="/js/sb-admin.min.js"></script>
 
-  <!-- Logout Modal-->
-  <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">로그아웃</h5>
-          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">×</span>
-          </button>
-        </div>
-        <div class="modal-body">로그아웃 하실래요?</div>
-        <div class="modal-footer">
-          <button class="btn btn-secondary" type="button" data-dismiss="modal">닫기</button>
-          <a class="btn btn-primary" id="logoutb">로그아웃</a>
-          <!-- LogOut btn action -->
-          <script type="text/javascript">
-            document.getElementById("logoutb").addEventListener('click', function () {
-              // Check the value are all filled
-              var usn = sessionStorage.getItem('usn');
-              //send json
-              $.ajax({
-                method: "POST",
-                url: "/signout",
-                data: {
-                  "USN": usn
-                }
-              }).done(function (msg) {
-                if (msg.message == 0) {
-                  //logout success
-                  //sessionStorage clear
-                  sessionStorage.clear();
-                  location.href = "/";
-                }
-                if (msg.message == 1) {
-                  alert("로그아웃 다시해주세요");
-                }
-              });
-            });
-          </script>
-        </div>
-      </div>
-    </div>
-  </div>
+        <!-- 달력 javascript -->
+        <script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+        <link
+            rel="stylesheet"
+            href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/themes/smoothness/jquery-ui.css">
+        <script
+            src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js"></script>
+        <script src="/js/jquery.mtz.monthpicker.js"></script>
+        <script>
+            $('#monthPicker').monthpicker();
+        </script>
 
+        <!-- Demo scripts for this page-->
+        <!-- <script src="js/demo/datatables-demo.js"></script> <script
+        src="js/demo/chart-area-demo.js"></script> -->
 
-  <!-- My Account-->
-  <!-- <div class="modal fade" id="MyaccountModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="accountModalLabel">My Account</h5>
-          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">×</span>
-          </button>
-        </div>
-        <div class="modal-body">Your Email: teamciot2019@gmail.com<br>Your Name: Jane</div>
-        <div class="modal-footer">
-          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-          <a class="btn btn-primary" href="login.html">Change</a>
-        </div>
-      </div>
-    </div>
-  </div> -->
-
-
-
-
-
-
-  <!-- Bootstrap core JavaScript-->
-  <script src="/vendor/jquery/jquery.min.js"></script>
-  <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-  <!-- Core plugin JavaScript-->
-  <script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
-
-  <!-- Page level plugin JavaScript-->
-  <script src="/vendor/chart.js/Chart.min.js"></script>
-  <script src="/vendor/datatables/jquery.dataTables.js"></script>
-  <script src="/vendor/datatables/dataTables.bootstrap4.js"></script>
-
-  <!-- Custom scripts for all pages-->
-  <script src="/js/sb-admin.min.js"></script>
-
-  <!-- Demo scripts for this page-->
-  <!-- <script src="js/demo/datatables-demo.js"></script>
-  <script src="js/demo/chart-area-demo.js"></script> -->
-
-</body>
+    </body>
 </html>
