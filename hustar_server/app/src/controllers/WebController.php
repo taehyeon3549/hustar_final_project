@@ -208,6 +208,18 @@ final class WebController extends BaseController
 
     }    
 
+    //PI
+    public function PI(Request $request, Response $response, $args)
+    {
+        $this->logger->info("PI page action dispatched");
+
+        //$this->flash->addMessage('info', 'PI page load');
+
+        $this->view->render($response, 'PI.html');
+        return $response;
+
+    }
+
     //test1
     public function test1(Request $request, Response $response, $args)
     {

@@ -206,7 +206,7 @@ final class AdminController extends BaseController
         // $year = $request->getParsedBody()['YEAR'];
         // $month = $request->getParsedBody()['MONTH'];
         // $ctime = $request->getParsedBody()['CLASSTIME'];
-
+        $ctime = "8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,";
         $daytime = explode(',',$ctime);
 
         $year = "2020";
@@ -264,15 +264,24 @@ final class AdminController extends BaseController
             $spreadsheet->getActiveSheet()
                     ->setCellvalue("C".$i,$userinfo[$i-9]['USER_NAME']);
         }
-
         
         // 교육생 출결 상황 입력
         for($column = 9; $column< 9+count($userinfo); $column++){
             //USN 가져오고
             $user['USN'] = $userinfo[$column-9]['USER_USN'];       
-            
+
+            //총 이수시간
+            $totalTime = 0;
+            // 차감 시간
+            $minusTime = 0;
+            //총 강의시간
+            $totalClassTime = 0;
+
             // USN 으로 출결 정보 가져오고
             for($row = 0; $row<$index; $row++){
+                // 총 강의시간 합
+                $totalClassTime += $daytime[$row];
+
                 if($day[$row] != NULL){
                     $user['DAYFRONT'] = "2020-".$day[$row]." 0:0:0";
                     $user['DAYEND'] = "2020-".$day[$row]." 23:59:59";
@@ -286,21 +295,58 @@ final class AdminController extends BaseController
                         $HourGab = (strtotime($GTH_time_H) - strtotime($GTW_time_H))/3600;
                         $MinGab = (strtotime($GTH_time_H) - strtotime($GTW_time_H))/60;
                         
-                        //print_r("\n".$GTW_day."\n");
+                        // 정상 출결이라면 그날 하루 시간을 표시1
                         if($MinGab >=480.0){                       
                             //print_r("정상");
                             $spreadsheet->getActiveSheet()
-                                ->setCellvalue($cellborder[$row].$column,$daytime[$row]);
+                                ->setCellvalue($cellborder[$row].$column,"출석(".$daytime[$row].")");
+                            // 색깔 변경
+                            $spreadsheet->getActiveSheet()->getStyle($cellborder[$row].$column)->getFill()
+                                ->setFillType(PHPExcel_Style_Fill::FILL_SOLD)->getStartColor()->setARGB("FF90EE90");
+
+                            // 총 이수시간 더하기
+                            $totalTime += $daytime[$row];
                         }else{                        
                             $spreadsheet->getActiveSheet()
-                                ->setCellvalue($cellborder[$row].$column,(int)$HourGab);
+                                ->setCellvalue($cellborder[$row].$column,"지각(".(int)$HourGab).")";
+                            // 색깔 변경
+                            $spreadsheet->getActiveSheet()->getStyle($cellborder[$row].$column)->getFill()
+                                ->setFillType(PHPExcel_Style_Fill::FILL_SOLD)->getStartColor()->setARGB("FFFAFAD2");                            
+                            
+
+                            // 총 이수시간 더하기
+                            $totalTime += (int)$HourGab;
+                            // 차감 시간 더하기
+                            $minusTime += ($daytime[$row] - (int)$HourGab);
                         }
                     }else{
                         $spreadsheet->getActiveSheet()
-                                ->setCellvalue($cellborder[$row].$column,"결석");
+                                ->setCellvalue($cellborder[$row].$column,"결석(0)");
+                        // 색깔 변경
+                        $spreadsheet->getActiveSheet()->getStyle($cellborder[$row].$column)->getFill()
+                            ->setFillType(PHPExcel_Style_Fill::FILL_SOLD)->getStartColor()->setARGB("FFFFB6C1");
+                        // 차감 시간 더하기
+                        $minusTime += $daytime[$row];
                     }
                 }
             }
+            // 총 강의시간 출력
+            $spreadsheet->getActiveSheet()
+                                ->setCellvalue("X".$column,$totalClassTime);
+            // 차감 시간 출력
+            $spreadsheet->getActiveSheet()
+                                ->setCellvalue("Y".$column,$minusTime);
+            // 총 이수시간 출력
+            $spreadsheet->getActiveSheet()
+                                ->setCellvalue("Z".$column,$totalTime);
+            $spreadsheet->getActiveSheet()->getStyle("Z".$column)->getFill()
+                                ->setFillType(PHPExcel_Style_Fill::FILL_SOLD)->getStartColor()->setARGB("FFFFFF00");  
+            // 출석률 출력 
+            $spreadsheet->getActiveSheet()
+                                ->setCellvalue("AA".$column,($totalTime/$totalClassTime)*100);
+            $spreadsheet->getActiveSheet()->getStyle("AA".$column)->getFill()
+                                ->setFillType(PHPExcel_Style_Fill::FILL_SOLD)->getStartColor()->setARGB("FFFFFF00");  
+
         }
 
 
