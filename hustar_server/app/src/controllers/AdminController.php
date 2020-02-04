@@ -518,4 +518,147 @@ final class AdminController extends BaseController
 		->withHeader('Content-Type', 'application/json')
 		->write(json_encode($result, JSON_NUMERIC_CHECK));
     }
+
+/**
+ * 출석일 출력
+ */
+public function getAttendanceDate(Request $request, Response $response, $args)
+    {
+        // 년, 월, 일별 수업시간 입력 받음
+         $year = $request->getParsedBody()['YEAR'];
+         $month = $request->getParsedBody()['MONTH'];
+         $ctime = $request->getParsedBody()['CLASSTIME'];
+        //$year = "2020";
+        //$month = "2";
+        //$ctime = "8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8";
+
+        $daytime = explode(',',$ctime);       
+
+        $time = mktime(0,0,0,$month, 1, $year);
+
+        $yoil = array("일","월","화","수","목","금","토");        
+        // 셀 인덱스 배열
+        $cellborder = array("D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","AA","AB","AC","AD","AE","AF","AG","AH");
+        $index = 0;
+
+        // 날짜 배열
+        $day = array();
+
+        // 결과
+        $result = array();
+        $result['TOP'] = array();
+        $result['TOP'][0] = '';
+        
+        // 날짜 부분 입력
+        while($month == date('m', $time)){
+            if(date('w', $time) != 6 && date('w', $time) != 0){                
+                
+                // 입력된 날짜 배열로 저장
+                $day[$index] = date("m-d",$time);
+
+                // 결과 
+                $result['TOP'][$index +1] = date("m-d",$time);
+
+                $index +=1;
+            }            
+            
+            //하루씩 증가
+            $time = strtotime("+1 days",$time);                     
+        }
+        
+        // 결과
+        $result['TOP'][$index+1] = "총 강의시간";
+        $result['TOP'][$index+2] = "차감 시간";
+        $result['TOP'][$index+3] = "총 이수시간";
+        $result['TOP'][$index+4] = "출석률(%)";       
+                
+
+        // 교육생 이름만 가져오기
+        $userinfo = $this->AdminModel->userNameList();
+        // 교육생 이름 입력
+        for($i = 9; $i<count($userinfo)+9; $i++){
+
+            // 결과
+            $result['LEFT'][$i-9]['NAME'] = $userinfo[$i-9]['USER_NAME'];
+        }
+        
+        // 교육생 출결 상황 입력
+        for($column = 9; $column< 9+count($userinfo); $column++){
+            //USN 가져오고
+            $user['USN'] = $userinfo[$column-9]['USER_USN'];       
+
+            //총 이수시간
+            $totalTime = 0;
+            // 차감 시간
+            $minusTime = 0;
+            //총 강의시간
+            $totalClassTime = 0;
+
+            // USN 으로 출결 정보 가져오고
+            for($row = 0; $row<$index; $row++){
+                // 총 강의시간 합
+                $totalClassTime += $daytime[$row];
+
+                if($day[$row] != NULL){
+                    $user['DAYFRONT'] = "2020-".$day[$row]." 0:0:0";
+                    $user['DAYEND'] = "2020-".$day[$row]." 23:59:59";
+                    
+                    // USN 에 해당하는 출결 정보 가져오고
+                    $userAttendace = $this->AdminModel->attendanceList($user);
+                    if(count($userAttendace) != 0){
+                        $GTW_time_H = date("H:i:s", strtotime( $userAttendace[0]["ATTENDANCE_GTW"] ) );
+                        //$GTH_time_H = date("H:m:s", strtotime( $userAttendace[0]["ATTENDANCE_GTH"] ) );
+                        $GTH_time_H = date("H:i:s", strtotime("2020-02-02 18:00:00" ));
+
+                        $HourGab = (strtotime($GTH_time_H) - strtotime($GTW_time_H))/3600;
+                        $MinGab = (strtotime($GTH_time_H) - strtotime($GTW_time_H))/60;
+                        
+                        // 정상 출결이라면 그날 하루 시간을 표시1
+                        if($MinGab >=470.0){                       
+                        
+                            
+                            //결과
+                            $result['LEFT'][$column-9]['ATTEND'][$row] = "출석(".$daytime[$row].")";
+
+
+                            // 총 이수시간 더하기
+                            $totalTime += $daytime[$row];
+                        }else{                        
+                            
+                            //결과
+                            $result['LEFT'][$column-9]['ATTEND'][$row] = "지각(".(int)$HourGab.")";
+                                                
+                            
+
+                            // 총 이수시간 더하기
+                            $totalTime += (int)$HourGab;
+                            // 차감 시간 더하기
+                            $minusTime += ($daytime[$row] - (int)$HourGab);
+                        }
+                    }else{
+                        //결과
+                        $result['LEFT'][$column-9]['ATTEND'][$row] = "결석(0)";
+                  
+                        // 차감 시간 더하기
+                        $minusTime += $daytime[$row];
+                    }
+                }
+            }
+             //결과
+             $result['LEFT'][$column-9]['ATTEND'][$row+1] = $totalClassTime;
+             //결과
+             $result['LEFT'][$column-9]['ATTEND'][$row+2] = $minusTime; 
+             //결과
+             $result['LEFT'][$column-9]['ATTEND'][$row+3] = $totalTime; 
+             //결과
+             $result['LEFT'][$column-9]['ATTEND'][$row+4] = ($totalTime/$totalClassTime)*100;  
+           
+
+        }     
+        //print_r($result);
+
+        return $response->withStatus(200)
+		->withHeader('Content-Type', 'application/json')
+		->write(json_encode($result, JSON_NUMERIC_CHECK));
+    }
 }

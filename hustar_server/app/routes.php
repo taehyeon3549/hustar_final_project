@@ -209,16 +209,17 @@ $app->get('/admin/user/attendance/page', 'App\Controller\WebController:userAtten
         ->setName('noticeList'); 
        
     // Hustar 출결 출력
-    $app->get('/admin/user/attendance', 'App\Controller\AdminController:printUserAttendance')
+    $app->get('/admin/user/attendance/excel', 'App\Controller\AdminController:printUserAttendance')
         ->setName('attendance'); 
 
-     // Hustar 출결 출력 test 
-     $app->post('/admin/user/test', 'App\Controller\AdminController:testest')
-     ->setName('testest'); 
+    // Hustar 출결 papge 출력 하기 위한 json
+    $app->post('/admin/user/attendance/page/getdata', 'App\Controller\AdminController:getAttendanceDate')
+        ->setName('getAttendanceDate'); 
+        
     
     
     // test
-    $app->get('/admin/user/temp', 'App\Controller\AdminController:printUserAttendance')
+    $app->get('/admin/user/temp', 'App\Controller\AdminController:temp')
         ->setName('temp');    
 
 
@@ -232,11 +233,15 @@ $app->get('/admin/user/attendance/page', 'App\Controller\WebController:userAtten
     $app->get('/calendar', 'App\Controller\WebController:calendar')
         ->setName('calendar');
 
-    // memo
-    $app->get('/memo', 'App\Controller\WebController:memo')
-        ->setName('memo');
-    
-    // PI
-    $app->get('/pi', 'App\Controller\WebController:PI')
+     // memo
+     $app->get('/memo', 'App\Controller\WebController:memo')
+        ->setName('calendar');
+
+     // PI
+     $app->get('/PI', 'App\Controller\WebController:PI')
         ->setName('PI');
+
+    // USER name 출력
+    $app->get('/user/name', 'App\Controller\UserManagementController:getUserName')
+    ->setName('getUserName');
 

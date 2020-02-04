@@ -932,4 +932,15 @@ public function change_certification_app(Request $request, Response $response, $
 		->write(json_encode($result, JSON_NUMERIC_CHECK));	
 
 	}	
+
+
+	 //유저 이름만 가져오기
+	 public function getUserName(Request $request, Response $response, $args)
+	 {
+		$result = $this->UserManagementModel->getUserName();
+
+		return $response->withStatus(200)
+		->withHeader('Content-Type', 'application/json')
+		->write(json_encode($result, JSON_NUMERIC_CHECK));	
+	 }
 }
