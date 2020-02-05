@@ -91,7 +91,8 @@
   <div id="wrapper">
     <!-- Sidebar -->
     <ul class="sidebar navbar-nav">
-       <li class="nav-item dropdown">
+
+      <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown"
           aria-haspopup="true" aria-expanded="false">
           <i class="fas fa-fw fa-folder"></i>
@@ -101,37 +102,45 @@
         <div class="dropdown-menu" aria-labelledby="pagesDropdown">
             <a class="dropdown-item" href="/calendar">달력</a>
             <a class="dropdown-item" href="/memo">게시판</a>
-            
-          
+   
         </a>
       </li>
+
+      <li class="nav-item">
+        <a class="nav-link" href="/PI">
+          <i class="fas fa-fw fa-folder"></i>
+
+          <span>교육생 현황</span>
+            
+        </a>
+      </li>
+
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown"
           aria-haspopup="true" aria-expanded="false">
           <i class="fas fa-fw fa-folder"></i>
-
-          <span>교육생 현황</span>
+          <span>출결 현황</span>
 
           <div class="dropdown-menu" aria-labelledby="pagesDropdown">
-            <a class="dropdown-item" href="/calendar">개인신상카드</a>
-            
+            <a class="dropdown-item" href="/calendar">출결상태</a>
+            <a class="dropdown-item" href="/memo">머넣지?</a>
 
         </a>
-
-        
-       
       </li>
 
-      <li class="nav-item">
-        <a class="nav-link" href="/charts">
-          <i class="fas fa-fw fa-chart-area"></i>
-          <span>출결 현황</span></a>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="false">
+          <i class="fas fa-fw fa-folder"></i>
+          <span>기타</span>
+
+          <div class="dropdown-menu" aria-labelledby="pagesDropdown">
+            <a class="dropdown-item" href="/calendar">도서대출</a>
+            <a class="dropdown-item" href="/memo">사유서</a>
+
+        </a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/maps">
-          <i class="fas fa-fw fa-chart-area"></i>
-          <span>Map</span></a>
-      </li>
+
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown"
           aria-haspopup="true" aria-expanded="false">
@@ -154,109 +163,11 @@
           <li class="breadcrumb-item">
             <a href="#">HUSTAR</a>
           </li>
-          <li class="breadcrumb-item active">Overview</li>
+          <li class="breadcrumb-item active">Main</li>
         </ol>
 
-        <!-- Google map-->
-        <!-- 구글 맵은 이거 복붙-->
-        <div class="card mb-3">
-          <div class="card-header">              
-            <i class="fas fa-chart-area"></i>
-            AQI Map
-            <div>
-                <!-- <input type="date" id = "datechanger" name = "datechanger" onchange="mapchange(this);"> -->
-            </div>
-          </div>
-          <div class="card-body">
-            <div id="map_canvas" style="position: relative;overflow: hidden;height: 500px;"></div>
-            <script async defer
-              src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCZ_5s3S4uTqhtcBNUndDLKvmvcD23QKvY&language=en&callback=initMap">
-              </script>
-            <div class='myLinkContainer'></div>
-          </div>
         </div>
-
-        <!-- Google Chart-->
-        <div class="card mb-3">
-          <div class="card-header">            
-            <i class="fas fa-chart-area"></i>
-            Real-Time Chart
-          </div>
-          <div class="card-body">
-            <!-- 차트 그림은 이거 복붙-->
-            <div id="dual_x_div" style="width: 900px; height: 500px;"></div>
-          </div>
         </div>
-
-        <!-- DataTables Example -->
-        <br><br>
-        <div class="card mb-3">
-          <div class="card-header">
-            <i class="fas fa-table"></i>
-            Sensor List Table</div>
-          <div class="card-body">
-            <div class="table-responsive">
-              <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                <thead>
-                  <tr>
-                    <th>MAC</th>
-                    <th>Sensor Name</th>
-                    <th>State</th>
-                  </tr>
-                </thead>
-                <tbody id="senosr_list">
-                  <!-- 센서 값 반복문-->
-                  <script>
-                    var usn = sessionStorage.usn;
-                    //send json
-                    $.ajax({
-                      method: "POST",
-                      url: "/sensorList",
-                      'dataType': "json",
-                      data: {
-                        "usn": usn
-                      }
-                    }).done(function (msg) {
-                      var lenght = msg.message.length;
-                      var temp = JSON.stringify(msg.message);
-
-                      for (var i = 0; i < lenght; i++) {
-                        var tr = document.createElement('tr');
-
-                        if (JSON.parse(temp)[i].state == 1)
-                          var text = '<th>' + JSON.parse(temp)[i].mac + '</th>' + '<th>' + JSON.parse(temp)[i].name + '</th>' + '<th>' + "Active" + '</th>';
-                        else
-                          var text = '<th>' + JSON.parse(temp)[i].mac + '</th>' + '<th>' + JSON.parse(temp)[i].name + '</th>' + '<th>' + "NotActive" + '</th>';
-
-                        tr.innerHTML = text;
-                        document.getElementById('senosr_list').appendChild(tr);
-                      }
-                    });
-                  </script>
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
-        </div>
-
-      </div>
-      <!-- /.container-fluid -->
-
-      <!-- Sticky Footer -->
-      <footer class="sticky-footer">
-        <div class="container my-auto">
-          <div class="copyright text-center my-auto">
-            <span>HUSTAR</span>
-          </div>
-        </div>
-      </footer>
-
-    </div>
-    <!-- /.content-wrapper -->
-
-  </div>
-  <!-- /#wrapper -->
 
   <!-- Scroll to Top Button-->
   <a class="scroll-to-top rounded" href="#page-top">

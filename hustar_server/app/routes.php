@@ -224,4 +224,15 @@ $app->get('/maps', 'App\Controller\WebController:maps')
     $app->get('/calendar', 'App\Controller\WebController:calendar')
         ->setName('calendar');
 
+     // memo
+     $app->get('/memo', 'App\Controller\WebController:memo')
+        ->setName('calendar');
+
+     // PI
+     $app->get('/PI', 'App\Controller\WebController:PI')
+        ->setName('PI');
+
+    // USER name 출력
+    $app->get('/user/name', 'App\Controller\UserManagementController:getUserName')
+    ->setName('getUserName');
 
