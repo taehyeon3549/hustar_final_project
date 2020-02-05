@@ -235,4 +235,13 @@ final class WebController extends BaseController
          $this->view->render($response, 'hustar_attendance.html');
          return $response;
      }
+
+     /**************************
+      * 휴스타 회원 출력
+      ************************/
+      public function userList(Request $request, Response $response, $args)
+      {
+          $this->view->render($response, 'hustar_user.html');
+          return $response;
+      }
 }
