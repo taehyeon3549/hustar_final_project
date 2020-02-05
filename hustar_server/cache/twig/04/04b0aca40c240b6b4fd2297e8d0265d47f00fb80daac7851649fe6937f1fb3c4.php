@@ -27,42 +27,60 @@ class __TwigTemplate_abbebacf45cc33f87d6cf00b96a5abd85bbace3e094661bcbb039473f30
   <meta name=\"description\" content=\"\">
   <meta name=\"author\" content=\"\">
 
-  <title>환영합니다 Hustar 입니다.</title>
+
+
+  <title>Hustar 출결관리 시스템</title>
+
+
+  <link rel=\"shortcut icon\" href=\"/hustar_server/app/templates/image/favicon.ico\"type=\"image/x-ico\">
 
   <!-- Custom fonts for this template-->
   <link href=\"/vendor/fontawesome-free/css/all.min.css\" rel=\"stylesheet\" type=\"text/css\">
 
   <!-- Custom styles for this template-->
   <link href=\"/css/sb-admin.css\" rel=\"stylesheet\">
+  
+  <style>
+    body {
+      background-image: url(\"https://ifh.cc/g/Zzv5w.jpg\");
+      background: url(https://ifh.cc/g/Zzv5w.jpg) no-repeat center center fixed; 
+      -webkit-background-size: cover;
+      -moz-background-size: cover;
+      -o-background-size: cover;
+      background-size: cover;
+      opacity: 0.7;
+    } 
+    </style>
+
+
 </head>
 
-<body class=\"bg-dark\">
+<body>
   <div class=\"container\">
-    <div class=\"card card-login mx-auto mt-5\" style=\"border-color: #01E1A5;\">
-        <img src=\"http://teamc-iot.calit2.net/mail_iconn.png\" style=\"height: 200px;background-color: #01dea5;\">
+       
     </div>
     <div class=\"card card-login mx-auto mt-5\" style=\"margin-top: 5px;\">
       <div class=\"card-header\">Hustar</div>
       <div class=\"card-body\">
 
-        <form>
+        <form >
           <div class=\"form-group\">
             <div class=\"form-label-group\">
               <input type=\"email\" name=\"email\"id=\"inputEmail\" class=\"form-control\" placeholder=\"Email address\" required=\"required\" autofocus=\"autofocus\">
-              <label for=\"inputEmail\">ID</label>
+              <label for=\"inputEmail\">아이디(이메일)</label>
             </div>
           </div>
           <div class=\"form-group\">
             <div class=\"form-label-group\">
               <input type=\"password\" name =\"pass\" id=\"inputPassword\" class=\"form-control\" placeholder=\"Password\" required=\"required\">
-              <label for=\"inputPassword\">PW</label>
+              <label for=\"inputPassword\">비밀번호</label>
             </div>
           </div>
           <div class=\"form-group\">
             <div class=\"checkbox\">
               <label>
                 <input type=\"checkbox\" value=\"remember-me\">
-                암호를 기억해주세요
+                비밀번호 자동저장
               </label>
             </div>
           </div>
@@ -103,7 +121,7 @@ class __TwigTemplate_abbebacf45cc33f87d6cf00b96a5abd85bbace3e094661bcbb039473f30
                       //Get usn and is_admin
                       sessionStorage.setItem(\"sensor\", JSON.stringify(msg.message));                      
                     });         
-                    alert(\"Welcome!!\");
+                    alert(\"로그인 성공했습니다!!\");
 
                     // WEB SESSION 생성
                     //Get usn and is_admin
@@ -131,7 +149,8 @@ class __TwigTemplate_abbebacf45cc33f87d6cf00b96a5abd85bbace3e094661bcbb039473f30
         </script>
         <div class=\"text-center\">
           <a class=\"d-block small mt-3\" href=\"/signup/email\">회원 가입</a>
-          <a class=\"d-block small\" href=\"/signup/forgotpassword\">비밀번호가 기억나지 않은세요?</a>
+          <div style=\"margin-top: 15px;\">
+          <a class=\"d-block small\" href=\"/signup/forgotpassword\">비밀번호 찾기</a>
         </div>
       </div>
     </div>
@@ -149,7 +168,7 @@ class __TwigTemplate_abbebacf45cc33f87d6cf00b96a5abd85bbace3e094661bcbb039473f30
   <script type=\"text/javascript\">
   
   </script>
-</body>
+</body  opacity: 0.5;>
 
 </html>
 ";
@@ -176,42 +195,60 @@ class __TwigTemplate_abbebacf45cc33f87d6cf00b96a5abd85bbace3e094661bcbb039473f30
 /*   <meta name="description" content="">*/
 /*   <meta name="author" content="">*/
 /* */
-/*   <title>환영합니다 Hustar 입니다.</title>*/
+/* */
+/* */
+/*   <title>Hustar 출결관리 시스템</title>*/
+/* */
+/* */
+/*   <link rel="shortcut icon" href="/hustar_server/app/templates/image/favicon.ico"type="image/x-ico">*/
 /* */
 /*   <!-- Custom fonts for this template-->*/
 /*   <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">*/
 /* */
 /*   <!-- Custom styles for this template-->*/
 /*   <link href="/css/sb-admin.css" rel="stylesheet">*/
+/*   */
+/*   <style>*/
+/*     body {*/
+/*       background-image: url("https://ifh.cc/g/Zzv5w.jpg");*/
+/*       background: url(https://ifh.cc/g/Zzv5w.jpg) no-repeat center center fixed; */
+/*       -webkit-background-size: cover;*/
+/*       -moz-background-size: cover;*/
+/*       -o-background-size: cover;*/
+/*       background-size: cover;*/
+/*       opacity: 0.7;*/
+/*     } */
+/*     </style>*/
+/* */
+/* */
 /* </head>*/
 /* */
-/* <body class="bg-dark">*/
+/* <body>*/
 /*   <div class="container">*/
-/*     <div class="card card-login mx-auto mt-5" style="border-color: #01E1A5;">*/
-/*         <img src="http://teamc-iot.calit2.net/mail_iconn.png" style="height: 200px;background-color: #01dea5;">*/
+/*        */
 /*     </div>*/
 /*     <div class="card card-login mx-auto mt-5" style="margin-top: 5px;">*/
 /*       <div class="card-header">Hustar</div>*/
 /*       <div class="card-body">*/
 /* */
-/*         <form>*/
+/*         <form >*/
 /*           <div class="form-group">*/
 /*             <div class="form-label-group">*/
 /*               <input type="email" name="email"id="inputEmail" class="form-control" placeholder="Email address" required="required" autofocus="autofocus">*/
-/*               <label for="inputEmail">ID</label>*/
+/*               <label for="inputEmail">아이디(이메일)</label>*/
 /*             </div>*/
 /*           </div>*/
 /*           <div class="form-group">*/
 /*             <div class="form-label-group">*/
 /*               <input type="password" name ="pass" id="inputPassword" class="form-control" placeholder="Password" required="required">*/
-/*               <label for="inputPassword">PW</label>*/
+/*               <label for="inputPassword">비밀번호</label>*/
 /*             </div>*/
 /*           </div>*/
 /*           <div class="form-group">*/
 /*             <div class="checkbox">*/
 /*               <label>*/
 /*                 <input type="checkbox" value="remember-me">*/
-/*                 암호를 기억해주세요*/
+/*                 비밀번호 자동저장*/
 /*               </label>*/
 /*             </div>*/
 /*           </div>*/
@@ -252,7 +289,7 @@ class __TwigTemplate_abbebacf45cc33f87d6cf00b96a5abd85bbace3e094661bcbb039473f30
 /*                       //Get usn and is_admin*/
 /*                       sessionStorage.setItem("sensor", JSON.stringify(msg.message));                      */
 /*                     });         */
-/*                     alert("Welcome!!");*/
+/*                     alert("로그인 성공했습니다!!");*/
 /* */
 /*                     // WEB SESSION 생성*/
 /*                     //Get usn and is_admin*/
@@ -280,7 +317,8 @@ class __TwigTemplate_abbebacf45cc33f87d6cf00b96a5abd85bbace3e094661bcbb039473f30
 /*         </script>*/
 /*         <div class="text-center">*/
 /*           <a class="d-block small mt-3" href="/signup/email">회원 가입</a>*/
-/*           <a class="d-block small" href="/signup/forgotpassword">비밀번호가 기억나지 않은세요?</a>*/
+/*           <div style="margin-top: 15px;">*/
+/*           <a class="d-block small" href="/signup/forgotpassword">비밀번호 찾기</a>*/
 /*         </div>*/
 /*       </div>*/
 /*     </div>*/
@@ -298,7 +336,7 @@ class __TwigTemplate_abbebacf45cc33f87d6cf00b96a5abd85bbace3e094661bcbb039473f30
 /*   <script type="text/javascript">*/
 /*   */
 /*   </script>*/
-/* </body>*/
+/* </body  opacity: 0.5;>*/
 /* */
 /* </html>*/
 /* */

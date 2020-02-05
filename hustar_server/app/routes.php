@@ -56,6 +56,14 @@ $app->get('/admin/notice', 'App\Controller\WebController:memo')
 $app->get('/maps', 'App\Controller\WebController:maps')
     ->setName('maps');
 
+// 출결 정보 표시
+$app->get('/admin/user/attendance/page', 'App\Controller\WebController:userAttendance')
+    ->setName('userAttendance');
+
+// 휴스타 학생 표시
+$app->get('/admin/user/', 'App\Controller\WebController:userAttendance')
+    ->setName('userAttendance');
+
 /****************************************/
 /*          User Management             */
 /****************************************/
@@ -205,8 +213,13 @@ $app->get('/maps', 'App\Controller\WebController:maps')
         ->setName('noticeList'); 
        
     // Hustar 출결 출력
-    $app->post('/admin/user/attendance', 'App\Controller\AdminController:printUserAttendance')
+    $app->get('/admin/user/attendance/excel', 'App\Controller\AdminController:printUserAttendance')
         ->setName('attendance'); 
+
+    // Hustar 출결 papge 출력 하기 위한 json
+    $app->post('/admin/user/attendance/page/getdata', 'App\Controller\AdminController:getAttendanceDate')
+        ->setName('getAttendanceDate'); 
+        
     
     
     // test

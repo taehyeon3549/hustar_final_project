@@ -141,7 +141,7 @@ class PoolingShardConnection extends Connection
      */
     public function getParams()
     {
-        return $this->activeShardId ? $this->connections[$this->activeShardId] : parent::getParams();
+        return $this->activeShardId ? $this->connections[$this->activeShardId] : $this->connections[0];
     }
 
     /**
@@ -236,7 +236,7 @@ class PoolingShardConnection extends Connection
     {
         $params = $this->getParams();
 
-        $driverOptions = isset($params['driverOptions']) ? $params['driverOptions'] : array();
+        $driverOptions = isset($params['driverOptions']) ? $params['driverOptions'] : [];
 
         $connectionParams = $this->connections[$shardId];
 

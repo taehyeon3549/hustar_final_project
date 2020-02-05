@@ -226,4 +226,13 @@ final class WebController extends BaseController
         $this->view->render($response, '404.html');
         return $response;
     }
+
+     /**************************
+      * 출결 상황 출력
+      ************************/
+     public function userAttendance(Request $request, Response $response, $args)
+     {
+         $this->view->render($response, 'hustar_attendance.html');
+         return $response;
+     }
 }
