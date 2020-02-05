@@ -2,9 +2,16 @@
 <html lang="en">
 
     <head>
+<<<<<<< HEAD
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"></script>
+
+=======
       
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
         <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"></script>
+>>>>>>> 861288cde3a2a457e4a1c35716404b99be8c5db5
         <link
             rel="stylesheet"
             href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"/>\
@@ -48,10 +55,6 @@
             }
         </style>
 
-       
-
-    </head>
-
     <script type="text/javascript">
         //버튼클릭시 javascript 호출합니다.
         function javascript() {
@@ -66,10 +69,6 @@
             );
         }
     </script>
-
-
-
-
 
     <body id="page-top">
 
@@ -215,50 +214,62 @@
                         </ul>
 
                         <script type="text/javascript">
-                          $.ajax({
-              
-                                  url: "/user/name", // 클라이언트가 요청을 보낼 서버의 URL 주소
-              
-                                  data: {}, // HTTP 요청과 함께 서버로 보낼 데이터
-              
-                                  type: "GET", // HTTP 요청 방식(GET, POST)
-              
-                                  dataType: "json" // 서버에서 보내줄 데이터의 타입
-              
-                              })
-              
-                              // HTTP 요청이 성공하면 요청한 데이터가 done() 메소드로 전달됨.
-                              .done(function (json) {
-                                 i = json;
-                                 //titleType = opener.document.getElementById(i);
-              
-                                  alert(json[0]['USER_NAME']);
-                                  console.log(i);
-              
-                                  //통신 끝나면 값넣음
-                                  $('#inputtest').html(json[0]['USER_NAME']);
-                                  document.getElementById('inputtest').value = json[0]['USER_NAME'];
-              
-                              })
-              
-                              // HTTP 요청이 실패하면 오류와 상태에 관한 정보가 fail() 메소드로 전달됨.
-                              .fail(function (xhr, status, errorThrown) {
-              
-                                  $("#text")
-                                      .html("오류가 발생했습니다.<br>")
-                                      .append("오류명: " + errorThrown + "<br>")
-                                      .append("상태: " + status);
-              
-                              })
-              
-                              // HTTP 요청이 성공하거나 실패하는 것에 상관없이 언제나 always() 메소드가 실행됨.
-                              .always(function (xhr, status) {
-              
-                                  $("#text").html("요청이 완료되었습니다!");
-              
-                              });
-                      </script>
-                      
+<<<<<<< HEAD
+                            $
+                                .ajax({
+
+                                    url: "/user/name", // 클라이언트가 요청을 보낼 서버의 URL 주소
+
+                                    data: {}, // HTTP 요청과 함께 서버로 보낼 데이터
+
+                                    type: "GET", // HTTP 요청 방식(GET, POST)
+
+                                    dataType: "json" // 서버에서 보내줄 데이터의 타입
+
+                                })
+
+                                // HTTP 요청이 성공하면 요청한 데이터가 done() 메소드로 전달됨.
+                                .done(function (json) {
+                                    i = json;
+                                    //titleType = opener.document.getElementById(i);
+
+                                    alert(json[0]['USER_NAME']);
+                                    console.log(i);
+
+                                    //통신 끝나면 값넣음
+                                    $('#inputtest').html(json[0]['USER_NAME']);
+                                    document
+                                        .getElementById('inputtest')
+                                        .value = json[0]['USER_NAME'];
+
+                                    alert(json[1]['USER_NAME']);
+                                    console.log(i);
+
+                                    //통신 끝나면 값넣음
+                                    $('#inputtest1').html(json[4]['USER_NAME']);
+                                    document
+                                        .getElementById('inputtest1')
+                                        .value = json[4]['USER_NAME'];
+
+                                })
+
+                                // HTTP 요청이 실패하면 오류와 상태에 관한 정보가 fail() 메소드로 전달됨.
+                                .fail(function (xhr, status, errorThrown) {
+
+                                    $("#text")
+                                        .html("오류가 발생했습니다.<br>")
+                                        .append("오류명: " + errorThrown + "<br>")
+                                        .append("상태: " + status);
+
+                                })
+
+                                // HTTP 요청이 성공하거나 실패하는 것에 상관없이 언제나 always() 메소드가 실행됨.
+                                .always(function (xhr, status) {
+
+                                    $("#text").html("요청이 완료되었습니다!");
+
+                                });
+                        </script>
 
                         <!-- My Account-->
                         <!-- <div class="modal fade" id="MyaccountModal" tabindex="-1" role="dialog"
@@ -298,12 +309,28 @@
                                     <li class="breadcrumb-item">
                                         <a href="#">HUSTAR</a>
                                     </li>
+                                    <li class="breadcrumb-item active">신상카드</li>
+                                </ol>
+                                <!-- margin 위 오른쪽 아래 왼쪽-->
+
+                                <input
+                                    id='inputtest'
+                                    type='button'
+                                    style="WIDTH: 100pt; HEIGHT: 50pt; margin : 50px 50px 50px 50px"
+                                    onclick='javascript()'
+                                    value=''></input>
+
+                                <input
+                                    id='inputtest1'
+                                    type='button'
+                                    style="WIDTH: 100pt; HEIGHT: 50pt; margin : 50px 50px 50px 50px"
+                                    onclick='javascript()'
+                                    value=''></input>
                                     <li class="breadcrumb-item active">Main</li>
                                 </ol>
 
                             </div>
                         </div>
-
                         <div class="t-wrap">
                             <input
                                 type='button'
@@ -332,6 +359,5 @@
                                 </script>
                         </input>
                         </div>
---
                     </body>
                 </html>

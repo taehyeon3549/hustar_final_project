@@ -1,8 +1,24 @@
 <!DOCTYPE html>
 <html lang="kr">
-
 <head>
- 
+<title>JDK의 블로그</title>
+    <script language="javascript">
+    //버튼클릭시 javascript 호출합니다.
+    function javascript(){
+        //팝업창출력
+        //width : 300px크기
+        //height : 300px크기
+        //top : 100px 위의 화면과 100px 차이해서 위치
+        //left : 100px 왼쪽화면과 100px 차이해서 위치
+        //툴바 X, 메뉴바 X, 스크롤바 X , 크기조절 X
+        window.open('https://ifh.cc/g/lU7FH.jpg','popName',
+                    'width=300,height=300,top=100,left=100,toolbar=no,menubar=no,scrollbars=no,resizable=no,status=no');
+    }
+    </script>
+</head>
+<body>
+<input type='button' onclick='javascript()' value='버튼'/>
+
 
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -351,6 +367,5 @@
   <!-- Demo scripts for this page-->
   <!-- <script src="js/demo/datatables-demo.js"></script>
   <script src="js/demo/chart-area-demo.js"></script> -->
-
 </body>
 </html>
