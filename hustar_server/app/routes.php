@@ -61,8 +61,8 @@ $app->get('/admin/user/attendance/page', 'App\Controller\WebController:userAtten
     ->setName('userAttendance');
 
 // 휴스타 학생 표시
-$app->get('/admin/user/', 'App\Controller\WebController:userAttendance')
-    ->setName('userAttendance');
+$app->get('/admin/user/', 'App\Controller\WebController:userList')
+    ->setName('userList');
 
 /****************************************/
 /*          User Management             */
