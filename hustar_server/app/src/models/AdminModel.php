@@ -28,17 +28,17 @@ final class AdminModel extends BaseModel
  *****************************/
 	public function userList(){
 		$sql = "SELECT HUSTAR_NAME, HUSTAR_ADDRESS, USER_NAME, USER_EMAIL, 
-						USER_UNIV, USER_MAJOR, USER_SUBMAJOR, USER_DEGREE, 
-						USER_PHONE, USER_BIRTH, USER_GENDER , SUB_CLASS_NAME, 
-						SUB_CLASS_CHARGER
-                FROM hustar_final.USER 
-                LEFT OUTER JOIN 
-                    (	SELECT *
-                        FROM hustar_final.HUSTAR
-                        LEFT OUTER JOIN hustar_final.SUB_CLASS
-                        ON HUSTAR.HUSTAR_SUB_CLASS_NO = SUB_CLASS.SUB_CLASS_NO
-                    ) AS a1
-                ON USER.USER_CLASS = a1.HUSTAR_NO";
+				USER_UNIV, USER_MAJOR, USER_SUBMAJOR, USER_DEGREE, 
+				USER_PHONE, USER_BIRTH, USER_GENDER , SUB_CLASS_NAME, 
+				SUB_CLASS_CHARGER
+				FROM hustar_final.USER 
+				LEFT OUTER JOIN
+					(	select *
+						from hustar_final.SUB_CLASS
+						left outer join hustar_final.HUSTAR
+						on SUB_CLASS.SUB_HUSTAR_NO = HUSTAR.HUSTAR_NO
+					) AS a1
+				ON USER.USER_CLASS = a1.SUB_CLASS_NO;";
         // printf($sql);
 		$sth = $this->db->prepare($sql);
 		$sth->execute();
