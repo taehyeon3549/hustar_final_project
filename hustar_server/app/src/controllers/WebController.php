@@ -236,6 +236,14 @@ final class WebController extends BaseController
          return $response;
      }
 
+     public function userAttendance2(Request $request, Response $response, $args)
+     {
+         $this->view->render($response, 'AttendanceCalendar.html');
+         //$this->view->render($response, '404.html');
+
+         return $response;
+     }
+
      /**************************
       * 휴스타 회원 출력
       ************************/
