@@ -60,7 +60,7 @@ $app->get('/maps', 'App\Controller\WebController:maps')
 $app->get('/admin/user/attendance/page', 'App\Controller\WebController:userAttendance')
     ->setName('userAttendance');
 
-// 휴스타 학생 표시
+// 내 신상 기록 카드
 $app->get('/admin/user/', 'App\Controller\WebController:userList')
     ->setName('userList');
 
