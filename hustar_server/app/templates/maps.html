@@ -1,256 +1,320 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
+    <head>
+        <!-- 로그인 SESSION이 없으면 로그인 페이지로 이동 -->
+        <script>
+            if (sessionStorage.getItem('usn') == null) {
+                location.href = "/";
+            }
+        </script>
 
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="">
-  <meta name="author" content="">
+        <link
+            rel="stylesheet"
+            href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"/>
 
-  <title>출결상황</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="">
+        <meta name="author" content="">
 
-  <!-- Custom fonts for this template-->
-  <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+        <title>상단 Tab 제목</title>
 
-  <!-- Page level plugin CSS-->
-  <link href="vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
+        <!-- Custom fonts for this template-->
+        <link
+            href="/vendor/fontawesome-free/css/all.min.css"
+            rel="stylesheet"
+            type="text/css">
 
-  <!-- Custom styles for this template-->
-  <link href="css/sb-admin.css" rel="stylesheet">
+        <!-- Page level plugin CSS-->
+        <link href="/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
 
-  <!-- Google Map -->
-  <script>
-    var map, infoWindow;
+        <!-- Custom styles for this template-->
+        <link href="/css/sb-admin.css" rel="stylesheet">
 
-    //Make Circle
-    var citymap = {
-      chicago: {
-        center: { lat: 41.878, lng: -87.629 },
-        population: 2714856
-      },
-      newyork: {
-        center: { lat: 40.714, lng: -74.005 },
-        population: 8405837
-      },
-      losangeles: {
-        center: { lat: 34.052, lng: -118.243 },
-        population: 3857799
-      },
-      vancouver: {
-        center: { lat: 49.25, lng: -123.1 },
-        population: 603502
-      }
-    };
+        <!-- Tab 왼쪽 아이콘-->
+        <link rel="shortcut icon" href="/icon/hustar.ico" type="image/x-icon"/>
 
+        <!-- Custom fonts for this template-->
+        <link
+            href="/vendor/fontawesome-free/css/all.min.css"
+            rel="stylesheet"
+            type="text/css">
 
-    function initMap() {
-      map = new google.maps.Map(document.getElementById('map'), {
-        center: { lat: -34.397, lng: 150.644 },
-        zoom: 6
-      });
-      infoWindow = new google.maps.InfoWindow;
+        <!-- Page level plugin CSS-->
+        <link href="/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
 
+        <!-- Custom styles for this template-->
+        <link href="/css/sb-admin.css" rel="stylesheet">
 
-      //make circle
-      for (var city in citymap) {
-        // Add the circle for this city to the map.
-        var cityCircle = new google.maps.Circle({
-          strokeColor: '#FF0000',
-          strokeOpacity: 0.8,
-          strokeWeight: 2,
-          fillColor: '#FF0000',
-          fillOpacity: 0.35,
-          map: map,
-          center: citymap[city].center,
-          radius: Math.sqrt(citymap[city].population) * 100
-        });
-      }
+        <!-- 팝업 테이블 css -->
+        <style>
+            .mytable {
+                border-collapse: collapse;
+            }
 
-      // Try HTML5 geolocation.
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function (position) {
-          var pos = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
-          };
+            .mytable td,
+            .mytable th {
+                border: 1px solid black;
+            }
+        </style>
+    </head>
 
-          infoWindow.setPosition(pos);
-          infoWindow.setContent('Location found.');
-          infoWindow.open(map);
-          map.setCenter(pos);
-        }, function () {
-          handleLocationError(true, infoWindow, map.getCenter());
-        });
-      } else {
-        // Browser doesn't support Geolocation
-        handleLocationError(false, infoWindow, map.getCenter());
-      }
-    }
+    <body id="page-top">
+        <!-- 최상단 바 -->
+        <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
+            <!-- 왼쪽 상단 마크 -->
+            <a class="navbar-brand mr-1" href="/main">
+                <img src="/icon/hustar_icon.ico" class="LogoPNG" style="width: 25px;">
+                HUSTAR
+            </a>
+            <!-- 메뉴 숨김/보이기 버튼-->
+            <button
+                class="btn btn-link btn-sm text-white order-1 order-sm-0"
+                id="sidebarToggle"
+                href="#">
+                <i class="fas fa-bars"></i>
+            </button>
 
-    function handleLocationError(browserHasGeolocation, infoWindow, pos) {
-      infoWindow.setPosition(pos);
-      infoWindow.setContent(browserHasGeolocation ?
-        'Error: The Geolocation service failed.' :
-        'Error: Your browser doesn\'t support geolocation.');
-      infoWindow.open(map);
-    }
-  </script>
-  <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCZ_5s3S4uTqhtcBNUndDLKvmvcD23QKvY&callback=initMap">
-    </script>
-</head>
+            <!-- Navbar 검색바 - 현재 검색기능 삭제 -->
+            <form
+                class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
+                <div class="input-group">
+                    <div class="input-group-append">
+                        <i>
+                            <!-- 삭제부분 -->
+                        </i>
+                    </div>
+                </div>
+            </form>
 
-<body id="page-top">
-  <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
-    <a class="navbar-brand mr-1" href="/main">HUSTAR</a>
-    <button class="btn btn-link btn-sm text-white order-1 order-sm-0" id="sidebarToggle" href="#">
-      <i class="fas fa-bars"></i>
-    </button>
+            <!-- 우측 상단 user 아이콘 메뉴 -->
+            <ul class="navbar-nav ml-auto ml-md-0">
+                <!-- 회원 아이콘 -->
+                <li class="nav-item dropdown no-arrow">
+                    <a
+                        class="nav-link dropdown-toggle"
+                        href="#"
+                        id="userDropdown"
+                        role="button"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false">
+                        <i class="fas fa-user-circle fa-fw"></i>
+                    </a>
 
-    <!-- Navbar -->
-    <ul class="navbar-nav ml-auto ml-md-0">
-      <li class="nav-item dropdown no-arrow">
-        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
-          aria-haspopup="true" aria-expanded="false">
-          <i class="fas fa-user-circle fa-fw"></i>
-        </a>
-        <!-- user icon-->
-        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
-          <a> 
-            <script>
-              var name = sessionStorage.getItem('name');
-              document.write(name);
-            </script>
-          </a> &nbsp &nbsp &nbsp
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" data-toggle="modal" data-target="#logoutModal">Logout</a>
+                    <!-- 메뉴 박스 -->
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                        <!-- 1번 메뉴-->
+                        <a class="dropdown-name">
+                            <script>
+                                var name = sessionStorage.getItem('name');
+                                document.write(name);
+                            </script>
+                        </a>
+                        <!-- 경계선 -->
+                        <div class="dropdown-divider"></div>
+                        <!-- 2번 선택 메뉴 -->
+                        <a
+                            class="dropdown-item"
+                            id="signoutb"
+                            href="#"
+                            data-toggle="modal"
+                            data-target="#logoutModal">로그아웃
+                        </a>
+                    </div>
+
+                </li>
+            </ul>
+        </nav>
+
+        <div id="wrapper">
+
+            <!-- 왼쪽 사이드바 -->
+            <ul class="sidebar navbar-nav">
+                <!-- 메인 메뉴 -->
+                <!-- 공지사항 -->
+                <li class="nav-item">
+                    <a class="nav-link" href="/maps">
+                        <i class="fas fa-fw fas fa-bell"></i>
+                        <span>공지사항</span>
+                    </a>
+                </li>
+
+                <!-- 출결 -->
+                <li class="nav-item dropdown">
+                    <a
+                        class="nav-link dropdown-toggle"
+                        href="#"
+                        id="pagesDropdown"
+                        role="button"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false">
+                        <i class="fas fa-fw fa-chart-area"></i>
+                        <span>출결</span>
+                    </a>
+
+                    <!-- 서브 메뉴-->
+                    <div class="dropdown-menu" aria-labelledby="pagesDropdown">
+                        <a class="dropdown-item" id="myAttend" href="/PI">내 출결 상황</a>
+                        <a class="dropdown-item" id="myWhyWrite" href="/PI">사유서 작성</a>
+                        <a class="dropdown-item" id="myWhy" href="/PI">내 사유서</a>
+                    </div>
+                </li>
+
+                <!-- 도서대출 -->
+                <li class="nav-item ">
+                    <a class="nav-link" href="/charts">
+                        <i class="fas fa-fw fa-book-open"></i>
+                        <span>도서 대출</span>
+                    </a>
+                </li>
+
+                <!-- 기자재 대출 -->
+                <li class="nav-item">
+                    <a class="nav-link" href="/maps">
+                        <i class="fas fa-fw fa-box-open"></i>
+                        <span>기자재 대출</span>
+                    </a>
+                </li>
+
+                <!-- 개인 신상 수정 -->
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/user/">
+                        <i class="fas fa-fw fa-file"></i>
+                        <span>내 신상 기록 카드</span>
+                    </a>
+                </li>
+
+                <!-- 관리자 기능 -->
+                <li class="nav-item dropdown">
+                    <a
+                        class="nav-link dropdown-toggle"
+                        href="#"
+                        id="pagesDropdown"
+                        role="button"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false">
+                        <i class="fas fa-fw fa-tools"></i>
+                        <span>관리자 기능</span>
+                    </a>
+
+                    <!-- 서브 메뉴-->
+                    <div class="dropdown-menu" aria-labelledby="pagesDropdown">
+                        <a class="dropdown-item" id="adminStudent" href="/myaccount">교육생 현황</a>
+                        <a class="dropdown-item" id="adminNotifi" href="/myaccount">공지사항 입력</a>
+                        <a class="dropdown-item" id="adminAttend" href="/change_password">출결 상황보기</a>
+                        <a class="dropdown-item" id="adminWhy" href="/change_password">사유서 보기</a>
+                        <a class="dropdown-item" id="adminBook" href="/change_password">도서대출 보기</a>
+                        <a class="dropdown-item" id="adminTool" href="/change_password">기자재 대출 보기</a>
+                    </div>
+
+                </li>
+
+                <!-- 내 계정관리 -->
+                <li class="nav-item dropdown">
+                    <a
+                        class="nav-link dropdown-toggle"
+                        href="#"
+                        id="pagesDropdown"
+                        role="button"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false">
+                        <i class="fas fa-fw fa-folder"></i>
+                        <span>내 계정관리</span>
+                    </a>
+
+                    <!-- 서브 메뉴-->
+                    <div class="dropdown-menu" aria-labelledby="pagesDropdown">
+                        <a class="dropdown-item" id="myaccountb" href="/myaccount">내 계정</a>
+                        <a class="dropdown-item" href="/change_password">비밀번호 변경</a>
+                        <a
+                            class="dropdown-item"
+                            id="signoutb"
+                            href="#"
+                            data-toggle="modal"
+                            data-target="#logoutModal">로그아웃</a>
+                        <a class="dropdown-item" href="/change_idcancellation">회원 탈퇴</a>
+                    </div>
+                </li>
+
+            </ul>
+
+            <div id="content-wrapper">
+                <div class="container-fluid">
+                    <!-- Breadcrumbs-->
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="#">HUSTAR</a>
+                        </li>
+                        <li class="breadcrumb-item active">Overview</li>
+                    </ol>
+
+                    <!-- Google map-->
+                    <div id="map" style="width:100%;height:600px"></div>
+
+                </div>
+
+            </div>
+
         </div>
-      </li>
-    </ul>
-  </nav>
+        <!-- /#wrapper -->
 
-  <div id="wrapper">
-    <!-- Sidebar -->
-    <ul class="sidebar navbar-nav">
-       <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown"
-          aria-haspopup="true" aria-expanded="false">
-          <i class="fas fa-fw fa-folder"></i>
-          
-          <span>메인</span>
-          
-        <div class="dropdown-menu" aria-labelledby="pagesDropdown">
-            <a class="dropdown-item" href="/calendar">달력</a>
-            <a class="dropdown-item" href="/memo">게시판</a>
-            
-          
+        <!-- Scroll to Top Button-->
+        <a class="scroll-to-top rounded" href="#page-top">
+            <i class="fas fa-angle-up"></i>
         </a>
-      </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown"
-          aria-haspopup="true" aria-expanded="false">
-          <i class="fas fa-fw fa-folder"></i>
 
-          <span>교육생 현황</span>
-
-          <div class="dropdown-menu" aria-labelledby="pagesDropdown">
-            <a class="dropdown-item" href="/PI">개인신상카드</a>
-            
-        </a>
-       
-      </li>
-
-      <li class="nav-item">
-        <a class="nav-link" href="/charts">
-          <i class="fas fa-fw fa-chart-area"></i>
-          <span>출결 현황</span></a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/maps">
-          <i class="fas fa-fw fa-chart-area"></i>
-          <span>Map</span></a>
-      </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown"
-          aria-haspopup="true" aria-expanded="false">
-          <i class="fas fa-fw fa-folder"></i>
-          <span>내 계정관리</span>
-        </a>
-        <div class="dropdown-menu" aria-labelledby="pagesDropdown">
-          <a class="dropdown-item" id="myaccountb" href="/myaccount">내 계정</a>
-          <a class="dropdown-item" href="/change_password">비밀번호 변경</a>
-          <a class="dropdown-item" id="signoutb" href="#" data-toggle="modal" data-target="#logoutModal">로그아웃</a>
-          <a class="dropdown-item" href="/change_idcancellation">회원 탈퇴</a>
-
-
-    </ul>
-    
-    <div id="content-wrapper">
-      <div class="container-fluid">
-        <!-- Breadcrumbs-->
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item">
-            <a href="#">HUSTAR</a>
-          </li>
-          <li class="breadcrumb-item active">Overview</li>
-        </ol>
-
-        <!-- Google map-->
-        <div id="map" style="width:100%;height:600px"></div>
-
-      </div>
-
-    </div>
-
-  </div>
-  <!-- /#wrapper -->
-
-  <!-- Scroll to Top Button-->
-  <a class="scroll-to-top rounded" href="#page-top">
-    <i class="fas fa-angle-up"></i>
-  </a>
-
-  <!-- Logout Modal-->
-  <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">×</span>
-          </button>
+        <!-- Logout Modal-->
+        <div
+            class="modal fade"
+            id="logoutModal"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                        <a class="btn btn-primary" href="/">Logout</a>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-        <div class="modal-footer">
-          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-          <a class="btn btn-primary" href="/">Logout</a>
-        </div>
-      </div>
-    </div>
-  </div>
 
-  <!-- Bootstrap core JavaScript-->
-  <script src="vendor/jquery/jquery.min.js"></script>
-  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <!-- Bootstrap core JavaScript-->
+        <script src="vendor/jquery/jquery.min.js"></script>
+        <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-  <!-- Core plugin JavaScript-->
-  <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+        <!-- Core plugin JavaScript-->
+        <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
-  <!-- Page level plugin JavaScript-->
-  <script src="vendor/chart.js/Chart.min.js"></script>
-  <script src="vendor/datatables/jquery.dataTables.js"></script>
-  <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
+        <!-- Page level plugin JavaScript-->
+        <script src="vendor/chart.js/Chart.min.js"></script>
+        <script src="vendor/datatables/jquery.dataTables.js"></script>
+        <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
 
-  <!-- Custom scripts for all pages-->
-  <script src="js/sb-admin.min.js"></script>
+        <!-- Custom scripts for all pages-->
+        <script src="js/sb-admin.min.js"></script>
 
-  <!-- Demo scripts for this page-->
-  <script src="js/demo/datatables-demo.js"></script>
-  <script src="js/demo/chart-area-demo.js"></script>
+        <!-- Demo scripts for this page-->
+        <script src="js/demo/datatables-demo.js"></script>
+        <script src="js/demo/chart-area-demo.js"></script>
 
-</body>
+    </body>
 
 </html>

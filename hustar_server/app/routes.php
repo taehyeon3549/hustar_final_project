@@ -65,6 +65,7 @@ $app->get('/admin/user/attendance/page2/', 'App\Controller\WebController:userAtt
     ->setName('userAttendance2');
 
 // 휴스타 학생 표시
+// 내 신상 기록 카드
 $app->get('/admin/user/', 'App\Controller\WebController:userList')
     ->setName('userList');
 

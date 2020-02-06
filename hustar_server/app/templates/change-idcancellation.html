@@ -1,159 +1,295 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
+    <head>
+        <!-- 로그인 SESSION이 없으면 로그인 페이지로 이동 -->
+        <script>
+            if (sessionStorage.getItem('usn') == null) {
+                location.href = "/";
+            }
+        </script>
 
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="">
-  <meta name="author" content="">
+        <link
+            rel="stylesheet"
+            href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"/>
 
-  <title>내 계정 수정</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="">
+        <meta name="author" content="">
 
-  <!-- Custom fonts for this template-->
-  <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+        <title>상단 Tab 제목</title>
 
-  <!-- Custom styles for this template-->
-  <link href="css/sb-admin.css" rel="stylesheet">
+        <!-- Custom fonts for this template-->
+        <link
+            href="/vendor/fontawesome-free/css/all.min.css"
+            rel="stylesheet"
+            type="text/css">
 
-  <script>
-      $(document).ready(function(){          
-          $("#inputemail").val(email);  
-          $("#inputPassword").val(password);
-      });
-    </script>
-  <script>
-    var usn = sessionStorage.getItem('usn');
-    var password = sessionStorage.getItem('password');
+        <!-- Page level plugin CSS-->
+        <link href="/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
 
-    var url = "/userinfo/" + usn;
+        <!-- Custom styles for this template-->
+        <link href="/css/sb-admin.css" rel="stylesheet">
 
-    $.ajax({
-      method: "GET",
-      //url: "/userinfo/"+usn,
-      url: url,
-      data: {
-        }
-    }).done(function (msg) {
-      console.log(msg);
-      email = msg.email;
-      password = msg.password;
-    });
-  </script>
-</head>
+        <!-- Tab 왼쪽 아이콘-->
+        <link rel="shortcut icon" href="/icon/hustar.ico" type="image/x-icon"/>
 
-<body id="page-top">
-  <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
-     
-    <a class="navbar-brand mr-1" href="/main">HUSTAR</a>
-    <button class="btn btn-link btn-sm text-white order-1 order-sm-0" id="sidebarToggle" href="#">
-      <i class="fas fa-bars"></i>
-    </button>
-    <form class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
-      <div class="input-group">
-        <div class="input-group-append"></div>
-      </div>
-    </form>
-    <!-- Navbar -->
-    <ul class="navbar-nav ml-auto ml-md-0">
-      <li class="nav-item dropdown no-arrow">
-        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
-          aria-haspopup="true" aria-expanded="false">
-          <i class="fas fa-user-circle fa-fw"></i>
-        </a>
-        <!-- user icon-->
-        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
-          <a>   
-            <script>
-              var name = sessionStorage.getItem('name');
-              document.write(name);
-            </script>
-          </a> &nbsp &nbsp &nbsp
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" data-toggle="modal" data-target="#logoutModal">Logout</a>
-        </div>
-      </li>
-    </ul>
-  </nav>
+        <!-- Custom fonts for this template-->
+        <link
+            href="/vendor/fontawesome-free/css/all.min.css"
+            rel="stylesheet"
+            type="text/css">
 
-  <div id="wrapper">
-    <!-- Sidebar -->
-    <ul class="sidebar navbar-nav">
-      <li class="nav-item active">
-        <a class="nav-link" href="/main">
-          <i class="fas fa-fw fa-tachometer-alt"></i>
-          
-          <span>메인</span>
-          
-        </a>
-      </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown"
-          aria-haspopup="true" aria-expanded="false">
-          <i class="fas fa-fw fa-folder"></i>
+        <!-- Page level plugin CSS-->
+        <link href="/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
 
-          <span>교육생 현황</span>
-        </a>
-        
-       
-      </li>
+        <!-- Custom styles for this template-->
+        <link href="/css/sb-admin.css" rel="stylesheet">
 
-      <li class="nav-item">
-        <a class="nav-link" href="/charts">
-          <i class="fas fa-fw fa-chart-area"></i>
-          <span>출결 현황</span></a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/maps">
-          <i class="fas fa-fw fa-chart-area"></i>
-          <span>Map</span></a>
-      </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown"
-          aria-haspopup="true" aria-expanded="false">
-          <i class="fas fa-fw fa-folder"></i>
-          <span>내 계정관리</span>
-        </a>
-        <div class="dropdown-menu" aria-labelledby="pagesDropdown">
-          <a class="dropdown-item" id="myaccountb" href="/myaccount">내 계정</a>
-          <a class="dropdown-item" href="/change_password">비밀번호 변경</a>
-          <a class="dropdown-item" id="signoutb" href="#" data-toggle="modal" data-target="#logoutModal">로그아웃</a>
-          <a class="dropdown-item" href="/change_idcancellation">회원 탈퇴</a>
+        <!-- 팝업 테이블 css -->
+        <style>
+            .mytable {
+                border-collapse: collapse;
+            }
 
+            .mytable td,
+            .mytable th {
+                border: 1px solid black;
+            }
+        </style>
+    </head>
 
-    </ul>
+    <body id="page-top">
+        <!-- 최상단 바 -->
+        <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
+            <!-- 왼쪽 상단 마크 -->
+            <a class="navbar-brand mr-1" href="/main">
+                <img src="/icon/hustar_icon.ico" class="LogoPNG" style="width: 25px;">
+                HUSTAR
+            </a>
+            <!-- 메뉴 숨김/보이기 버튼-->
+            <button
+                class="btn btn-link btn-sm text-white order-1 order-sm-0"
+                id="sidebarToggle"
+                href="#">
+                <i class="fas fa-bars"></i>
+            </button>
 
-  <div class="container">
-    <div class="card card-login mx-auto mt-5">
-      <div class="card-header">회원탈퇴</div>
-      <div class="card-body">
-        <div class="text-center mb-4">
-        
-          <p>당신의 현재 비밀번호를 입력하시오.</p>
-        </div>
-        <form>
-          <div class="form-group">
-            <div class="form-label-group">
-              <input type="text" id="inputEmail" class="form-control" placeholder="Enter email address" required="required" autofocus="autofocus">
-              <label for="inputEmail">현재 비밀번호 입력</label>
-            </div>
-          </div>
-          <a class="btn btn-primary btn-block" href="confirm-idcancellation.html">인증</a>
-        </form>
-        <div class="text-center">   
-        </div>
-      </div>
-    </div>
-  </div>
+            <!-- Navbar 검색바 - 현재 검색기능 삭제 -->
+            <form
+                class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
+                <div class="input-group">
+                    <div class="input-group-append">
+                        <i>
+                            <!-- 삭제부분 -->
+                        </i>
+                    </div>
+                </div>
+            </form>
 
-  <!-- Bootstrap core JavaScript-->
-  <script src="vendor/jquery/jquery.min.js"></script>
-  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+            <!-- 우측 상단 user 아이콘 메뉴 -->
+            <ul class="navbar-nav ml-auto ml-md-0">
+                <!-- 회원 아이콘 -->
+                <li class="nav-item dropdown no-arrow">
+                    <a
+                        class="nav-link dropdown-toggle"
+                        href="#"
+                        id="userDropdown"
+                        role="button"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false">
+                        <i class="fas fa-user-circle fa-fw"></i>
+                    </a>
 
-  <!-- Core plugin JavaScript-->
-  <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+                    <!-- 메뉴 박스 -->
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                        <!-- 1번 메뉴-->
+                        <a class="dropdown-name">
+                            <script>
+                                var name = sessionStorage.getItem('name');
+                                document.write(name);
+                            </script>
+                        </a>
+                        <!-- 경계선 -->
+                        <div class="dropdown-divider"></div>
+                        <!-- 2번 선택 메뉴 -->
+                        <a
+                            class="dropdown-item"
+                            id="signoutb"
+                            href="#"
+                            data-toggle="modal"
+                            data-target="#logoutModal">로그아웃
+                        </a>
+                    </div>
 
-</body>
+                </li>
+            </ul>
+        </nav>
 
-</html>
+        <div id="wrapper">
+
+            <!-- 왼쪽 사이드바 -->
+            <ul class="sidebar navbar-nav">
+                <!-- 메인 메뉴 -->
+                <!-- 공지사항 -->
+                <li class="nav-item">
+                    <a class="nav-link" href="/maps">
+                        <i class="fas fa-fw fas fa-bell"></i>
+                        <span>공지사항</span>
+                    </a>
+                </li>
+
+                <!-- 출결 -->
+                <li class="nav-item dropdown">
+                    <a
+                        class="nav-link dropdown-toggle"
+                        href="#"
+                        id="pagesDropdown"
+                        role="button"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false">
+                        <i class="fas fa-fw fa-chart-area"></i>
+                        <span>출결</span>
+                    </a>
+
+                    <!-- 서브 메뉴-->
+                    <div class="dropdown-menu" aria-labelledby="pagesDropdown">
+                        <a class="dropdown-item" id="myAttend" href="/PI">내 출결 상황</a>
+                        <a class="dropdown-item" id="myWhyWrite" href="/PI">사유서 작성</a>
+                        <a class="dropdown-item" id="myWhy" href="/PI">내 사유서</a>
+                    </div>
+                </li>
+
+                <!-- 도서대출 -->
+                <li class="nav-item ">
+                    <a class="nav-link" href="/charts">
+                        <i class="fas fa-fw fa-book-open"></i>
+                        <span>도서 대출</span>
+                    </a>
+                </li>
+
+                <!-- 기자재 대출 -->
+                <li class="nav-item">
+                    <a class="nav-link" href="/maps">
+                        <i class="fas fa-fw fa-box-open"></i>
+                        <span>기자재 대출</span>
+                    </a>
+                </li>
+
+                <!-- 개인 신상 수정 -->
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/user/">
+                        <i class="fas fa-fw fa-file"></i>
+                        <span>내 신상 기록 카드</span>
+                    </a>
+                </li>
+
+                <!-- 관리자 기능 -->
+                <li class="nav-item dropdown">
+                    <a
+                        class="nav-link dropdown-toggle"
+                        href="#"
+                        id="pagesDropdown"
+                        role="button"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false">
+                        <i class="fas fa-fw fa-tools"></i>
+                        <span>관리자 기능</span>
+                    </a>
+
+                    <!-- 서브 메뉴-->
+                    <div class="dropdown-menu" aria-labelledby="pagesDropdown">
+                        <a class="dropdown-item" id="adminStudent" href="/myaccount">교육생 현황</a>
+                        <a class="dropdown-item" id="adminNotifi" href="/myaccount">공지사항 입력</a>
+                        <a class="dropdown-item" id="adminAttend" href="/change_password">출결 상황보기</a>
+                        <a class="dropdown-item" id="adminWhy" href="/change_password">사유서 보기</a>
+                        <a class="dropdown-item" id="adminBook" href="/change_password">도서대출 보기</a>
+                        <a class="dropdown-item" id="adminTool" href="/change_password">기자재 대출 보기</a>
+                    </div>
+
+                </li>
+
+                <!-- 내 계정관리 -->
+                <li class="nav-item dropdown">
+                    <a
+                        class="nav-link dropdown-toggle"
+                        href="#"
+                        id="pagesDropdown"
+                        role="button"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false">
+                        <i class="fas fa-fw fa-folder"></i>
+                        <span>내 계정관리</span>
+                    </a>
+
+                    <!-- 서브 메뉴-->
+                    <div class="dropdown-menu" aria-labelledby="pagesDropdown">
+                        <a class="dropdown-item" id="myaccountb" href="/myaccount">내 계정</a>
+                        <a class="dropdown-item" href="/change_password">비밀번호 변경</a>
+                        <a
+                            class="dropdown-item"
+                            id="signoutb"
+                            href="#"
+                            data-toggle="modal"
+                            data-target="#logoutModal">로그아웃</a>
+                        <a class="dropdown-item" href="/change_idcancellation">회원 탈퇴</a>
+                    </div>
+                </li>
+
+            </ul>
+            <div id="content-wrapper">
+                <div class="container-fluid">
+                    <!-- 흰 소제목 바 -->
+                    <ol class="breadcrumb mb-4">
+                        <li class="breadcrumb-item">
+                            <a href="index.html">HUSTAR</a>
+                        </li>
+                        <li class="breadcrumb-item active">회원탈퇴</li>
+                    </ol>
+                </div>
+                <div class="container">
+                    <div class="card card-login mx-auto mt-5">
+                        
+                        <div class="card-body">
+                            <div class="text-center mb-4">
+
+                                <p>당신의 현재 비밀번호를 입력하시오.</p>
+                            </div>
+                            <form>
+                                <div class="form-group">
+                                    <div class="form-label-group">
+                                        <input
+                                            type="text"
+                                            id="inputEmail"
+                                            class="form-control"
+                                            placeholder="Enter email address"
+                                            required="required"
+                                            autofocus="autofocus">
+                                        <label for="inputEmail">현재 비밀번호 입력</label>
+                                    </div>
+                                </div>
+                                <a class="btn btn-primary btn-block" href="confirm-idcancellation.html">인증</a>
+                            </form>
+                            <div class="text-center"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bootstrap core JavaScript-->
+                <script src="vendor/jquery/jquery.min.js"></script>
+                <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+                <!-- Core plugin JavaScript-->
+                <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+            </body>
+
+        </html>
