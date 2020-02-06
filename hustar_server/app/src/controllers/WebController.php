@@ -244,4 +244,15 @@ final class WebController extends BaseController
           $this->view->render($response, 'hustar_user.html');
           return $response;
       }
+
+      /**************************
+      * 테스트 페이지
+      ************************/
+      public function TESTPAGE(Request $request, Response $response, $args)
+      {
+          $this->view->render($response, 'Root.html');
+          return $response;
+      }
+
+      
 }

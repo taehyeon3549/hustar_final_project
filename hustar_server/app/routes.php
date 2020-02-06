@@ -249,3 +249,8 @@ $app->get('/admin/user/', 'App\Controller\WebController:userList')
     $app->get('/user/name', 'App\Controller\UserManagementController:getUserName')
     ->setName('getUserName');
 
+
+    // WEB TEST 페이지
+    $app->get('/hustar/test/', 'App\Controller\WebController:TESTPAGE')
+        ->setName('userList');
+

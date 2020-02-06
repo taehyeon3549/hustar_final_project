@@ -36,47 +36,7 @@
             .mytable th {
                 border: 1px solid black;
             }
-        </style>
-
-        <!-- 달력 검색 부분 -->
-        <link
-            rel="stylesheet"
-            type="text/css"
-            href="https://cdnjs.cludflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
-
-        <style>
-            input[id="monthPicker"] {
-                widows: 100;
-                border: 2px solid dodgerblue;
-                border-radius: 4px;
-
-                outline: none;
-                padding: 8px;
-                box-sizing: border-box;
-                transition: 0.3s;
-            }
-
-            input[id="monthPicker"]:focus {
-                border-color: dodgerblue;
-            }
-
-            .inputWithIcon input[type=test] {
-                padding-left: 40px;
-            }
-
-            .inputWithIcon {
-                position: relative;
-            }
-
-            .inputWithIcon i {
-                position: absolute;
-                left: 0;
-                top: 8px;
-                padding: 9px 8px;
-                color: #aaa;
-            }
-        </style>
-
+        </style>      
     </head>
 
     <body id="page-top">
@@ -120,7 +80,7 @@
                         aria-haspopup="true"
                         aria-expanded="false">
                         <i class="fas fa-user-circle fa-fw"></i>
-                    </a>
+                    </a>                   
 
                     <!-- 메뉴 박스 -->
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
@@ -383,19 +343,7 @@
         <script src="/vendor/datatables/dataTables.bootstrap4.js"></script>
 
         <!-- Custom scripts for all pages-->
-        <script src="/js/sb-admin.min.js"></script>
-
-        <!-- 달력 javascript -->
-        <script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
-        <link
-            rel="stylesheet"
-            href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/themes/smoothness/jquery-ui.css">
-        <script
-            src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js"></script>
-        <script src="/js/jquery.mtz.monthpicker.js"></script>
-        <script>
-            $('#monthPicker').monthpicker();
-        </script>
+        <script src="/js/sb-admin.min.js"></script>        
 
         <!-- 사용자 이름 가져오는 ajax -->
         <script type="text/javascript">
@@ -424,7 +372,7 @@
                 })
         </script>
 
-        <!-- 출석 현황 가져오는 ajax -->
+        <!-- 출석 현황 가져오는 ajax
         <script type="text/javascript">
             $
                 .ajax({
