@@ -435,4 +435,16 @@ public function getOutingByUSN($userInfo) {
 	return $result;
 }
 
+/**********************
+ * 회원 이름 가져오기
+ **********************/
+public function getUserName(){
+	$sql = "SELECT USER_NAME FROM USER";
+	$sth = $this->db->prepare($sql);
+	$sth->execute(array($email));
+	$result = $sth->fetchAll();
+	//print_r($result);
+	return $result;
+}
+
 }

@@ -10,6 +10,7 @@ use PhpOffice\PhpSpreadsheet\Shared\File;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Style\Color;
 
 
 
@@ -202,59 +203,189 @@ final class AdminController extends BaseController
      *************************************************/
     public function printUserAttendance(Request $request, Response $response, $args)
     {
-        // 년, 월 입력 받음
-        $year = $request->getParsedBody()['YEAR'];
-        $month = $request->getParsedBody()['MONTH'];
+        // 년, 월, 일별 수업시간 입력 받음
+        // $year = $request->getParsedBody()['YEAR'];
+        // $month = $request->getParsedBody()['MONTH'];
+        // $ctime = $request->getParsedBody()['CLASSTIME'];
+        $ctime = "8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8";
+        $daytime = explode(',',$ctime);
+
+        $year = "2020";
+        $month = "2";
 
         $time = mktime(0,0,0,$month, 1, $year);
 
         $yoil = array("일","월","화","수","목","금","토");        
+        // 셀 인덱스 배열
+        $cellborder = array("D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","AA","AB","AC","AD","AE","AF","AG","AH");
+        $index = 0;
 
-        // 해당 월에 해당하는 주말 빼고 날짜 가지고 옴
+        // 날짜 배열
+        $day = array();
+
+        // 엑셀 템플릿 들고옴
+        $reader = IOFactory::createReader('Xlsx');
+        $spreadsheet = $reader->load(__DIR__.'/Hustar_attendance_template.xlsx');
+        
+        // 출력 년 월 입력
+        $spreadsheet->getActiveSheet()
+                    ->setCellvalue("T3",$year."년");
+        $spreadsheet->getActiveSheet()
+                    ->setCellvalue("U3",$month."월");
+
+        // 날짜 부분 입력
         while($month == date('m', $time)){
-            if(date('w', $time) != 6 && date('w', $time) != 0){
+            if(date('w', $time) != 6 && date('w', $time) != 0){                
+                $spreadsheet->getActiveSheet()
+                    ->setCellvalue($cellborder[$index]."8",date("m-d",$time));
                 
-                printf(date("m-d",$time)."\n");
-                printf($yoil[date('w', $time)]."\n");
+                // 입력된 날짜 배열로 저장
+                $day[$index] = date("m-d",$time);
+                $index +=1;
             }            
             
+            //하루씩 증가
             $time = strtotime("+1 days",$time);                     
         }
+        // 계산 부분 입력
+        $spreadsheet->getActiveSheet()
+                    ->setCellvalue($cellborder[$index]."8","총 강의시간");
+        $spreadsheet->getActiveSheet()
+                    ->setCellvalue($cellborder[$index+1]."8","차감 시간");
+        $spreadsheet->getActiveSheet()
+                    ->setCellvalue($cellborder[$index+2]."8","총 이수시간");
+        $spreadsheet->getActiveSheet()
+                    ->setCellvalue($cellborder[$index+3]."8","출석률(%)");       
+                
 
-        // //$helper->log('Load from Xls template');
-        // $reader = IOFactory::createReader('Xlsx');
-        // $spreadsheet = $reader->load(__DIR__.'/Hustar_attendance_template.xlsx');
+        // 교육생 이름만 가져오기
+        $userinfo = $this->AdminModel->userNameList();
+        // 교육생 이름 입력
+        for($i = 9; $i<count($userinfo)+9; $i++){
+            $spreadsheet->getActiveSheet()
+                    ->setCellvalue("C".$i,$userinfo[$i-9]['USER_NAME']);
+        }
         
-        // // 교육생 이름만 가져오기
-        // $userinfo = $this->AdminModel->userNameList();
+        // 교육생 출결 상황 입력
+        for($column = 9; $column< 9+count($userinfo); $column++){
+            //USN 가져오고
+            $user['USN'] = $userinfo[$column-9]['USER_USN'];       
 
-        // //반복문을 돌며 각 row의 cell에 데이터 추가
-        // for($i=9; $i<count($userinfo)+9; $i++) {            
-        //     $spreadsheet->getActiveSheet()
-        //                 // ->setCellValue("A$i", $userinfo[i-3]['HUSTAR_NAME'])
-        //                 ->setCellValue("C$i", ($i - 8));
+            //총 이수시간
+            $totalTime = 0;
+            // 차감 시간
+            $minusTime = 0;
+            //총 강의시간
+            $totalClassTime = 0;
 
-        //     if($userinfo[$i-9]['USER_GENDER'] == 0){
-        //         $spreadsheet->setActiveSheetIndex(0)
-        //               ->setCellValue("N$i", "남");
-        //     }else{
-        //         $spreadsheet->setActiveSheetIndex(0)
-        //               ->setCellValue("N$i", "여");
-        //     }            
-        // }
+            // USN 으로 출결 정보 가져오고
+            for($row = 0; $row<$index; $row++){
+                // 총 강의시간 합
+                $totalClassTime += $daytime[$row];
 
-        // $excelWriter = new Xlsx($spreadsheet);
-        // $tempFile = tempnam(File::sysGetTempDir(), 'phpxltmp');
-        // $tempFile = $tempFile ?: __DIR__ . '/temp.xlsx';
-        // $excelWriter->save($tempFile);
+                if($day[$row] != NULL){
+                    $user['DAYFRONT'] = "2020-".$day[$row]." 0:0:0";
+                    $user['DAYEND'] = "2020-".$day[$row]." 23:59:59";
+                    
+                    // USN 에 해당하는 출결 정보 가져오고
+                    $userAttendace = $this->AdminModel->attendanceList($user);
+                    if(count($userAttendace) != 0){
+                        $GTW_time_H = date("H:i:s", strtotime( $userAttendace[0]["ATTENDANCE_GTW"] ) );
+                        //$GTH_time_H = date("H:m:s", strtotime( $userAttendace[0]["ATTENDANCE_GTH"] ) );
+                        $GTH_time_H = date("H:i:s", strtotime("2020-02-02 18:00:00" ));
 
-        // $response = $response->withHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        // $response = $response->withHeader('Content-Disposition', 'attachment; filename="Hustar_교육생명단.xlsx"');
+                        $HourGab = (strtotime($GTH_time_H) - strtotime($GTW_time_H))/3600;
+                        $MinGab = (strtotime($GTH_time_H) - strtotime($GTW_time_H))/60;
+                        
+                        // 정상 출결이라면 그날 하루 시간을 표시1
+                        if($MinGab >=470.0){                       
+                            //print_r("정상");
+                            $spreadsheet->getActiveSheet()
+                                ->setCellvalue($cellborder[$row].$column,"출석(".$daytime[$row].")");
+                            // 색깔 변경
+                            $spreadsheet->getActiveSheet()->getStyle($cellborder[$row].$column)->getFill()
+                                ->setFillType('solid')->getStartColor()->setARGB("FF90EE90");
 
-        // $stream = fopen($tempFile, 'r+');
+                            // 총 이수시간 더하기
+                            $totalTime += $daytime[$row];
+                        }else{                        
+                            $spreadsheet->getActiveSheet()
+                                ->setCellvalue($cellborder[$row].$column,"지각(".(int)$HourGab.")");
+                                //->setCellvalue($cellborder[$row].$column,(int)$HourGab);
+                            // 색깔 변경
+                            $spreadsheet->getActiveSheet()->getStyle($cellborder[$row].$column)->getFill()
+                                ->setFillType("solid")->getStartColor()->setARGB("FFFAFAD2");                            
+                            
 
-        // return $response->withBody(new \Slim\Http\Stream($stream));          
+                            // 총 이수시간 더하기
+                            $totalTime += (int)$HourGab;
+                            // 차감 시간 더하기
+                            $minusTime += ($daytime[$row] - (int)$HourGab);
+                        }
+                    }else{
+                        $spreadsheet->getActiveSheet()
+                                ->setCellvalue($cellborder[$row].$column,"결석(0)");
+                        // 색깔 변경
+                        $spreadsheet->getActiveSheet()->getStyle($cellborder[$row].$column)->getFill()
+                            ->setFillType("solid")->getStartColor()->setARGB("FFFFB6C1");
+                        // 차감 시간 더하기
+                        $minusTime += $daytime[$row];
+                    }
+                }
+            }
+            // 총 강의시간 출력
+            $spreadsheet->getActiveSheet()
+                                ->setCellvalue($cellborder[$row].$column,$totalClassTime);
+            // 차감 시간 출력
+            $spreadsheet->getActiveSheet()
+                                ->setCellvalue($cellborder[$row+1].$column,$minusTime);
+            // 총 이수시간 출력
+            $spreadsheet->getActiveSheet()
+                                ->setCellvalue($cellborder[$row+2].$column,$totalTime);
+            $spreadsheet->getActiveSheet()->getStyle($cellborder[$row+2].$column)->getFill()
+                                ->setFillType("solid")->getStartColor()->setARGB("FFFFFF00");  
+            // 출석률 출력 
+            $spreadsheet->getActiveSheet()
+                                ->setCellvalue($cellborder[$row+3].$column,($totalTime/$totalClassTime)*100);
+            $spreadsheet->getActiveSheet()->getStyle($cellborder[$row+3].$column)->getFill()
+                                ->setFillType("solid")->getStartColor()->setARGB("FFFFFF00");  
+
+        }
+
+
+        $excelWriter = new Xlsx($spreadsheet);
+        $tempFile = tempnam(File::sysGetTempDir(), 'phpxltmp');
+        $tempFile = $tempFile ?: __DIR__ . '/temp.xlsx';
+        $excelWriter->save($tempFile);
+
+        $response = $response->withHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        $response = $response->withHeader('Content-Disposition', 'attachment; filename="Hustar_출석명단.xlsx"');
+
+        $stream = fopen($tempFile, 'r+');
+
+        return $response->withBody(new \Slim\Http\Stream($stream)); 
+    }
+
+
+    public function testest(Request $request, Response $response, $args){
+        $GTW_time_H = date("H:i:s", strtotime("2020-02-02 10:00:11" ));        
+        $GTH_time_H = date("H:i:s", strtotime("2020-02-02 18:00:00" ));
+
+        print_r($GTW_time_H."\n");
+        print_r($GTH_time_H."\n");
+
+        $HourGab = (strtotime($GTH_time_H) - strtotime($GTW_time_H))/3600;
+        $MinGab = (strtotime($GTH_time_H) - strtotime($GTW_time_H))/60;
         
+        // 정상 출결이라면 그날 하루 시간을 표시1
+        if($MinGab >=470.0){                       
+            //print_r("정상");
+            print_r("\n정상 시간차이 (".(int)$HourGab.") :: 분 차이 (".$MinGab.")\n");            
+        }else{
+            print_r("\n지각 시간차이 (".(int)$HourGab.") :: 분 차이 (".$MinGab.")\n");            
+        }
+        
+
     }
 
     /***************************************
@@ -382,6 +513,149 @@ final class AdminController extends BaseController
             $result[$i]['NOTICE_STATE'] = $noticeInfo[$i]['NOTICE_STATE'];
         }
         
+
+        return $response->withStatus(200)
+		->withHeader('Content-Type', 'application/json')
+		->write(json_encode($result, JSON_NUMERIC_CHECK));
+    }
+
+/**
+ * 출석일 출력
+ */
+public function getAttendanceDate(Request $request, Response $response, $args)
+    {
+        // 년, 월, 일별 수업시간 입력 받음
+         $year = $request->getParsedBody()['YEAR'];
+         $month = $request->getParsedBody()['MONTH'];
+         $ctime = $request->getParsedBody()['CLASSTIME'];
+        //$year = "2020";
+        //$month = "2";
+        //$ctime = "8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8";
+
+        $daytime = explode(',',$ctime);       
+
+        $time = mktime(0,0,0,$month, 1, $year);
+
+        $yoil = array("일","월","화","수","목","금","토");        
+        // 셀 인덱스 배열
+        $cellborder = array("D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","AA","AB","AC","AD","AE","AF","AG","AH");
+        $index = 0;
+
+        // 날짜 배열
+        $day = array();
+
+        // 결과
+        $result = array();
+        $result['TOP'] = array();
+        $result['TOP'][0] = '';
+        
+        // 날짜 부분 입력
+        while($month == date('m', $time)){
+            if(date('w', $time) != 6 && date('w', $time) != 0){                
+                
+                // 입력된 날짜 배열로 저장
+                $day[$index] = date("m-d",$time);
+
+                // 결과 
+                $result['TOP'][$index +1] = date("m-d",$time);
+
+                $index +=1;
+            }            
+            
+            //하루씩 증가
+            $time = strtotime("+1 days",$time);                     
+        }
+        
+        // 결과
+        $result['TOP'][$index+1] = "총 강의시간";
+        $result['TOP'][$index+2] = "차감 시간";
+        $result['TOP'][$index+3] = "총 이수시간";
+        $result['TOP'][$index+4] = "출석률(%)";       
+                
+
+        // 교육생 이름만 가져오기
+        $userinfo = $this->AdminModel->userNameList();
+        // 교육생 이름 입력
+        for($i = 9; $i<count($userinfo)+9; $i++){
+
+            // 결과
+            $result['LEFT'][$i-9]['NAME'] = $userinfo[$i-9]['USER_NAME'];
+        }
+        
+        // 교육생 출결 상황 입력
+        for($column = 9; $column< 9+count($userinfo); $column++){
+            //USN 가져오고
+            $user['USN'] = $userinfo[$column-9]['USER_USN'];       
+
+            //총 이수시간
+            $totalTime = 0;
+            // 차감 시간
+            $minusTime = 0;
+            //총 강의시간
+            $totalClassTime = 0;
+
+            // USN 으로 출결 정보 가져오고
+            for($row = 0; $row<$index; $row++){
+                // 총 강의시간 합
+                $totalClassTime += $daytime[$row];
+
+                if($day[$row] != NULL){
+                    $user['DAYFRONT'] = "2020-".$day[$row]." 0:0:0";
+                    $user['DAYEND'] = "2020-".$day[$row]." 23:59:59";
+                    
+                    // USN 에 해당하는 출결 정보 가져오고
+                    $userAttendace = $this->AdminModel->attendanceList($user);
+                    if(count($userAttendace) != 0){
+                        $GTW_time_H = date("H:i:s", strtotime( $userAttendace[0]["ATTENDANCE_GTW"] ) );
+                        //$GTH_time_H = date("H:m:s", strtotime( $userAttendace[0]["ATTENDANCE_GTH"] ) );
+                        $GTH_time_H = date("H:i:s", strtotime("2020-02-02 18:00:00" ));
+
+                        $HourGab = (strtotime($GTH_time_H) - strtotime($GTW_time_H))/3600;
+                        $MinGab = (strtotime($GTH_time_H) - strtotime($GTW_time_H))/60;
+                        
+                        // 정상 출결이라면 그날 하루 시간을 표시1
+                        if($MinGab >=470.0){                       
+                        
+                            
+                            //결과
+                            $result['LEFT'][$column-9]['ATTEND'][$row] = "출석(".$daytime[$row].")";
+
+
+                            // 총 이수시간 더하기
+                            $totalTime += $daytime[$row];
+                        }else{                        
+                            
+                            //결과
+                            $result['LEFT'][$column-9]['ATTEND'][$row] = "지각(".(int)$HourGab.")";
+                                                
+                            
+
+                            // 총 이수시간 더하기
+                            $totalTime += (int)$HourGab;
+                            // 차감 시간 더하기
+                            $minusTime += ($daytime[$row] - (int)$HourGab);
+                        }
+                    }else{
+                        //결과
+                        $result['LEFT'][$column-9]['ATTEND'][$row] = "결석(0)";
+                  
+                        // 차감 시간 더하기
+                        $minusTime += $daytime[$row];
+                    }
+                }
+            }
+             //결과
+             $result['LEFT'][$column-9]['ATTEND'][$row+1] = $totalClassTime;
+             //결과
+             $result['LEFT'][$column-9]['ATTEND'][$row+2] = $minusTime; 
+             //결과
+             $result['LEFT'][$column-9]['ATTEND'][$row+3] = $totalTime; 
+             //결과
+             $result['LEFT'][$column-9]['ATTEND'][$row+4] = ($totalTime/$totalClassTime)*100;  
+           
+
+        }     
+        //print_r($result);
 
         return $response->withStatus(200)
 		->withHeader('Content-Type', 'application/json')

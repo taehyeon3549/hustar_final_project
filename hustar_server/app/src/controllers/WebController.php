@@ -208,10 +208,51 @@ final class WebController extends BaseController
 
     }    
 
+    //PI
+    public function PI(Request $request, Response $response, $args)
+    {
+        $this->logger->info("PI page action dispatched");
+
+        //$this->flash->addMessage('info', 'PI page load');
+
+        $this->view->render($response, 'PI.html');
+        return $response;
+
+    }
+
     //test1
     public function test1(Request $request, Response $response, $args)
     {
         $this->view->render($response, '404.html');
         return $response;
     }
+
+     /**************************
+      * 출결 상황 출력
+      ************************/
+     public function userAttendance(Request $request, Response $response, $args)
+     {
+         $this->view->render($response, 'hustar_attendance.html');
+         return $response;
+     }
+
+     /**************************
+      * 휴스타 회원 출력
+      ************************/
+      public function userList(Request $request, Response $response, $args)
+      {
+          $this->view->render($response, 'hustar_user.html');
+          return $response;
+      }
+
+      /**************************
+      * 테스트 페이지
+      ************************/
+      public function TESTPAGE(Request $request, Response $response, $args)
+      {
+          $this->view->render($response, 'Root.html');
+          return $response;
+      }
+
+      
 }

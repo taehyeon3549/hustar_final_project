@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="kr">
+
+    <head>
+
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+        <title>Hustar 교육생 출석 현황</title>
+
+        <link rel="shortcut icon" href="/icon/hustar.ico" type="image/x-icon"/>
+
+        <!-- Custom fonts for this template-->
+        <link
+            href="/vendor/fontawesome-free/css/all.min.css"
+            rel="stylesheet"
+            type="text/css">
+
+        <!-- Page level plugin CSS-->
+        <link href="/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
+
+        <!-- Custom styles for this template-->
+        <link href="/css/sb-admin.css" rel="stylesheet">
+
+        <!-- 팝업 테이블 css -->
+        <style>
+            .mytable {
+                border-collapse: collapse;
+            }
+            .mytable td,
+            .mytable th {
+                border: 1px solid black;
+            }
+        </style>      
+    </head>
+
+    <body id="page-top">
+        <!-- 로그인 SESSION이 없으면 로그인 페이지로 이동-->
+        <script>
+            if (sessionStorage.getItem('usn') == null) {
+                location.href = "/";
+            }
+        </script>
+
+        <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
+            <a class="navbar-brand mr-1" href="/main">HUSTAR</a>
+            <button
+                class="btn btn-link btn-sm text-white order-1 order-sm-0"
+                id="sidebarToggle"
+                href="#">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <!-- Navbar Search -->
+            <form
+                class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
+                <div class="input-group">
+                    <div class="input-group-append">
+                        
+                    </div>
+                </div>
+            </form>
+
+            <!-- Navbar -->
+            <ul class="navbar-nav ml-auto ml-md-0">
+                
+                <!-- 회원 아이콘 -->
+                <li class="nav-item dropdown no-arrow">
+                    <a
+                        class="nav-link dropdown-toggle"
+                        href="#"
+                        id="userDropdown"
+                        role="button"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false">
+                        <i class="fas fa-user-circle fa-fw"></i>
+                    </a>                   
+
+                    <!-- 메뉴 박스 -->
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                      
+                        <a
+                            class="dropdown-item"
+                            id="signoutb"
+                            href="#"
+                            data-toggle="modal"
+                            data-target="#logoutModal">로그아웃</a>
+                    </div>
+
+                </li>
+            </ul>
+        </nav>
+
+        <div id="wrapper">
+
+            <!-- 왼쪽 사이드바 -->
+            <ul class="sidebar navbar-nav">
+                <!-- 메인 메뉴 -->
+                <li class="nav-item dropdown">
+                    <a
+                        class="nav-link dropdown-toggle"
+                        href="#"
+                        id="pagesDropdown"
+                        role="button"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false">
+                        <i class="fas fa-fw fa-folder"></i>
+                        <span>메인</span>
+                    </a>
+
+                    <!-- 서브 메뉴-->
+                    <div class="dropdown-menu" aria-labelledby="pagesDropdown">
+                        <a class="dropdown-item" href="/calendar">달력</a>
+                        <a class="dropdown-item" href="/memo">게시판</a>
+                    </div>
+                </li>
+
+                <!-- 교육생 현황 -->
+                <li class="nav-item dropdown">
+                    <a
+                        class="nav-link dropdown-toggle"
+                        href="#"
+                        id="pagesDropdown"
+                        role="button"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false">
+                        <i class="fas fa-fw fa-folder"></i>
+                        <span>교육생 현황</span>
+                    </a>
+
+                    <!-- 서브 메뉴-->
+                    <div class="dropdown-menu" aria-labelledby="pagesDropdown">
+                        <a class="dropdown-item" href="/PI">개인신상카드</a>
+                    </div>
+                </li>
+
+                <!-- 출결 현황 -->
+                <li class="nav-item active">
+                    <a class="nav-link" href="/charts">
+                        <i class="fas fa-fw fa-chart-area"></i>
+                        <span>출결 현황</span>
+                    </a>
+                </li>
+
+                <!-- Map -->
+                <li class="nav-item">
+                    <a class="nav-link" href="/maps">
+                        <i class="fas fa-fw fa-chart-area"></i>
+                        <span>Map</span>
+                    </a>
+                </li>
+
+                <!-- 내 계정관리 -->
+                <li class="nav-item dropdown">
+                    <a
+                        class="nav-link dropdown-toggle"
+                        href="#"
+                        id="pagesDropdown"
+                        role="button"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false">
+                        <i class="fas fa-fw fa-folder"></i>
+                        <span>내 계정관리</span>
+                    </a>
+
+                    <!-- 서브 메뉴-->
+                    <div class="dropdown-menu" aria-labelledby="pagesDropdown">
+                        <a class="dropdown-item" id="myaccountb" href="/myaccount">내 계정</a>
+                        <a class="dropdown-item" href="/change_password">비밀번호 변경</a>
+                        <a
+                            class="dropdown-item"
+                            id="signoutb"
+                            href="#"
+                            data-toggle="modal"
+                            data-target="#logoutModal">로그아웃</a>
+                        <a class="dropdown-item" href="/change_idcancellation">회원 탈퇴</a>
+                    </div>
+                </li>
+            </ul>
+
+            <!-- 우측 메인 화면 -->
+            <div id="layoutSidenav_content">
+                <main>
+                    <div style="margin-top:10px;">
+                        <div class="container-fluid">
+
+                            <ol class="breadcrumb mb-4">
+                                <li class="breadcrumb-item">
+                                    <a href="index.html">휴스타</a>
+                                </li>
+                                <li class="breadcrumb-item active">개인신상카드</li>
+                            </ol>
+                        </div>
+
+                        <div class="card mb-4">
+                            
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                        <thead>
+                                            <tr>
+                                                <th>이름</th>
+                                                <th>성별</th>
+                                                <th>전공</th>
+                                                <th>나이</th>
+                                                <th>트랙</th>
+                                                <th>개인신상카드</th>
+                                            </tr>
+                                        </thead>
+                                        
+                                        <tbody>
+                                            <tr>
+                                                <td>Tiger Nixon</td>
+                                                <td>System Architect</td>
+                                                <td>Edinburgh</td>
+                                                <td>61</td>
+                                                <td>2011/04/25</td>
+                                                <td>$320,800</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Garrett Winters</td>
+                                                <td>Accountant</td>
+                                                <td>Tokyo</td>
+                                                <td>63</td>
+                                                <td>2011/07/25</td>
+                                                <td>$170,750</td>
+                                            </tr>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                       
+                    </div>
+                </main>
+                <footer class="py-4 bg-light mt-auto">
+                    <div class="container-fluid">
+                        <div class="d-flex align-items-center justify-content-between small">
+                            <div class="text-muted">Copyright &copy; Your Website 2019</div>
+                            <div>
+                                <a href="#">Privacy Policy</a>
+                                &middot;
+                                <a href="#">Terms &amp; Conditions</a>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+            <!-- /.content-wrapper -->
+
+        </div>
+        <!-- /#wrapper -->
+
+        <!-- 최상단으로 이동하는 버튼 -->
+        <a class="scroll-to-top rounded" href="#page-top">
+            <i class="fas fa-angle-up"></i>
+        </a>
+
+        <!-- 로그아웃 모달 -->
+        <div
+            class="modal fade"
+            id="logoutModal"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">로그아웃</h5>
+                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">로그아웃 하실래요?</div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">닫기</button>
+                        <a class="btn btn-primary" id="logoutb">로그아웃</a>
+                        <!-- LogOut btn action -->
+                        <script type="text/javascript">
+                            document
+                                .getElementById("logoutb")
+                                .addEventListener('click', function () {
+                                    // Check the value are all filled
+                                    var usn = sessionStorage.getItem('usn');
+                                    //send json
+                                    $
+                                        .ajax({
+                                            method: "POST",
+                                            url: "/signout",
+                                            data: {
+                                                "USN": usn
+                                            }
+                                        })
+                                        .done(function (msg) {
+                                            if (msg.message == 0) {
+                                                //logout success sessionStorage clear
+                                                sessionStorage.clear();
+                                                location.href = "/";
+                                            }
+                                            if (msg.message == 1) {
+                                                alert("로그아웃 다시해주세요");
+                                            }
+                                        });
+                                });
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- My Account-->
+        <!-- <div class="modal fade" id="MyaccountModal" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalLabel" aria-hidden="true"> <div
+        class="modal-dialog" role="document"> <div class="modal-content"> <div
+        class="modal-header"> <h5 class="modal-title" id="accountModalLabel">My
+        Account</h5> <button class="close" type="button" data-dismiss="modal"
+        aria-label="Close"> <span aria-hidden="true">×</span> </button> </div> <div
+        class="modal-body">Your Email: teamciot2019@gmail.com<br>Your Name: Jane</div>
+        <div class="modal-footer"> <button class="btn btn-secondary" type="button"
+        data-dismiss="modal">Cancel</button> <a class="btn btn-primary"
+        href="login.html">Change</a> </div> </div> </div> </div> -->
+
+        <!-- Bootstrap core JavaScript-->
+        <script src="/vendor/jquery/jquery.min.js"></script>
+        <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+        <!-- Core plugin JavaScript-->
+        <script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+        <!-- Page level plugin JavaScript-->
+        <script src="/vendor/chart.js/Chart.min.js"></script>
+        <script src="/vendor/datatables/jquery.dataTables.js"></script>
+        <script src="/vendor/datatables/dataTables.bootstrap4.js"></script>
+
+        <!-- Custom scripts for all pages-->
+        <script src="/js/sb-admin.min.js"></script>        
+
+        <!-- 사용자 이름 가져오는 ajax -->
+        <script type="text/javascript">
+            $
+                .ajax({
+                    url: "/user/name", // 클라이언트가 요청을 보낼 서버의 URL 주소
+                    data: {}, // HTTP 요청과 함께 서버로 보낼 데이터
+                    type: "GET", // HTTP 요청 방식(GET, POST)
+                    dataType: "json" // 서버에서 보내줄 데이터의 타입
+                })
+
+                // HTTP 요청이 성공하면 요청한 데이터가 done() 메소드로 전달됨.
+                .done(function (json) {
+                    NAME = json;
+
+                    console.log(NAME);
+
+                    //통신 끝나면 값넣음
+                    $('#inputtest').html(json[0]['USER_NAME']);
+
+                })
+
+                // HTTP 요청이 실패하면 오류와 상태에 관한 정보가 fail() 메소드로 전달됨.
+                .fail(function (xhr, status, errorThrown) {
+                    alert("오류가 발생 오류명" + errorThrown + "<br>상태:" + status);
+                })
+        </script>
+
+        <!-- 출석 현황 가져오는 ajax
+        <script type="text/javascript">
+            $
+                .ajax({
+                    url: "/admin/user/attendance/page/getdata", // 클라이언트가 요청을 보낼 서버의 URL 주소
+                    data: {
+                        "YEAR": "2020",
+                        "MONTH": "2",
+                        "CLASSTIME": "8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,"
+                    }, // HTTP 요청과 함께 서버로 보낼 데이터
+                    type: "POST", // HTTP 요청 방식(GET, POST)
+                    dataType: "json" // 서버에서 보내줄 데이터의 타입
+                })
+
+                // HTTP 요청이 성공하면 요청한 데이터가 done() 메소드로 전달됨.
+                .done(function (json) {
+                    ATTENDANCE = json;
+                    console.log(ATTENDANCE['TOP']);
+                    console.log(ATTENDANCE['LEFT']);
+                    $('#userAttendance').html(
+                        <table id="table">
+                            <caption>출결 Excel</caption>
+
+                            <thead>
+                                <tr>
+
+                                    <th></th>
+                                    <th>sample1</th>
+                                    <th>sample2</th>
+                                    <th>sample3</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <tr>
+                                    <th>sample11</th>
+                                    <td>Text1</td>
+                                    <td>Text1</td>
+                                    <td>Text1</td>
+                                </tr>
+
+                                <tr>
+                                    <th>sample22</th>
+                                    <td>Text2</td>
+                                    <td>Text2</td>
+                                    <td>Text2</td>
+                                </tr>
+
+                                <tr>
+                                    <th>sample33</th>
+                                    <td>Text3</td>
+                                    <td>Text3</td>
+                                    <td>Text3</td>
+                                </tr>
+                            </tbody>
+
+                        </table>
+                    );
+
+                    // 통신 끝나면 값넣음 $('#inputtest').html(json[0]['USER_NAME']);
+                    // document.getElementById('inputtest').value = json[0]['USER_NAME'];
+
+                })
+
+                // HTTP 요청이 실패하면 오류와 상태에 관한 정보가 fail() 메소드로 전달됨.
+                .fail(function (xhr, status, errorThrown) {
+                    alert("오류가 발생 오류명" + errorThrown + "<br>상태:" + status);
+                })
+
+            // HTTP 요청이 성공하거나 실패하는 것에 상관없이 언제나 always() 메소드가 실행됨. .always(function (xhr,
+            // status) {   alert("요청이 완료되었습니다!"); });
+        </script>
+
+        <!-- 엑셀 다운로드 기능-->
+        <script>
+            function fnExcelReport(id, title) {
+                var tab_text = '<html xmlns:x="urn:schemas-microsoft-com:office:excel">';
+                tab_text = tab_text + '<head><meta http-equiv="content-type" content="applicati' +
+                        'on/vnd.ms-excel; charset=UTF-8">';
+                tab_text = tab_text + '<xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorkshe' +
+                        'et>'
+                tab_text = tab_text + '<x:Name>Test Sheet</x:Name>';
+                tab_text = tab_text + '<x:WorksheetOptions><x:Panes></x:Panes></x:WorksheetOpti' +
+                        'ons></x:ExcelWorksheet>';
+                tab_text = tab_text +
+                        '</x:ExcelWorksheets></x:ExcelWorkbook></xml></head><body>';
+                tab_text = tab_text + "<table border='1px'>";
+                var exportTable = $('#' + id).clone();
+                exportTable
+                    .find('input')
+                    .each(function (index, elem) {
+                        $(elem).remove();
+                    });
+                tab_text = tab_text + exportTable.html();
+                tab_text = tab_text + '</table></body></html>';
+                var data_type = 'data:application/vnd.ms-excel';
+                var ua = window.navigator.userAgent;
+                var msie = ua.indexOf("MSIE ");
+                var fileName = title + '.xls';
+                //Explorer 환경에서 다운로드
+                if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./)) {
+                    if (window.navigator.msSaveBlob) {
+                        var blob = new Blob([tab_text], {type: "application/csv;charset=utf-8;"});
+                        navigator.msSaveBlob(blob, fileName);
+                    }
+                } else {
+                    var blob2 = new Blob([tab_text], {type: "application/csv;charset=utf-8;"});
+                    var filename = fileName;
+                    var elem = window
+                        .document
+                        .createElement('a');
+                    elem.href = window
+                        .URL
+                        .createObjectURL(blob2);
+                    elem.download = filename;
+                    document
+                        .body
+                        .appendChild(elem);
+                    elem.click();
+                    document
+                        .body
+                        .removeChild(elem);
+                }
+            }
+        </script>
+        <script
+            src="https://code.jquery.com/jquery-3.4.1.min.js"
+            crossorigin="anonymous"></script>
+        <script
+            src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"
+            crossorigin="anonymous"></script>
+        <script src="/js/scripts.js"></script>
+        <script
+            src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"
+            crossorigin="anonymous"></script>
+        <script
+            src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"
+            crossorigin="anonymous"></script>
+        <script src="/assets/demo/datatables-demo.js"></script>
+
+        <!-- Demo scripts for this page-->
+        <!-- <script src="js/demo/datatables-demo.js"></script> <script
+        src="js/demo/chart-area-demo.js"></script> -->
+
+    </body>
+</html>

@@ -3,7 +3,8 @@
 .aws_key/
 .aws_key/hustar_final_project.pem
 .aws_key/hustar_final_project.ppk
-
+.hustar_server/vendor/doctrine/annotations/*
+hustar_server/log/*
 *.pem
 *.ppk
 
@@ -18,3 +19,14 @@ hustar_server/~$server_기능_설명.xlsx
 hustar_server/vendor/
 ~$server_기능_설명.xlsx
 server_기능_설명.xlsx
+hustar_server/app/dependencies.php.bak
+hustar_server/app/routes.php.bak
+hustar_server/app/routes.php.save
+hustar_server/app/src/models/BackendModel copy.php
+hustar_server/KISA/decode
+hustar_server/KISA/KISA_HIGHT_CBC.c
+hustar_server/KISA/KISA_HIGHT_CBC.c.save
+hustar_server/KISA/KISA_HIGHT_CBC.h
+hustar_server/KISA/main
+hustar_server/public/Project5.exe
+hustar_server/public/test.exe
