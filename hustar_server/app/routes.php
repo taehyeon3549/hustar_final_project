@@ -60,6 +60,11 @@ $app->get('/maps', 'App\Controller\WebController:maps')
 $app->get('/admin/user/attendance/page', 'App\Controller\WebController:userAttendance')
     ->setName('userAttendance');
 
+// 출결 정보 표시 2 
+$app->get('/admin/user/attendance/page2/', 'App\Controller\WebController:userAttendance2')
+    ->setName('userAttendance2');
+
+// 휴스타 학생 표시
 // 내 신상 기록 카드
 $app->get('/admin/user/', 'App\Controller\WebController:userList')
     ->setName('userList');
@@ -218,6 +223,10 @@ $app->get('/admin/user/', 'App\Controller\WebController:userList')
 
     // Hustar 출결 papge 출력 하기 위한 json
     $app->post('/admin/user/attendance/page/getdata', 'App\Controller\AdminController:getAttendanceDate')
+        ->setName('getAttendanceDate'); 
+
+    // Hustar 출결 papge 출력 하기 위한 일별 출결 인원 json
+    $app->post('/admin/user/attendance/page/count/', 'App\Controller\AdminController:getAttendanceCount')
         ->setName('getAttendanceDate'); 
         
     

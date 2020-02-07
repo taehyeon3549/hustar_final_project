@@ -50,31 +50,31 @@ final class AdminModel extends BaseModel
 /*****************************
  * 회원 출결 목록 조회
  *****************************/
-	// public function attendanceList($USN){
-	// 	$sql = "SELECT *
-	// 			FROM hustar_final.ATTENDANCE
-	// 			WHERE ATTENDANCDE_USN = ?";
-	// 	// printf($sql);
-	// 	$sth = $this->db->prepare($sql);
-	// 	$sth->execute(array($USN));
-	// 	$result = $sth->fetchAll();
+	public function attendanceList2222($USN){
+		$sql = "SELECT *
+				FROM hustar_final.ATTENDANCE
+				WHERE ATTENDANCDE_USN = ?";
+		// printf($sql);
+		$sth = $this->db->prepare($sql);
+		$sth->execute(array($USN));
+		$result = $sth->fetchAll();
 
-	// 	return $result;
-	// }
+		return $result;
+	}
 
-	// public function attendanceList($user){
-	// 	$sql = "SELECT *
-	// 		FROM hustar_final.ATTENDANCE
-	// 		WHERE ATTENDANCE_USN = ?
-	// 		ORDER BY ATTENDANCE_GTW";
-	// 	// printf($sql);
-	// 	// print_r($user);
-	// 	$sth = $this->db->prepare($sql);
-	// 	$sth->execute(array($user['USN']));
-	// 	$result = $sth->fetchAll();
-	// 	// print_r($result);
-	// 	return $result;
-	// }
+	public function attendanceList333333($user){
+		$sql = "SELECT *
+			FROM hustar_final.ATTENDANCE
+			WHERE ATTENDANCE_USN = ?
+			ORDER BY ATTENDANCE_GTW";
+		// printf($sql);
+		// print_r($user);
+		$sth = $this->db->prepare($sql);
+		$sth->execute(array($user['USN']));
+		$result = $sth->fetchAll();
+		// print_r($result);
+		return $result;
+	}
 
 	public function attendanceList($user){
 		$sql = "SELECT *
@@ -189,4 +189,29 @@ public function noticeList(){
 		return $result[0];
 	}
 
+	/*****************************
+	 * 일별 출결 정보 가져오기
+	 *****************************/
+	public function attendanceListByDATE($DATE) {  
+		$sql = "select count(*) from hustar_final.ATTENDANCE
+		where  ATTENDANCE_GTW >= ? AND ATTENDANCE_GTH <= ?";
+		$sth = $this->db->prepare($sql);		
+		$sth->execute(array($DATE['DAYFRONT'], $DATE['DAYEND']));
+		$result = $sth->fetchAll();
+
+		return $result[0];
+	}
+
+	/*****************************
+	 * 교육생 수 가져오기
+	 *****************************/
+	public function userCount() {  
+		$sql = "SELECT count(*) FROM USER WHERE USER_ADMIN = 0";
+		$sth = $this->db->prepare($sql);
+		
+		$sth->execute();
+		$result = $sth->fetchAll();
+
+		return $result[0];
+	}
 }

@@ -9,8 +9,8 @@ final class UserManagementModel extends BaseModel
 	public function test_insert($data){
 		$dd = date("yy-m-d H:i:s");
 
-		$sql = "INSERT INTO HUSTAR (`HUSTAR_NAME`, `HUSTAR_ADDRESS`, `HUSTAR_TELL`, `HUSTAR_CHARGE`, `HUSTAR_SUB_CLASS_NO`) 
-				VALUES ('testerrrrrr', ?, '00000', ?, '1')";
+		$sql = "INSERT INTO HUSTAR (`HUSTAR_NAME`, `HUSTAR_ADDRESS`, `HUSTAR_TELL`, `HUSTAR_CHARGE`) 
+				VALUES ('testerrrrrr', ?, '00000', ?)";
 
 		$val = 0;
 
