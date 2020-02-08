@@ -7,7 +7,7 @@
             if (sessionStorage.getItem('usn') == null) {
                 location.href = "/";
             }
-        </script>
+        </script>        
 
         <link
             rel="stylesheet"
@@ -21,34 +21,23 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>출결 상황</title>
-
+        <title>공지 사항</title>
+        
         <!-- Custom fonts for this template-->
         <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-
+        
         <!-- Page level plugin CSS-->
         <link href="/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
 
         <!-- Custom styles for this template-->
         <link href="/css/sb-admin.css" rel="stylesheet">
 
+        <!-- <link href="/css/bootstrap/bootstrap.css" rel="stylesheet"> -->
+
+        
+
         <!-- Tab 왼쪽 아이콘-->
-        <link rel="shortcut icon" href="/icon/hustar.ico" type="image/x-icon"/>
-
-        <!-- Custom fonts for this template-->
-        <link
-            href="/vendor/fontawesome-free/css/all.min.css"
-            rel="stylesheet"
-            type="text/css">
-
-        <!-- Page level plugin CSS-->
-        <link href="/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
-
-        <!-- Custom styles for this template-->
-        <link href="/css/sb-admin.css" rel="stylesheet">        
-
-        <!-- 달력 -->
-        <link href="/css/calendar.css" rel="stylesheet">      
+        <link rel="shortcut icon" href="/icon/hustar.ico" type="image/x-icon"/>       
 
         <!-- 팝업 테이블 css -->
         <style>
@@ -60,69 +49,8 @@
             .mytable th {
                 border: 1px solid black;
             }
-        </style>
-        
-        <!-- 달력 css -->
-        <style>
-            body {
-            margin-bottom: 40px;
-            margin-top: 40px;
-            text-align: center;
-            font-size: 14px;
-            font-family: "Open Sans", sans-serif;            
-            }
-
-            #wrap {
-            width: 1100px;
-            margin: 0 auto;
-            }
-
-            #external-events {
-            float: left;
-            width: 150px;
-            padding: 0 10px;
-            text-align: left;
-            }
-
-            #external-events h4 {
-            font-size: 16px;
-            margin-top: 0;
-            padding-top: 1em;
-            }
-
-            .external-event {
-            /* try to mimick the look of a real event */
-            margin: 10px 0;
-            padding: 2px 4px;
-            background: #3366CC;
-            color: #fff;
-            font-size: .85em;
-            cursor: pointer;
-            }
-
-            #external-events p {
-            margin: 1.5em 0;
-            font-size: 11px;
-            color: #666;
-            }
-
-            #external-events p input {
-            margin: 0;
-            vertical-align: middle;
-            }
-
-            #calendar {
-            /* 		float: right; */
-            margin: 0 auto;
-            width: 80%;
-            background-color: #FFFFFF;
-            border-radius: 6px;
-            box-shadow: 0 1px 2px #C3C3C3;
-            -webkit-box-shadow: 0px 0px 21px 2px rgba(0, 0, 0, 0.18);
-            -moz-box-shadow: 0px 0px 21px 2px rgba(0, 0, 0, 0.18);
-            box-shadow: 0px 0px 21px 2px rgba(0, 0, 0, 0.18);
-            }
-        </style>
+        </style>        
+    
     </head>
 
     <body id="page-top" style="margin-top: 0px;margin-bottom: 0px;">
@@ -318,17 +246,39 @@
                         <!-- 흰 소제목 바 -->
                         <ol class="breadcrumb mb-4">
                             <li class="breadcrumb-item">
-                                <a href="index.html">관리자 기능</a>
+                                <a href="index.html">공지사항</a>
                             </li>
-                            <li class="breadcrumb-item active">교육생 출결 상황</li>
+                            <!-- <li class="breadcrumb-item active"></li> -->
                         </ol>
 
                         <!-- 페이지 내용 -->
                         <div id="layoutSidenav_content" style="padding-bottom: 50px;">
                             페이지 내용
-                            <!-- 달력 출력-->
-                            <div id='calendar'></div>
-                            <div style='clear:both'></div>                            
+                            <table class ="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>번호</th>
+                                        <th>제목</th>
+                                        <th>작성자</th>
+                                        <th>날짜</th>
+                                    </tr>
+                                </thead>
+                                <tbody id = 'notiList'>                                    
+                                </tbody>
+                            </table>
+                            <hr/>
+                            <a class="btn btn-primary pull-right">글쓰기</a>
+
+                            <div id='paging' style="position: relative; width: 80%; margin: 0 auto; text-align: center; margin-top: 250px;">
+                                <ul class="pagination ">
+                                    <li class="left-etc"><a href="#">&laquo;</a></li>
+                                    <li class="active"><a href="#">1</a></li>
+                                    <li ><a href="#">2</a></li>
+                                    <li><a href="#">3</a></li>
+                                    <li><a href="#">4</a></li>                                   
+                                    <li class="right-etc"><a href="#">&raquo;</a></li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                     <!-- /.container-fluid -->
@@ -407,6 +357,9 @@
                     });
             </script>
 
+            <!-- Core plugin JavaScript-->
+            <script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
+
             <!-- 필수 js-->
             <!-- Bootstrap core JavaScript-->
             <script src="/vendor/jquery/jquery.min.js"></script>
@@ -417,138 +370,58 @@
 
             <!-- Custom scripts for all pages-->
             <script src="/js/sb-admin.min.js"></script>
-            <!-- /. 필수 js -->
-
-            <!-- Bootstrap 달력-->
-            <!-- 달력 -->
-            <script src="/js/calendar.js"></script>            
+            <!-- /. 필수 js -->              
+            
+            <!-- pagination 클릭부분-->
             <script>
-                $(document).ready(function() {
-                  var date = new Date();
-                  var d = date.getDate();
-                  var m = date.getMonth();
-                  var y = date.getFullYear();
-                  /*  className colors
-                    
-                  className: default(transparent), important(red), chill(pink), success(green), info(blue)
-                    
-                  */
-                  /* initialize the external events
-                  -----------------------------------------------------------------*/
-                  $('#external-events div.external-event').each(function() {
-                    // create an Event Object (http://arshaw.com/fullcalendar/docs/event_data/Event_Object/)
-                    // it doesn't need to have a start or end
-                    var eventObject = {
-                      title: $.trim($(this).text()) // use the element's text as the event title
-                    };
-                    // store the Event Object in the DOM element so we can get to it later
-                    $(this).data('eventObject', eventObject);
-                    // make the event draggable using jQuery UI
-                    // $(this).draggable({
-                    //   zIndex: 999,
-                    //   revert: true, // will cause the event to go back to its
-                    //   revertDuration: 0 //  original position after the drag
-                    // });
-                  });
+                $('li').click(function() {
+                    $(this).addClass('active').siblings().removeClass('active');
+                });
+                
+                function callFunction() {
+                    var str = ""
+                    var tdArr = new Array(); // 배열 선언
 
-                  /* 캘린더 생성 및 초기화
-                  -----------------------------------------------------------------*/                  
-                  var calendar = $('#calendar').fullCalendar({
-                    header: {
-                      left: 'title',
-                      center: 'agendaDay,agendaWeek,month',
-                      right: 'prev,next today'
-                    },
-                    editable: true,
-                    firstDay: 0, //  1(Monday) this can be changed to 0(Sunday) for the USA system
-                    selectable: true,
-                    defaultView: 'month',
-                    axisFormat: 'h:mm',
-                    columnFormat: {
-                      month: 'ddd', // Mon
-                      week: 'ddd d', // Mon 7
-                      day: 'dddd M/d', // Monday 9/7
-                      agendaDay: 'dddd d'
-                    },
-                    titleFormat: {
-                      month: 'MMMM yyyy', // September 2009
-                      week: "MMMM yyyy", // September 2009
-                      day: 'MMMM yyyy' // Tuesday, Sep 8, 2009
-                    },
-                    allDaySlot: false,
-                    selectHelper: false,
-                     select: function(start, end, allDay) {
-                    //   var title = prompt('Event Title:');
-                    //   if (title) {
-                    //     calendar.fullCalendar('renderEvent', {
-                    //         title: title,
-                    //         start: start,
-                    //         end: end,
-                    //         allDay: allDay
-                    //       },
-                    //       true // make the event "stick"
-                    //     );
-                    //   }
-                    //   calendar.fullCalendar('unselect');
-                        alert("Hu");
-                     },
-                    droppable: false, // this allows things to be dropped onto the calendar !!!
-                    // drop: function(date, allDay) { // this function is called when something is dropped
-                    //   // retrieve the dropped element's stored Event Object
-                    //   var originalEventObject = $(this).data('eventObject');
-                    //   // we need to copy it, so that multiple events don't have a reference to the same object
-                    //   var copiedEventObject = $.extend({}, originalEventObject);
-                    //   // assign it the date that was reported
-                    //   copiedEventObject.start = date;
-                    //   copiedEventObject.allDay = allDay;
-                    //   // render the event on the calendar
-                    //   // the last `true` argument determines if the event "sticks" (http://arshaw.com/fullcalendar/docs/event_rendering/renderEvent/)
-                    //   $('#calendar').fullCalendar('renderEvent', copiedEventObject, true);
-                    //   // is the "remove after drop" checkbox checked?
-                    //   if ($('#drop-remove').is(':checked')) {
-                    //     // if so, remove the element from the "Draggable Events" list
-                    //     $(this).remove();
-                    //   }
-                    // },
-                    events: function(info, successCallback, failureCallback){
-                        // 전체 월출석 일정 들고 오기
-                        $.ajax({
-                            method: "POST",
-                            url: "/admin/user/attendance/page/count/",
-                            dataType: 'json',
-                            data: {
-                                
-                                }
-                            }).done(function (msg) {
-                                 console.log(msg);
-                                 var result = msg;
-                                 result.length;
+                    // 현재 클릭된 Row(<tr>)
+                    var tr = $(this);
+                    var td = tr.children();
 
-                                 for(var i = 0; i<result.length; i++){                                    
-                                        var t1 = {
-                                            start: result[i]['start'],
-                                            title: result[i]['title'][0]
-                                        };
-                                        var t2 = {
-                                            start: result[i]['start'],
-                                            title: result[i]['title'][1]
-                                        };
-                                        var t3 = {
-                                            start: result[i]['start'],
-                                            title: result[i]['title'][2]
-                                        };
-                                        $("#calendar").fullCalendar('renderEvent', t1);
-                                        $("#calendar").fullCalendar('renderEvent', t2);
-                                        $("#calendar").fullCalendar('renderEvent', t3);
-                                     
-                                 }
-                            });       
-                    },
+                    // tr.text()는 클릭된 Row 즉 tr에 있는 모든 값을 가져온다.
+                    console.log("클릭한 Row의 모든 데이터 : " + tr.text());
+
+                    // 반복문을 이용해서 배열에 값을 담아 사용할 수 도 있다.
+                    td.each(function(i) {
+                        tdArr.push(td.eq(i).text());
                     });
 
-                });  
-              </script>
-              <!-- /. Bootstrap 달력-->
+                    console.log("배열에 담긴 값 : " + tdArr);
+                    alert(tdArr);
+                    //open_modeling(tdArr)
+                }
 
+            </script>
+            <!-- 계시판 리스트 가져오는 부분-->
+            <script>
+                $.ajax({
+                            method: "POST",
+                            url: "/notification/getList",
+                            dataType: 'json',
+                            data: {                               
+                                }
+                            }).done(function (msg) {
+                                 console.log(msg[0]);
+                                 var html = '';
+                                 for(var i = 0; i<msg.length; i++){
+                                    html += "<tr>";
+                                    html += "<td id = 'no' >"+msg[i]['NOTICE_NO']+"</td>";
+                                    html += "<td ><a href='javascript:void(0);' onclick='callFunction();'style='color: black;'>"+msg[i]['NOTICE_TITLE']+"</a>";
+                                    html += "<td>"+msg[i]['USER_NAME'];
+                                    html += "<td>"+msg[i]['NOTICE_DATE'];
+                                    html += "<tr>";
+                                 }
+
+                                 $("#notiList").html(html);
+                            });       
+            </script>            
             </body>
         </html>
