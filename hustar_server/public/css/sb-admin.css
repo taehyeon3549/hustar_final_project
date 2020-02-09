@@ -10978,6 +10978,12 @@ body {
   color: #777;
 }
 
+.footer{
+  position: absolute;   
+    bottom: 0;
+    width: 100%;
+}
+
 footer.sticky-footer {
   display: -webkit-box;
   display: -ms-flexbox;

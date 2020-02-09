@@ -76,6 +76,11 @@ $app->get('/notification/', 'App\Controller\WebController:notiList')
 // 공지사항 게시판 글 목록 가져오기
 $app->post('/notification/getList', 'App\Controller\WebController:getNotiList')
 ->setName('getNotiList');
+
+// 게시글 출력
+$app->get('/notification/view/{index}', 'App\Controller\WebController:notiView')
+    ->setName('notificationView');
+
 /****************************************/
 /*          User Management             */
 /****************************************/

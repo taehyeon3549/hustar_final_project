@@ -283,5 +283,26 @@ final class WebController extends BaseController
 		->write(json_encode($result, JSON_NUMERIC_CHECK));	
     }
 
+    /************************************
+    * 공지사항 게시판 글 보기
+    **************************************/
+	public function notiView(Request $request, Response $response, $args)
+    {
+        // 호출 index 받고
+        $index = $args['index'];
+       
+        // index에 해당하는 공지사항 가져오기
+        $TITLE = $this->WebModel->getNotiView($index)[0]['NOTICE_TITLE'];
+        $BODY = $this->WebModel->getNotiView($index)[0]['NOTICE_BODY'];
+        $NAME = $this->WebModel->getNotiView($index)[0]['USER_NAME'];
+        $DATE = $this->WebModel->getNotiView($index)[0]['NOTICE_DATE'];
+
+        $this->view->render($response, 'notificationView.twig', 
+                            ['index' => $index , 'title' => $TITLE, 
+                            'body' => $BODY , 'name' => $NAME , 'date' => $DATE]);
+        
+        return $response;
+    }
+
       
 }
