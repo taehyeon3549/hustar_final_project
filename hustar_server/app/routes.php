@@ -188,6 +188,14 @@ $app->get('/notification/view/{index}', 'App\Controller\WebController:notiView')
     $app->get('/gettime', 'App\Controller\DeviceManagementController:gettime')
         ->setName('getTime');
 
+    // 지문 출석 체크
+    $app->get('/check/fingerprint/', 'App\Controller\UserManagementController:checkFinger')
+        ->setName('CheckFinger');
+
+    // 지문 등록
+    $app->get('/register/fingerprint/', 'App\Controller\UserManagementController:registerFinger')
+        ->setName('registerFinger');
+
 
     /****************************************/
     /*               기기 관리               */
