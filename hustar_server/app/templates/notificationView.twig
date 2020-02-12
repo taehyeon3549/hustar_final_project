@@ -63,9 +63,9 @@
         <script type="text/javascript">
             $(document).ready(function() {
               $('.summernote').summernote({
-                height: 300,
-                minHeight: null,
-                maxHeight: null,
+                height: 700,
+                minHeight: 500,
+                maxHeight: 1000,
                 lang : 'ko-KR'
               });
             });
@@ -80,7 +80,7 @@
             <!-- 최상단 바 -->
             <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
                 <!-- 왼쪽 상단 마크 -->
-                <a class="navbar-brand mr-1" href="/main">
+                <a class="navbar-brand mr-1" href="/notification/">
                     <img src="/icon/hustar_icon.ico" class="LogoPNG" style="width: 25px;">
                     HUSTAR                    
                 </a>
@@ -150,8 +150,8 @@
                 <ul class="sidebar navbar-nav">
                     <!-- 메인 메뉴 -->
                     <!-- 공지사항 -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="/maps">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/notification/">
                             <i class="fas fa-fw fas fa-bell"></i>                            
                             <span>공지사항</span>
                         </a>                        
@@ -222,8 +222,8 @@
                         <!-- 서브 메뉴-->
                         <div class="dropdown-menu" aria-labelledby="pagesDropdown">
                             <a class="dropdown-item" id="adminStudent" href="/myaccount">교육생 현황</a>
-                            <a class="dropdown-item" id="adminNotifi" href="/myaccount">공지사항 입력</a>
-                            <a class="dropdown-item active toggle" id="adminAttend" href="/change_password">출결 상황보기</a>
+                            <a class="dropdown-item" id="adminNotifi" href="/notification/wirte/">공지사항 입력</a>
+                            <a class="dropdown-item active toggle" id="adminAttend" href="/admin/user/attendance/page/">출결 상황보기</a>
                             <a class="dropdown-item" id="adminWhy" href="/change_password">사유서 보기</a>
                             <a class="dropdown-item" id="adminBook" href="/change_password">도서대출 보기</a>
                             <a class="dropdown-item" id="adminTool" href="/change_password">기자재 대출 보기</a>                            
@@ -271,7 +271,7 @@
                             <li class="breadcrumb-item">
                                 <a href="index.html">공지사항</a>
                             </li>
-                            <!-- <li class="breadcrumb-item active"></li> -->
+                            <li class="breadcrumb-item active">게시글 보기</li>
                         </ol>
 
                         <!-- 페이지 내용 -->
@@ -302,7 +302,9 @@
                             </table>
 
                             <a class="btn btn-primary pull-right" id="rewriteb">수정</a> 
+                            <a class="btn btn-primary pull-right" data-target="#deleteModal" data-toggle="modal">삭제</a> 
                             <a class="btn btn-primary pull-right" href="/notification/">뒤로가기</a> 
+                            
                         </div>
                     </div>
                     <!-- /.container-fluid -->
@@ -355,6 +357,31 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- 삭제 모달 -->
+                <div
+                    class="modal fade"
+                    id="deleteModal"
+                    tabindex="-1"
+                    role="dialog"
+                    aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="notiDeleteModalLabel">공지사항 삭제</h5>
+                                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">삭제 하시겠습니까?</div>
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" type="button" data-dismiss="modal">닫기</button>
+                                <a class="btn btn-primary" id="deleteb">삭제</a>                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 
             <!-- 로그아웃 버튼 동작 -->
             <script type="text/javascript">
@@ -376,6 +403,31 @@
                             }
                             if (msg.message == 1) {
                                 alert("로그아웃 다시해주세요");
+                            }
+                        });
+                    });
+            </script>
+
+            <!-- 삭제 버튼 동작 -->
+            <script type="text/javascript">
+                document.getElementById("deleteb").addEventListener('click', function () {
+                    // Check the value are all filled
+                    var usn = sessionStorage.getItem('usn');
+                    var no = document.getElementsByTagName('td')[0].childNodes[0].nodeValue;
+                    //send json
+                    $.ajax({
+                        method: "POST",
+                        url: "/admin/notice/delete",
+                        data: {
+                                "USN": usn,
+                                "NO": no
+                            }
+                        }).done(function (msg) {
+                            if (msg.message == 0) {                                                                
+                                location.href = "/notification/";
+                            }
+                            if (msg.message == 1) {
+                                alert("삭제 실패하셨습니다.\n"+msg.message);
                             }
                         });
                     });
