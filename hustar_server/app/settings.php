@@ -5,14 +5,14 @@ if ($_SERVER['HTTP_HOST'] == '54.180.159.207') {
     $db_array = array(
         'host' => '127.0.0.1',
         'user' => 'root',
-        'pass' => '1234',
+        'pass' => 'hustar9509',
         'dbname' => 'hustar_final'
     );
 } else {
     $db_array = array(
         'host' => '127.0.0.1',
         'user' => 'root',
-        'pass' => '1234',
+        'pass' => 'hustar9509',
         'dbname' => 'hustar_final'
     );
 }
