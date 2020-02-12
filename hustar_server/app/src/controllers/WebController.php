@@ -303,6 +303,5 @@ final class WebController extends BaseController
         
         return $response;
     }
-
       
 }

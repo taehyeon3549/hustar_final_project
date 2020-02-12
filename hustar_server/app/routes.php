@@ -81,6 +81,10 @@ $app->post('/notification/getList', 'App\Controller\WebController:getNotiList')
 $app->get('/notification/view/{index}', 'App\Controller\WebController:notiView')
     ->setName('notificationView');
 
+// 게시글 수정
+$app->get('/notification/rewrite', 'App\Controller\WebController:notiRewrite')
+    ->setName('notiRewrite');
+
 /****************************************/
 /*          User Management             */
 /****************************************/
@@ -189,7 +193,7 @@ $app->get('/notification/view/{index}', 'App\Controller\WebController:notiView')
         ->setName('getTime');
 
     // 지문 출석 체크
-    $app->get('/check/fingerprint/', 'App\Controller\UserManagementController:checkFinger')
+    $app->get('/check/fingerprint/{code}', 'App\Controller\UserManagementController:checkFinger')
         ->setName('CheckFinger');
 
     // 지문 등록

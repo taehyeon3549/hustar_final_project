@@ -47,4 +47,42 @@ final class WebModel extends BaseModel
 		
 		return $result;
 	}
+
+	/*************************************
+	 * // 공지사항 글 수정
+	 *************************************/	
+	public function notiUpdate($noti){
+		$sql = "UPDATE `hustar_final`.`NOTICE` 
+				SET `NOTICE_TITLE` = ?, `NOTICE_BODY` = ? 
+				WHERE (`NOTICE_NO` = ?);";
+				
+		$sth = $this->db->prepare($sql);
+
+		if($sth->execute(array($noti['title'],$noti['body'], $noti['no']))){
+			$val = 0;
+		}else{						
+			$val = 1;			
+		}		
+		return $val;
+	}
+
+	/*************************************
+	 * // 관리자 유무 체크
+	 *************************************/	
+	public function getAdmin($usn){
+		$sql = "SELECT *
+				FROM USER
+				WHERE USER_USN = ? AND USER_ADMIN = 1";
+				
+		$sth = $this->db->prepare($sql);
+
+		$sth->execute($usn);
+		$result = $sth->fetchAll();			
+		
+		return $result;
+	}
+
+
+
+	
 }

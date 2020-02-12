@@ -440,15 +440,18 @@ final class AdminController extends BaseController
         $notice['USN'] = $request->getParsedBody()['USN'];
         $notice['DATE'] = date("yy-m-d H:i:s");
 
+       
         $userinfo = $this->AdminModel->getUserByUSN($notice['USN']);
 
         if($userinfo['USER_ADMIN'] == 1){       //입력한 사용자가 관리자라면
-            if($this->AdminModel->noticeUpdate($notice) == 0){
+            $tt = $this->AdminModel->noticeUpdate($notice);
+            if($tt == 0){
                 $result['header'] = "Update the Notice is success";
                 $result['message'] = "0";
             }else{
+                // print_r($this->AdminModel->noticeUpdate($notice));
                 $result['header'] = "Update the Notice is fail";
-                $result['message'] = "1";
+                $result['message'] = $tt;
             }
         }else{
             $result['header'] = "Not admin";

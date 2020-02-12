@@ -960,9 +960,9 @@ public function change_certification_app(Request $request, Response $response, $
 		//이후 MAC 주소 받아서 USN을 찾고 출석 되게끔 만듬
 		
 		// code = 암호
-		//$code = $request->getParsedBody()['CODE'];
+		$code = $args['code'];		
 		
-		$code = "2$2263c0dec883b96b$1";
+		//$code = "1$91810bf4e1d1b59d$1";
 		// 코드 입력 받은 것을 $로 문자열 자름
 		$slidecode = explode('$', $code);
 
@@ -970,7 +970,8 @@ public function change_certification_app(Request $request, Response $response, $
 		$time = date("H:i:s");		
 
 		// 지문 index를 이용하여 usn 가져오기		
-		$userinfo['USN'] = $this->UserManagementModel->checkFingerCode($slidecode[0])[0]['AUTHENTICATION_FINGER_1'];
+		$userInfo['USN'] = $this->UserManagementModel->checkFingerCode($slidecode[0])[0]['AUTHENTICATION_USN'];
+		print_r($this->UserManagementModel->checkFingerCode($slidecode[0])[0]['AUTHENTICATION_USN']);
 
 		// 1번째 값이 암호화된 code
 		$result['Input'] = $slidecode[1];
@@ -978,9 +979,8 @@ public function change_certification_app(Request $request, Response $response, $
 		$inputcode = $slidecode[1];
 
 		// 암호 해독
-		$temp = exec("/var/www/html/hustar/hustar-app/KISA/decode $inputcode");
-		print_r("해독 결과".$temp);
-
+		$temp = exec("/var/www/html/hustar/hustar-app/KISA/decode1 $inputcode");
+		
 		$result['Decode'] = $temp;
 
 		//문자열 자르고
@@ -988,11 +988,20 @@ public function change_certification_app(Request $request, Response $response, $
 
 		//날짜 체크
 		if($decode[1] == explode('-', $day)[0]  && $decode[2] == explode('-', $day)[1]){
-			if( ((int)$decode[5] - (int)date("s")) <= 10 && ((int)$decode[5] - (int)date("s")) >= 0){
-				printf(((int)$decode[5] - (int)date("s")));
+			if((int)$decode[5] >= 50 &&  (int)date("s") < 10){
+				$nowSecond = (int)date("s") + 60;
+			}else{
+				$nowSecond = (int)date("s");
+			}
+
+			if( ($nowSecond - (int)$decode[5]) <= 20 && ($nowSecond - (int)$decode[5]) >= 0){
+				//printf(((int)$decode[5] - (int)date("s")));
 				if($slidecode[2] == 1){				// 출근
 					// DB 삽입
 					$userInfo['GTW'] = date("yy-m-d H:i:s");
+					
+					//print_r("PUSH >>> USN : ".$userInfo['USN']."GTW : ".$userInfo['GTW']."\n");
+
 					$attendInfo = $this->UserManagementModel->AttendanceGTW($userInfo);
 
 					if($attendInfo == 1){
