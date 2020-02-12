@@ -13,4 +13,38 @@ final class WebModel extends BaseModel
 		
 		return $result[0];
 	}
+
+	/*************************************
+	 * // 공지사항 글 리스트 가져오기
+	 *************************************/	
+	public function getNotiList(){
+		$sql = "SELECT NOTICE_NO, NOTICE_TITLE, USER_NAME, NOTICE_DATE
+				FROM NOTICE
+				LEFT OUTER JOIN USER
+				ON NOTICE.NOTICE_USN = USER.USER_USN
+				WHERE NOTICE.NOTICE_STATE = 1;";
+		$sth = $this->db->prepare($sql);
+		
+		$sth->execute();
+		$result = $sth->fetchAll();
+		
+		return $result;
+	}
+	
+	/*************************************
+	 * // 공지사항 글 출력
+	 *************************************/	
+	public function getNotiView($index){
+		$sql = "SELECT NOTICE.*, USER.USER_NAME FROM hustar_final.NOTICE
+				LEFT OUTER JOIN USER
+				ON NOTICE.NOTICE_USN = USER.USER_USN
+				WHERE NOTICE.NOTICE_NO=?";
+				
+		$sth = $this->db->prepare($sql);
+
+		$sth->execute(array($index));
+		$result = $sth->fetchAll();			
+		
+		return $result;
+	}
 }

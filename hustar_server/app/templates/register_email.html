@@ -1,107 +1,136 @@
 <!DOCTYPE html>
 <html lang="kr">
 
-<head>
+    <head>
 
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="">
-  <meta name="author" content="">
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="">
+        <meta name="author" content="">
 
-  <title>회원가입</title>
+        <title>회원가입</title>
 
-  <!-- Custom fonts for this template-->
-  <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+        <!-- Custom fonts for this template-->
+        <link
+            href="/vendor/fontawesome-free/css/all.min.css"
+            rel="stylesheet"
+            type="text/css">
 
-  <!-- Custom styles for this template-->
-  <link href="/css/sb-admin.css" rel="stylesheet">
+        <!-- Custom styles for this template-->
+        <link href="/css/sb-admin.css" rel="stylesheet">
 
-  <style>
+        <!--상단 휴스타 이미지-->
+        <style>
 
-    body {
-      background-image: url("https://ifh.cc/g/Zzv5w.jpg");
-      background: url(https://ifh.cc/g/Zzv5w.jpg) no-repeat center center fixed; 
-      -webkit-background-size: cover;
-      -moz-background-size: cover;
-      -o-background-size: cover;
-      background-size: cover;
-      opacity: 0.7;
-    } 
-    
-    </style>
-
-</head>
-
-<body>
-  
-  <div class="container">
-  
-    <div class="card card-login mx-auto mt-5" style="margin-top: 5px;">
-      <div class="card-header">회원가입</div>
-      <div class="card-body">
-        <div class="mb-4">
-          <p>가입할 이메일을 입력하세요</p>
-        </div>
-        <form>
-          <div class="form-group">
-          </div>
-          <div class="form-group">
-            <div class="form-label-group">
-              <input type="email" name= "email" id="inputEmail" class="form-control" placeholder="Email address" required="required">
-              <label for="inputEmail">이메일 주소</label>
-            </div>
-          </div>
-          <a class="btn btn-primary btn-block" id="verifyb">인증</a>   
-        </form>
-
-        <script type="text/javascript">
-          //When click the login btn
-          document.getElementById("verifyb").addEventListener('click', function(){
-            // Check the value are all filled
-            var email = $('input[name = email]').val();
-
-            if(email == ""){
-              alert("이메일을 입력하세요");
-              isSend = 0;
-            }else{
-              //send json
-              $.ajax({
-              method: "POST",
-              url: "/verify/0",
-              data: {
-                "EMAIL": $('input[name = email]').val()               
-              }
-              }).done(function( msg ) {
-                  //If sign_up success, show up the sign in page
-                  if(msg.message == 0){
-                    alert("인증 이메일을 메일로 보냈어요. 메일을 확인하세요");
-                    location.href = "/signup/message";
-                  }
-                  if(msg.message == 1){
-                    alert("이미 Hustar 회원이세요!");
-                    location.href = "/";
-                  }
-              });         
+            #image {
+                margin: 0 auto;
+                width: 230px;
+                height: 100px;
+                background-image: url("https://ifh.cc/g/UG86R.png");
+                /*background-size: 50%;*/
+                background-repeat: no-repeat;
+                /*background-attachment: fixed;*/
             }
-          });
-        </script>
+        </style>
 
-        <div class="text-center">
-          <a class="d-block small mt-3" href="/">로그인 페이지</a>
-          
+    </head>
+
+    <body>
+
+        <div class="container">
+
+          <div id="image">
+  
+          </div>
+
+            <div class="card card-login mx-auto mt-5" style="margin-top: 5px;">
+                <div class="card-header">회원가입</div>
+                <div class="card-body">
+                    <div class="mb-4">
+                        <p>가입할 이메일을 입력하세요</p>
+                    </div>
+                    <form>
+                        <div class="form-group"></div>
+                        <div class="form-group">
+                            <div class="form-label-group">
+                                <input
+                                    type="email"
+                                    name="email"
+                                    id="inputEmail"
+                                    class="form-control"
+                                    placeholder="Email address"
+                                    required="required">
+                                <label for="inputEmail">이메일 주소</label>
+                            </div>
+                        </div>
+                        <a class="btn btn-primary btn-block" id="verifyb">인증</a>
+                    </form>
+
+                    <script type="text/javascript">
+                        //When click the login btn
+                        document
+                            .getElementById("verifyb")
+                            .addEventListener('click', function () {
+                                // Check the value are all filled
+                                var email = $('input[name = email]').val();
+
+                                if (email == "") {
+                                    alert("이메일을 입력하세요");
+                                    isSend = 0;
+                                } else {
+                                    //send json
+                                    $
+                                        .ajax({
+                                            method: "POST",
+                                            url: "/verify/0",
+                                            data: {
+                                                "EMAIL": $('input[name = email]').val()
+                                            }
+                                        })
+                                        .done(function (msg) {
+                                            //If sign_up success, show up the sign in page
+                                            if (msg.message == 0) {
+                                                alert("인증 이메일을 메일로 보냈어요. 메일을 확인하세요");
+                                                location.href = "/signup/message";
+                                            }
+                                            if (msg.message == 1) {
+                                                alert("이미 Hustar 회원이세요!");
+                                                location.href = "/";
+                                            }
+                                        });
+                                }
+                            });
+                    </script>
+
+                    <div class="text-center">
+                        <a class="d-block small mt-3" href="/">로그인 페이지</a>
+
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  </div>
 
-  <!-- Bootstrap core JavaScript-->
-  <script src="/vendor/jquery/jquery.min.js"></script>
-  <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <!-- Bootstrap core JavaScript-->
+        <script src="/vendor/jquery/jquery.min.js"></script>
+        <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-  <!-- Core plugin JavaScript-->
-  <script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
+        <!-- Core plugin JavaScript-->
+        <script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
+        
+        <footer class="sticky-footer" style="width: 100%;">
+            <div class="container my-auto">
+              
+                <div class="copyright text-center my-auto">
+        
+                    <span>Copyright © HUSTAR 2020 &nbsp 첨단정보통신융합산업기술원 동내로 70 &nbsp 010-5737-0114</span>
+        
+                </div>
+            </div>
+        </footer>
 
-</body>
+    </body>
 
 </html>

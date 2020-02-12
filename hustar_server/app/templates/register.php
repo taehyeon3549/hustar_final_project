@@ -29,7 +29,7 @@
 
 </head>
 
-<body class="bg-dark">
+<body >
 
   <div class="container">
     <div class="card card-register mx-auto mt-5">

@@ -447,4 +447,93 @@ public function getUserName(){
 	return $result;
 }
 
+/**********************
+ * 지문 index 체크
+ **********************/
+public function checkFingerCode($user){
+	$sql = "SELECT * FROM hustar_final.AUTHENTICATION
+			WHERE AUTHENTICATION_FINGER_1 = ? OR AUTHENTICATION_FINGER_2 = ? OR AUTHENTICATION_FINGER_3 = ?;";
+			
+	$sth = $this->db->prepare($sql);
+	$sth->execute(array($user,$user,$user));
+	$result = $sth->fetchAll();
+	
+	return $result;
+}
+
+/**********************
+ * usn 에 해당하는 지문 체크
+ **********************/
+public function checkFingerUsn($user){
+	$sql = "SELECT AUTHENTICATION_FINGER_3
+			FROM AUTHENTICATION
+			WHERE AUTHENTICATION_USN = ?;";
+			
+	$sth = $this->db->prepare($sql);
+	$sth->execute(array($user['usn']));
+	$result = $sth->fetchAll();
+	
+	return $result;
+}
+
+/**********************
+ * usn 에 해당하는 지문 정보
+ **********************/
+public function getFingerUsn($user){
+	$sql = "SELECT *
+			FROM AUTHENTICATION
+			WHERE AUTHENTICATION_USN = ?;";
+			
+	$sth = $this->db->prepare($sql);
+	$sth->execute(array($user['usn']));
+	$result = $sth->fetchAll();
+	
+	return $result;
+}
+
+/**********************
+ * 지문 등록  1
+ **********************/
+public function registerFinger_1($user){
+	$sql = "INSERT INTO `hustar_final`.`AUTHENTICATION` (`AUTHENTICATION_USN`, `AUTHENTICATION_FINGER_1`) 
+			VALUES (?, ?);";
+			
+	$sth = $this->db->prepare($sql);
+	if($sth->execute(array($user['usn'],$user['code']))){
+		return 0;
+	}else{
+		return 1;
+	}	
+}
+
+/**********************
+ * 지문 등록 2
+ **********************/
+public function registerFinger_2($user){
+	$sql = "UPDATE `hustar_final`.`AUTHENTICATION` SET `AUTHENTICATION_FINGER_2` = ? 
+			WHERE (`AUTHENTICATION_USN` = ?)";
+			
+	$sth = $this->db->prepare($sql);
+	if($sth->execute(array($user['code'], $user['usn']))){
+		return 0;
+	}else{
+		return 1;
+	}			
+}
+
+/**********************
+ * 지문 등록 3
+ **********************/
+public function registerFinger_3($user){
+	$sql = "UPDATE `hustar_final`.`AUTHENTICATION` SET `AUTHENTICATION_FINGER_3` = ? 
+			WHERE (`AUTHENTICATION_USN` = ?)";
+			
+	$sth = $this->db->prepare($sql);
+	if($sth->execute(array($user['code'], $user['usn']))){
+		return 0;
+	}else{
+		return 1;
+	}	
+}
+
 }

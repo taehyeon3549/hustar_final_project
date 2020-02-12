@@ -262,5 +262,47 @@ final class WebController extends BaseController
           return $response;
       }
 
+    /************************************
+    * 공지사항 게시판
+    **************************************/
+	public function notiList(Request $request, Response $response, $args)
+    {
+        $this->view->render($response, 'notificationBoard.html');
+        return $response;
+    }
+
+    /************************************
+    * 공지사항 게시판 글 가져오기
+    **************************************/
+	public function getNotiList(Request $request, Response $response, $args)
+    {
+        $result = $this->WebModel->getNotiList();
+
+		return $response->withStatus(200)
+		->withHeader('Content-Type', 'application/json')
+		->write(json_encode($result, JSON_NUMERIC_CHECK));	
+    }
+
+    /************************************
+    * 공지사항 게시판 글 보기
+    **************************************/
+	public function notiView(Request $request, Response $response, $args)
+    {
+        // 호출 index 받고
+        $index = $args['index'];
+       
+        // index에 해당하는 공지사항 가져오기
+        $TITLE = $this->WebModel->getNotiView($index)[0]['NOTICE_TITLE'];
+        $BODY = $this->WebModel->getNotiView($index)[0]['NOTICE_BODY'];
+        $NAME = $this->WebModel->getNotiView($index)[0]['USER_NAME'];
+        $DATE = $this->WebModel->getNotiView($index)[0]['NOTICE_DATE'];
+
+        $this->view->render($response, 'notificationView.twig', 
+                            ['index' => $index , 'title' => $TITLE, 
+                            'body' => $BODY , 'name' => $NAME , 'date' => $DATE]);
+        
+        return $response;
+    }
+
       
 }
