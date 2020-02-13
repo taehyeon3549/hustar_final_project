@@ -69,6 +69,12 @@ $app->get('/admin/user/attendance/page2/', 'App\Controller\WebController:userAtt
 $app->get('/admin/user/', 'App\Controller\WebController:userList')
     ->setName('userList');
 
+// 내 신상 기록 카드 글 목록 가져오기
+
+
+// 내 신상 기록 카드 출력
+
+
 // 공지사항 게시판
 $app->get('/notification/', 'App\Controller\WebController:notiList')
     ->setName('notification');
