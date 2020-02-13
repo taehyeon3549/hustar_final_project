@@ -7,7 +7,7 @@
             if (sessionStorage.getItem('usn') == null) {
                 location.href = "/";
             }
-        </script>        
+        </script>
 
         <link
             rel="stylesheet"
@@ -21,20 +21,15 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>공지 사항</title>
+        <title>공지 사항 입력</title>
         
         <!-- Custom fonts for this template-->
         <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
         
         <!-- Page level plugin CSS-->
         <link href="/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
-
-        <!-- Custom styles for this template-->
-        <link href="/css/sb-admin.css" rel="stylesheet">
-
-        <!-- <link href="/css/bootstrap/bootstrap.css" rel="stylesheet"> -->
-
-        
+      
+        <!-- <link href="/css/bootstrap/bootstrap.css" rel="stylesheet"> -->        
 
         <!-- Tab 왼쪽 아이콘-->
         <link rel="shortcut icon" href="/icon/hustar.ico" type="image/x-icon"/>       
@@ -49,7 +44,35 @@
             .mytable th {
                 border: 1px solid black;
             }
-        </style>        
+        </style>       
+
+        <!-- include jquery -->
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js"></script>
+
+        <!-- include libs stylesheets -->
+        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.css" />
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.js"></script>
+        <script src="http://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.js"></script>
+
+        <!--  summernote 추가-->
+        <link rel="stylesheet" href="/js/dist/summernote-bs4.css">
+        <script type="text/javascript" src="/js/dist/summernote-bs4.js"></script>
+
+        <link rel="stylesheet" href="/js/dist/example.css">
+        
+        <script type="text/javascript">
+            $(document).ready(function() {
+              $('.summernote').summernote({
+                height: 800,
+                minHeight: 500,
+                maxHeight: 1000,
+                lang : 'ko-KR'
+              });
+            });
+          </script>       
+
+          <!-- Custom styles for this template-->
+        <link href="/css/sb-admin.css" rel="stylesheet">
     
     </head>
 
@@ -127,7 +150,7 @@
                 <ul class="sidebar navbar-nav">
                     <!-- 메인 메뉴 -->
                     <!-- 공지사항 -->
-                    <li class="nav-item active">
+                    <li class="nav-item">
                         <a class="nav-link" href="/notification/">
                             <i class="fas fa-fw fas fa-bell"></i>                            
                             <span>공지사항</span>
@@ -183,7 +206,7 @@
                     </li>
 
                      <!-- 관리자 기능 -->
-                     <li class="nav-item dropdown">
+                     <li class="nav-item dropdown active">
                         <a
                             class="nav-link dropdown-toggle active"
                             href="#"
@@ -191,7 +214,7 @@
                             role="button"
                             data-toggle="dropdown"
                             aria-haspopup="true"
-                            aria-expanded="false">
+                            aria-expanded="true">
                             <i class="fas fa-fw fa-tools"></i>
                             <span>관리자 기능</span>
                         </a>
@@ -199,7 +222,7 @@
                         <!-- 서브 메뉴-->
                         <div class="dropdown-menu" aria-labelledby="pagesDropdown">
                             <a class="dropdown-item" id="adminStudent" href="/myaccount">교육생 현황</a>
-                            <a class="dropdown-item" id="adminNotifi" href="/notification/wirte/">공지사항 입력</a>
+                            <a class="dropdown-item active toggle" id="adminNotifi" href="/notification/wirte/">공지사항 입력</a>
                             <a class="dropdown-item" id="adminAttend" href="/admin/user/attendance/page/">출결 상황보기</a>
                             <a class="dropdown-item" id="adminWhy" href="/change_password">사유서 보기</a>
                             <a class="dropdown-item" id="adminBook" href="/change_password">도서대출 보기</a>
@@ -248,36 +271,26 @@
                             <li class="breadcrumb-item">
                                 <a href="index.html">공지사항</a>
                             </li>
-                            <!-- <li class="breadcrumb-item active"></li> -->
+                            <li class="breadcrumb-item active">공지사항 입력</li>
                         </ol>
 
                         <!-- 페이지 내용 -->
-                        <div id="layoutSidenav_content" style="padding-bottom: 50px;">                            
-                            <table class ="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>번호</th>
-                                        <th>제목</th>
-                                        <th>작성자</th>
-                                        <th>날짜</th>
-                                    </tr>
-                                </thead>
-                                <tbody id = 'notiList'>                                    
-                                </tbody>
+                        <div id="layoutSidenav_content" style="padding-bottom: 50px;">
+                            <table class="table table-striped table-bordered">                                                             
+                                <tr>
+                                    <th>제목</th>                                     <!-- 제목 입력 -->
+                                    <td><input id="title" type="text" class="form-control" name="title" value=""></td>                                    
+                                </tr>         
+                                <tr style="height: 100%;">
+                                    <th>내용</th>                                     <!-- 내용 입력 -->
+                                    <td>
+                                        <textarea name="notibody" id = "notibody" class="summernote"><p></p></textarea>
+                                    </td>
+                                </tr>
                             </table>
-                            <hr/>
-                            <a class="btn btn-primary pull-right" href="/notification/wirte/">글쓰기</a>
 
-                            <div id='paging' style="position: relative; width: 80%; margin: 0 auto; text-align: center; margin-top: 250px;">
-                                <ul class="pagination ">
-                                    <li class="left-etc"><a href="#">&laquo;</a></li>
-                                    <li class="active"><a href="#">1</a></li>
-                                    <li ><a href="#">2</a></li>
-                                    <li><a href="#">3</a></li>
-                                    <li><a href="#">4</a></li>                                   
-                                    <li class="right-etc"><a href="#">&raquo;</a></li>
-                                </ul>
-                            </div>
+                            <a class="btn btn-primary pull-right" id="writeb">입력</a> 
+                            <a class="btn btn-primary pull-right" href="/notification/">뒤로가기</a> 
                         </div>
                     </div>
                     <!-- /.container-fluid -->
@@ -330,6 +343,30 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- 게시글 입력 성공 모달 -->
+                <div
+                    class="modal fade"
+                    id="insertModal"
+                    tabindex="-1"
+                    role="dialog"
+                    aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="insertModalLabel">입력 성공</h5>
+                                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">공지사항을 등록하였습니다.</div>
+                            <div class="modal-footer">
+                                <button id="insertClose"class="btn btn-secondary" type="button" data-dismiss="modal">닫기</button>                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 
             <!-- 로그아웃 버튼 동작 -->
             <script type="text/javascript">
@@ -354,74 +391,62 @@
                             }
                         });
                     });
+
+                    document.getElementById("insertClose").addEventListener('click', function () {  
+                        location.href = "/notification/";
+                    });
             </script>
 
-            <!-- Core plugin JavaScript-->
-            <script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
+            <!-- 입력 버튼 동작 -->
+            <script type="text/javascript">
+                document.getElementById("writeb").addEventListener('click', function () {
+                    // Check the value are all filled
+                    var usn = sessionStorage.getItem('usn');                    
+                    var title = document.getElementById("title").value;                    
+                    var body = $('textarea[name="notibody"]').summernote('code');
 
+                    if(title=="" || body==""){
+                        alert("내용을 입력 후 등록해주세요.");
+                    }else{
+                        //send json
+                        $.ajax({
+                            method: "POST",
+                            url: "/admin/notice/add",
+                            data: {
+                                    "USN": usn,                                
+                                    "TITLE": title,
+                                    "BODY": body,
+                                }
+                            }).done(function (msg) {                                                        
+                                if (msg.message == 0) {
+                                    alert("입력 성공");
+                                    location.href = "/notification/";
+                                }else if (msg.message == 1) {
+                                    console.log(msg);
+                                    alert("입력 실패");
+                                }else{
+                                    console.log(msg);
+                                }
+                            });
+                        }
+                    });
+            </script>
+           
             <!-- 필수 js-->
             <!-- Bootstrap core JavaScript-->
-            <script src="/vendor/jquery/jquery.min.js"></script>
-            <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+            <!-- <script src="/vendor/jquery/jquery.min.js"></script> -->
+            <!-- <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script> -->
 
             <!-- Core plugin JavaScript-->
-            <script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
+            <!-- <script src="/vendor/jquery-easing/jquery.easing.min.js"></script> -->
 
             <!-- Custom scripts for all pages-->
             <script src="/js/sb-admin.min.js"></script>
-            <!-- /. 필수 js -->              
+
+            <!-- /. 필수 js -->    
+
             
-            <!-- pagination 클릭부분-->
-            <script>
-                $('li').click(function() {
-                    $(this).addClass('active').siblings().removeClass('active');
-                });
-                
-                function callFunction() {
-                    var str = ""
-                    var tdArr = new Array(); // 배열 선언
-
-                    // 현재 클릭된 Row(<tr>)
-                    var tr = $(this);
-                    var td = tr.children();
-
-                    // tr.text()는 클릭된 Row 즉 tr에 있는 모든 값을 가져온다.
-                    console.log("클릭한 Row의 모든 데이터 : " + tr.text());
-
-                    // 반복문을 이용해서 배열에 값을 담아 사용할 수 도 있다.
-                    td.each(function(i) {
-                        tdArr.push(td.eq(i).text());
-                    });
-
-                    console.log("배열에 담긴 값 : " + tdArr);
-                    alert(tdArr);
-                    //open_modeling(tdArr)
-                }
-
-            </script>
-            <!-- 계시판 리스트 가져오는 부분-->
-            <script>
-                $.ajax({
-                            method: "POST",
-                            url: "/notification/getList",
-                            dataType: 'json',
-                            data: {                               
-                                }
-                            }).done(function (msg) {
-                                 console.log(msg[0]);
-                                 var html = '';
-                                 var index = msg[i]
-                                 for(var i = 0; i<msg.length; i++){
-                                    html += "<tr>";
-                                    html += "<td id = 'no' >"+msg[i]['NOTICE_NO']+"</td>";
-                                    html += "<td ><a href='/notification/view/"+msg[i]['NOTICE_NO']+"' style='color: black;'>"+msg[i]['NOTICE_TITLE']+"</a>";
-                                    html += "<td>"+msg[i]['USER_NAME'];
-                                    html += "<td>"+msg[i]['NOTICE_DATE'];
-                                    html += "<tr>";
-                                 }
-
-                                 $("#notiList").html(html);
-                            });       
-            </script>            
+            
+           
             </body>
         </html>

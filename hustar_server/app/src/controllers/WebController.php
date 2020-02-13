@@ -304,5 +304,13 @@ final class WebController extends BaseController
         return $response;
     }
 
+    /************************************
+    * 공지사항 게시판 글 작성 페이지
+    **************************************/
+	public function notiWrite(Request $request, Response $response, $args)
+    {
+        $this->view->render($response, 'notificationWrite.html');
+        return $response;
+    }
       
 }

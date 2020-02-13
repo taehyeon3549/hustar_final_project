@@ -56,12 +56,12 @@ $app->get('/admin/notice', 'App\Controller\WebController:memo')
 $app->get('/maps', 'App\Controller\WebController:maps')
     ->setName('maps');
 
-// 출결 정보 표시
-$app->get('/admin/user/attendance/page', 'App\Controller\WebController:userAttendance')
+// 출결 정보 표시2
+$app->get('/admin/user/attendance/page2', 'App\Controller\WebController:userAttendance')
     ->setName('userAttendance');
 
-// 출결 정보 표시 2 
-$app->get('/admin/user/attendance/page2/', 'App\Controller\WebController:userAttendance2')
+// 출결 정보 표시
+$app->get('/admin/user/attendance/page/', 'App\Controller\WebController:userAttendance2')
     ->setName('userAttendance2');
 
 // 휴스타 학생 표시
@@ -86,6 +86,10 @@ $app->post('/notification/getList', 'App\Controller\WebController:getNotiList')
 // 게시글 출력
 $app->get('/notification/view/{index}', 'App\Controller\WebController:notiView')
     ->setName('notificationView');
+
+// 게시글 입력
+$app->get('/notification/wirte/', 'App\Controller\WebController:notiWrite')
+    ->setName('notificationWrite');
 
 /****************************************/
 /*          User Management             */
@@ -195,7 +199,7 @@ $app->get('/notification/view/{index}', 'App\Controller\WebController:notiView')
         ->setName('getTime');
 
     // 지문 출석 체크
-    $app->get('/check/fingerprint/', 'App\Controller\UserManagementController:checkFinger')
+    $app->get('/check/fingerprint/{code}', 'App\Controller\UserManagementController:checkFinger')
         ->setName('CheckFinger');
 
     // 지문 등록

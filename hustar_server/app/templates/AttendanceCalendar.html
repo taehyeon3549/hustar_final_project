@@ -129,7 +129,7 @@
             <!-- 최상단 바 -->
             <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
                 <!-- 왼쪽 상단 마크 -->
-                <a class="navbar-brand mr-1" href="/main">
+                <a class="navbar-brand mr-1" href="/notification/">
                     <img src="/icon/hustar_icon.ico" class="LogoPNG" style="width: 25px;">
                     HUSTAR                    
                 </a>
@@ -200,7 +200,7 @@
                     <!-- 메인 메뉴 -->
                     <!-- 공지사항 -->
                     <li class="nav-item">
-                        <a class="nav-link" href="/maps">
+                        <a class="nav-link" href="/notification/">
                             <i class="fas fa-fw fas fa-bell"></i>                            
                             <span>공지사항</span>
                         </a>                        
@@ -255,7 +255,7 @@
                     </li>
 
                      <!-- 관리자 기능 -->
-                     <li class="nav-item dropdown">
+                     <li class="nav-item dropdown active">
                         <a
                             class="nav-link dropdown-toggle active"
                             href="#"
@@ -271,8 +271,8 @@
                         <!-- 서브 메뉴-->
                         <div class="dropdown-menu" aria-labelledby="pagesDropdown">
                             <a class="dropdown-item" id="adminStudent" href="/myaccount">교육생 현황</a>
-                            <a class="dropdown-item" id="adminNotifi" href="/myaccount">공지사항 입력</a>
-                            <a class="dropdown-item active toggle" id="adminAttend" href="/change_password">출결 상황보기</a>
+                            <a class="dropdown-item" id="adminNotifi" href="/notification/wirte/">공지사항 입력</a>
+                            <a class="dropdown-item active toggle" id="adminAttend" href="/admin/user/attendance/page/">출결 상황보기</a>
                             <a class="dropdown-item" id="adminWhy" href="/change_password">사유서 보기</a>
                             <a class="dropdown-item" id="adminBook" href="/change_password">도서대출 보기</a>
                             <a class="dropdown-item" id="adminTool" href="/change_password">기자재 대출 보기</a>                            
@@ -324,8 +324,7 @@
                         </ol>
 
                         <!-- 페이지 내용 -->
-                        <div id="layoutSidenav_content" style="padding-bottom: 50px;">
-                            페이지 내용
+                        <div id="layoutSidenav_content" style="padding-bottom: 50px;">                            
                             <!-- 달력 출력-->
                             <div id='calendar'></div>
                             <div style='clear:both'></div>                            

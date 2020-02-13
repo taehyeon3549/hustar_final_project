@@ -359,6 +359,8 @@ final class UserManagementModel extends BaseModel
 		$sql = "INSERT INTO `hustar_final`.`ATTENDANCE` 
 				(`ATTENDANCE_USN`, `ATTENDANCE_GTW`) VALUES (?, ?)";
 
+		//print_r("PULL >>> USN : ".$attenInfo['USN']."GTW : ".$attenInfo['GTW']."\n");
+
 		$sth = $this->db->prepare($sql);
 		if($sth->execute(array($attenInfo['USN'], $attenInfo['GTW']))){
 			return 0;
