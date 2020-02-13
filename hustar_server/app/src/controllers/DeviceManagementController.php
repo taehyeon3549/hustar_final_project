@@ -51,7 +51,7 @@ final class DeviceManagementController extends BaseController
 		if(count($deviceCheck) == 0){		// 등록되어 있는 기기가 없다면
 			if(count($userCheck) != 0){		// 등록한 회원이라면				
 				$result['header'] = "Registeration fail";
-				$result['message'] = 3;
+				$result['message'] = "3";
 			}else{
 				// 중간에 빈 SSN 확인
 				$emptyssn = $this->DeviceManagementModel->checkEmptyssn();
@@ -122,6 +122,20 @@ final class DeviceManagementController extends BaseController
 			$result['header'] = "Update Device fail";
 			$result['message'] = "1";
 		}
+		
+		return $response->withStatus(200)
+		->withHeader('Content-Type', 'application/json')
+		->write(json_encode($result, JSON_NUMERIC_CHECK));
+	}
+
+	/*************************************
+	 * 기기 조회
+	 * 
+	 * return	 * 
+	 ************************************/
+	public function deviceList(Request $request, Response $response, $args)
+	{	
+		$result = $this->DeviceManagementModel->showDevice();		
 		
 		return $response->withStatus(200)
 		->withHeader('Content-Type', 'application/json')

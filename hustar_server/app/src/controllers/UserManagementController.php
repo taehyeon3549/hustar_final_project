@@ -787,7 +787,7 @@ public function change_certification_app(Request $request, Response $response, $
 	
 	/*********************************************
 	 * 출결
-	 * 
+	 * MAC이랑 CODE 보냄(what과)
 	 * return 
 	 * 0 : 출근 성공
 	 * 1 : DB 에러
@@ -801,7 +801,8 @@ public function change_certification_app(Request $request, Response $response, $
 		$flag = $args['what'];
 				
 		//이후 MAC 주소 받아서 USN을 찾고 출석 되게끔 만듬
-
+		$code = $request->getParsedBody()['MAC'];
+		
 		// code = 암호
 		$code = $request->getParsedBody()['CODE'];
 		//$userInfo['USN'] = $request->getParsedBody()['USN'];
