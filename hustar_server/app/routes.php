@@ -69,6 +69,10 @@ $app->get('/admin/user/attendance/page/', 'App\Controller\WebController:userAtte
 $app->get('/admin/user/', 'App\Controller\WebController:userList')
     ->setName('userList');
 
+// 회원 기기 등록 표시
+$app->get('/admin/device/', 'App\Controller\WebController:deviceList')
+    ->setName('deviceList');
+
 // 공지사항 게시판
 $app->get('/notification/', 'App\Controller\WebController:notiList')
     ->setName('notification');
@@ -217,11 +221,15 @@ $app->get('/notification/wirte/', 'App\Controller\WebController:notiWrite')
     $app->post('/device/update', 'App\Controller\DeviceManagementController:deviceUpdate')
         ->setName('deviceUpdate');
 
+    // 기기 리스트
+    $app->post('/device/list/', 'App\Controller\DeviceManagementController:deviceList')
+        ->setName('deviceList');
+
     /****************************************/
     /*             관리자 기능               */
     /****************************************/
 
-    // 회원 목록 출력
+    // 회원 목록 출력 - 엑셀
     $app->get('/admin/user/list', 'App\Controller\AdminController:printUserList')
         ->setName('userList');    
 

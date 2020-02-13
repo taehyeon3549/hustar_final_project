@@ -99,6 +99,20 @@ final class DeviceManagementModel extends BaseModel
 		}		
 		return $val;
 	}
+
+	/***********************
+	 * 기기 리스트
+	 ***********************/
+	public function showDevice(){
+		$sql = "SELECT  USER_NAME, DEVICE.* FROM hustar_final.DEVICE
+				LEFT OUTER JOIN USER
+				ON DEVICE_USN = USER.USER_USN;";
+
+		$sth = $this->db->prepare($sql);
+		$sth->execute();
+		$result = $sth->fetchAll();
+		return $result;
+	}
 	
 	//Get sensor list by ssn
 	public function getSensorByssn($sensor){   
