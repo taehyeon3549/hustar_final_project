@@ -97,14 +97,7 @@ $app->post('/notification/getList', 'App\Controller\WebController:getNotiList')
 // 게시글 출력
 $app->get('/notification/view/{index}', 'App\Controller\WebController:notiView')
     ->setName('notificationView');
-
-
-
-
-
-
-
-    
+        
 // 게시글 입력
 $app->get('/notification/wirte/', 'App\Controller\WebController:notiWrite')
     ->setName('notificationWrite');
