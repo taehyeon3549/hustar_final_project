@@ -277,49 +277,27 @@
                                                 </tr>
                                             </thead>
 
-                                            <tbody>
-                                                <tr>
-                                                    <td>Tiger Nixon</td>
-                                                    <td>System Architect</td>
-                                                    <td>Edinburgh</td>
-                                                    <td>61</td>
-                                                    <td>2011/04/25</td>
-                                                    <td>
-                                                        <form method="post" enctype="multipart/form-data" action="upload.php">
-                                                            <input type="file" name="pic"/>
-                                                            <input type="submit" value="Upload"/>
-                                                        </form>
-
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Garrett Winters</td>
-                                                    <td>Accountant</td>
-                                                    <td>Tokyo</td>
-                                                    <td>63</td>
-                                                    <td>2011/04/25
-                                                    </td>
-                                                </tr>
+                                            <tbody id='userList'>
+                                          
 
                                             </tbody>
                                         </table>
+                                        <div id='paging' style="position: relative; width: 80%; margin: 0 auto; text-align: center; margin-top: 250px;">
+                                <ul class="pagination ">
+                                    <li class="left-etc"><a href="#">&laquo;</a></li>
+                                    <li class="active"><a href="#">1</a></li>
+                                    <li ><a href="#">2</a></li>
+                                    <li><a href="#">3</a></li>
+                                    <li><a href="#">4</a></li>                                   
+                                    <li class="right-etc"><a href="#">&raquo;</a></li>
+                                </ul>
+                            </div>
                                     </div>
                                 </div>
 
                             </div>
                         </main>
-                        <footer class="py-4 bg-light mt-auto">
-                            <div class="container-fluid">
-                                <div class="d-flex align-items-center justify-content-between small">
-                                    <div class="text-muted">Copyright &copy; Your Website 2019</div>
-                                    <div>
-                                        <a href="#">Privacy Policy</a>
-                                        &middot;
-                                        <a href="#">Terms &amp; Conditions</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </footer>
+                        
                     </div>
                     <!-- /.content-wrapper -->
 
@@ -456,9 +434,7 @@
                 요청이 실패하면 오류와 상태에 관한 정보가 fail() 메소드로 전달됨. .fail(function (xhr, status,
                 errorThrown) { alert("오류가 발생 오류명" + errorThrown + "<br>상태:" + status); }) //
                 HTTP 요청이 성공하거나 실패하는 것에 상관없이 언제나 always() 메소드가 실행됨. .always(function (xhr, //
-                status) { alert("요청이 완료되었습니다!"); }); </script> 
-                
-                <!-- 엑셀 다운로드 기능 -->
+                status) { alert("요청이 완료되었습니다!"); }); </script> <!-- 엑셀 다운로드 기능 -->
                 <script>
                     function fnExcelReport(id, title) {
                         var tab_text = '<html xmlns:x="urn:schemas-microsoft-com:office:excel">';
@@ -528,6 +504,39 @@
                 <!-- Demo scripts for this page-->
                 <!-- <script src="js/demo/datatables-demo.js"></script> <script
                 src="js/demo/chart-area-demo.js"></script> -->
+
+                <!-- 계시판 리스트 가져오는 부분-->
+                <script>
+                    $
+                        .ajax({method: "POST", url: "/admin/user", dataType: 'json', data: {}})
+                        .done(function (msg) {
+                            console.log(msg[0]);
+                            var html = '';
+                            var index = msg[i]
+                            for (var i = 0; i < msg.length; i++) {
+                                html += "<tr>";
+                                html += "<td id = 'no' >" + msg[i]['NOTICE_NO'] + "</td>";
+                                html += "<td > <a href='/admin/user/" + msg[i]['NOTICE_NO'] + "' style='color: bl" +
+                                        "ack;'>" + msg[i]['NOTICE_TITLE'] + "</a>";
+                                html += "<td>" + msg[i]['USER_NAME'];
+                                html += "<td>" + msg[i]['NOTICE_DATE'];
+                                html += "<tr>";
+                            }
+
+                            $("#notiList").html(html);
+                        });
+                </script>
+
+                <footer class="sticky-footer" style="width: 100%;">
+                    <div class="container my-auto">
+
+                        <div class="copyright text-center my-auto">
+
+                            <span>Copyright © HUSTAR 2020 &nbsp 첨단정보통신융합산업기술원 동내로 70 &nbsp 010-5737-0114</span>
+
+                        </div>
+                    </div>
+                </footer>
 
             </body>
         </html>

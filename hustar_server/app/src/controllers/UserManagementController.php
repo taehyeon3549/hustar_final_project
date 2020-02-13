@@ -75,7 +75,7 @@ final class UserManagementController extends BaseController
 									<table align="center" border="0" cellpadding="0" cellspacing="0" width="600">
 										<tr>
 											<td align="center" bgcolor="#01dea5" style="padding: 40px 0 30px 0;">
-												<img src= "http://54.180.159.207/mail_iconn.png" alt="Thank you for certification!!" height="230" style="display: block;width: 100%"/>
+												<img src= "http://54.180.159.207/icon/hustar.png" alt="Thank you for certification!!" height="230" style="display: block;width: 100%"/>
 											</td>
 										</tr>
 										<tr>
@@ -118,7 +118,7 @@ final class UserManagementController extends BaseController
 				<table align="center" border="0" cellpadding="0" cellspacing="0" width="600">
 					<tr>
 						<td align="center" bgcolor="#01dea5" style="padding: 40px 0 30px 0;">
-							<img src= "http://54.180.159.207/mail_iconn.png" alt="Thank you for certification!!" height="230" style="display: block;width: 100%"/>
+							<img src= "http://54.180.159.207/icon/hustar.png" alt="Thank you for certification!!" height="230" style="display: block;width: 100%"/>
 						</td>
 					</tr>
 					<tr>
