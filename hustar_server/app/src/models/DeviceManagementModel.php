@@ -104,9 +104,10 @@ final class DeviceManagementModel extends BaseModel
 	 * 기기 리스트
 	 ***********************/
 	public function showDevice(){
-		$sql = "SELECT  USER_NAME, DEVICE.* FROM hustar_final.DEVICE
-				LEFT OUTER JOIN USER
-				ON DEVICE_USN = USER.USER_USN;";
+		$sql = "SELECT USER.USER_NAME, USER.USER_USN, DEVICE.*
+				FROM USER
+				LEFT OUTER JOIN DEVICE
+				ON USER_USN = DEVICE_USN;";
 
 		$sth = $this->db->prepare($sql);
 		$sth->execute();
