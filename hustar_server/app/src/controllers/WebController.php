@@ -245,7 +245,7 @@ final class WebController extends BaseController
      }
 
      /**************************
-      * 휴스타 회원 출력
+      * 내 개인 신상카드
       ************************/
       public function userList(Request $request, Response $response, $args)
       {
@@ -254,13 +254,38 @@ final class WebController extends BaseController
       }
 
       /**************************
-      * 테스트 페이지
+      * 내 개인 신상카드 글 가져오기
       ************************/
-      public function TESTPAGE(Request $request, Response $response, $args)
+      public function getuserList(Request $request, Response $response, $args)
       {
-          $this->view->render($response, 'Root.html');
-          return $response;
+          $result = $this->WebModel->getuserList();
+  
+          return $response->withStatus(200)
+          ->withHeader('Content-Type', 'application/json')
+          ->write(json_encode($result, JSON_NUMERIC_CHECK));	
       }
+
+      /**************************
+      * 내 개인 신상카드 글 보기
+      *****************************/
+      public function userView(Request $request, Response $response, $args)
+    {
+        // 호출 index 받고
+        $index = $args['index'];
+       
+        // index에 해당하는 공지사항 가져오기
+        $TITLE = $this->WebModel->getuserView($index)[0]['NOTICE_TITLE'];
+        $BODY = $this->WebModel->getuserView($index)[0]['NOTICE_BODY'];
+        $NAME = $this->WebModel->getuserView($index)[0]['USER_NAME'];
+        $DATE = $this->WebModel->getuserView($index)[0]['NOTICE_DATE'];
+
+        $this->view->render($response, 'notificationView.twig', 
+                            ['index' => $index , 'title' => $TITLE, 
+                            'body' => $BODY , 'name' => $NAME , 'date' => $DATE]);
+        
+        return $response;
+    }
+
 
     /************************************
     * 공지사항 게시판
@@ -313,6 +338,14 @@ final class WebController extends BaseController
         return $response;
     }
 
+     /**************************
+      * 테스트 페이지
+      ************************/
+      public function TESTPAGE(Request $request, Response $response, $args)
+      {
+          $this->view->render($response, 'Root.html');
+          return $response;
+      }
      /************************************
     * 회원 등록 기기 출력 페이지
     **************************************/
