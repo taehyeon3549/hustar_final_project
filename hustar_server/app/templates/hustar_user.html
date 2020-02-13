@@ -277,27 +277,38 @@
                                                 </tr>
                                             </thead>
 
-                                            <tbody id='userList'>
-                                          
-
-                                            </tbody>
+                                            <tbody id='notiList'></tbody>
                                         </table>
-                                        <div id='paging' style="position: relative; width: 80%; margin: 0 auto; text-align: center; margin-top: 250px;">
-                                <ul class="pagination ">
-                                    <li class="left-etc"><a href="#">&laquo;</a></li>
-                                    <li class="active"><a href="#">1</a></li>
-                                    <li ><a href="#">2</a></li>
-                                    <li><a href="#">3</a></li>
-                                    <li><a href="#">4</a></li>                                   
-                                    <li class="right-etc"><a href="#">&raquo;</a></li>
-                                </ul>
-                            </div>
+                                        <div
+                                            id='paging'
+                                            style="position: relative; width: 80%; margin: 0 auto; text-align: center; margin-top: 250px;">
+                                            <ul class="pagination ">
+                                                <li class="left-etc">
+                                                    <a href="#">&laquo;</a>
+                                                </li>
+                                                <li class="active">
+                                                    <a href="#">1</a>
+                                                </li>
+                                                <li >
+                                                    <a href="#">2</a>
+                                                </li>
+                                                <li>
+                                                    <a href="#">3</a>
+                                                </li>
+                                                <li>
+                                                    <a href="#">4</a>
+                                                </li>
+                                                <li class="right-etc">
+                                                    <a href="#">&raquo;</a>
+                                                </li>
+                                            </ul>
+                                        </div>
                                     </div>
                                 </div>
 
                             </div>
                         </main>
-                        
+
                     </div>
                     <!-- /.content-wrapper -->
 
@@ -505,10 +516,41 @@
                 <!-- <script src="js/demo/datatables-demo.js"></script> <script
                 src="js/demo/chart-area-demo.js"></script> -->
 
+                <!-- pagination 클릭부분-->
+                <script>
+                    $('li').click(function () {
+                        $(this)
+                            .addClass('active')
+                            .siblings()
+                            .removeClass('active');
+                    });
+
+                    function callFunction() {
+                        var str = ""
+                        var tdArr = new Array(); // 배열 선언
+
+                        // 현재 클릭된 Row(<tr>)
+                        var tr = $(this);
+                        var td = tr.children();
+
+                        // tr.text()는 클릭된 Row 즉 tr에 있는 모든 값을 가져온다.
+                        console.log("클릭한 Row의 모든 데이터 : " + tr.text());
+
+                        // 반복문을 이용해서 배열에 값을 담아 사용할 수 도 있다.
+                        td.each(function (i) {
+                            tdArr.push(td.eq(i).text());
+                        });
+
+                        console.log("배열에 담긴 값 : " + tdArr);
+                        alert(tdArr);
+                        //open_modeling(tdArr)
+                    }
+                </script>
+
                 <!-- 계시판 리스트 가져오는 부분-->
                 <script>
                     $
-                        .ajax({method: "POST", url: "/admin/user", dataType: 'json', data: {}})
+                        .ajax({method: "POST", url: "/admin/user/getList", dataType: 'json', data: {}})
                         .done(function (msg) {
                             console.log(msg[0]);
                             var html = '';
@@ -516,8 +558,8 @@
                             for (var i = 0; i < msg.length; i++) {
                                 html += "<tr>";
                                 html += "<td id = 'no' >" + msg[i]['NOTICE_NO'] + "</td>";
-                                html += "<td > <a href='/admin/user/" + msg[i]['NOTICE_NO'] + "' style='color: bl" +
-                                        "ack;'>" + msg[i]['NOTICE_TITLE'] + "</a>";
+                                html += "<td > <a href='/admin/user/view" + msg[i]['NOTICE_NO'] +
+                                        "' style='color: black;'>" + msg[i]['NOTICE_TITLE'] + "</a>";
                                 html += "<td>" + msg[i]['USER_NAME'];
                                 html += "<td>" + msg[i]['NOTICE_DATE'];
                                 html += "<tr>";
