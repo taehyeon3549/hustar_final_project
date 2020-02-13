@@ -57,7 +57,7 @@
             <!-- 최상단 바 -->
             <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
                 <!-- 왼쪽 상단 마크 -->
-                <a class="navbar-brand mr-1" href="/main">
+                <a class="navbar-brand mr-1" href="/notification/">
                     <img src="/icon/hustar_icon.ico" class="LogoPNG" style="width: 25px;">
                     HUSTAR                    
                 </a>
@@ -127,8 +127,8 @@
                 <ul class="sidebar navbar-nav">
                     <!-- 메인 메뉴 -->
                     <!-- 공지사항 -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="/maps">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/notification/">
                             <i class="fas fa-fw fas fa-bell"></i>                            
                             <span>공지사항</span>
                         </a>                        
@@ -198,9 +198,10 @@
 
                         <!-- 서브 메뉴-->
                         <div class="dropdown-menu" aria-labelledby="pagesDropdown">
-                            <a class="dropdown-item" id="adminStudent" href="/myaccount">교육생 현황</a>
+                            <h6 class="dropdown-header">교육생 관리</h6>    
+                            <a class="dropdown-item" id="adminStudent" href="/admin/user/">교육생 현황</a>
                             <a class="dropdown-item" id="adminNotifi" href="/myaccount">공지사항 입력</a>
-                            <a class="dropdown-item active toggle" id="adminAttend" href="/change_password">출결 상황보기</a>
+                            <a class="dropdown-item" id="adminAttend" href="/change_password">출결 상황보기</a>
                             <a class="dropdown-item" id="adminWhy" href="/change_password">사유서 보기</a>
                             <a class="dropdown-item" id="adminBook" href="/change_password">도서대출 보기</a>
                             <a class="dropdown-item" id="adminTool" href="/change_password">기자재 대출 보기</a>
@@ -248,14 +249,13 @@
                         <!-- 흰 소제목 바 -->
                         <ol class="breadcrumb mb-4">
                             <li class="breadcrumb-item">
-                                <a href="index.html">공지사항</a>
+                                <a href="/notification/">공지사항</a>
                             </li>
                             <!-- <li class="breadcrumb-item active"></li> -->
                         </ol>
 
                         <!-- 페이지 내용 -->
-                        <div id="layoutSidenav_content" style="padding-bottom: 50px;">
-                            페이지 내용
+                        <div id="layoutSidenav_content" style="padding-bottom: 50px;">                            
                             <table class ="table table-hover">
                                 <thead>
                                     <tr>
@@ -269,8 +269,7 @@
                                 </tbody>
                             </table>
                             <hr/>
-                            
-                            <a class="btn btn-primary pull-right">글쓰기</a>
+                            <a class="btn btn-primary pull-right" href="/notification/wirte/">글쓰기</a>
 
                             <div id='paging' style="position: relative; width: 80%; margin: 0 auto; text-align: center; margin-top: 250px;">
                                 <ul class="pagination ">
