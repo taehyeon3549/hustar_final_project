@@ -102,6 +102,10 @@ $app->get('/notification/view/{index}', 'App\Controller\WebController:notiView')
 $app->get('/notification/wirte/', 'App\Controller\WebController:notiWrite')
     ->setName('notificationWrite');
 
+// 지문 정보 표시
+$app->get('/admin/fingerprint/', 'App\Controller\WebController:fingerprintList')
+    ->setName('fingerprintList');
+
 /****************************************/
 /*          User Management             */
 /****************************************/
@@ -174,6 +178,22 @@ $app->get('/notification/wirte/', 'App\Controller\WebController:notiWrite')
     $app->get('/newpassword/{code}', 'App\Controller\UserManagementController:changePassword_checkUser')
     ->setName('CheckUser');
 
+    // 지문 등록
+    $app->post('/register/fingerprint/', 'App\Controller\UserManagementController:registerFinger')
+        ->setName('registerFinger');
+
+    // 지문 삭제
+    $app->post('/delete/fingerprint/', 'App\Controller\UserManagementController:deleteFinger')
+        ->setName('deleteFinger');
+
+    // 지문 수정
+    $app->post('/update/fingerprint/', 'App\Controller\UserManagementController:updateFinger')
+        ->setName('updateFinger');
+
+    // 지문 리스트
+    $app->post('/fingerprint/list/', 'App\Controller\UserManagementController:fingerList')
+        ->setName('fingerList');
+
     /****************************************/
     /*          certification page          */
     /****************************************/
@@ -197,8 +217,8 @@ $app->get('/notification/wirte/', 'App\Controller\WebController:notiWrite')
     /*               출결                   */
     /****************************************/
 
-    // 출석 체크 - test
-    $app->get('/check/{what}', 'App\Controller\UserManagementController:attendCheck')
+    // 출석 체크
+    $app->post('/check/{what}', 'App\Controller\UserManagementController:attendCheck')
         ->setName('attendCheck');
 
     // 외출 체크
@@ -212,11 +232,6 @@ $app->get('/notification/wirte/', 'App\Controller\WebController:notiWrite')
     // 지문 출석 체크
     $app->get('/check/fingerprint/{code}', 'App\Controller\UserManagementController:checkFinger')
         ->setName('CheckFinger');
-
-    // 지문 등록
-    $app->get('/register/fingerprint/', 'App\Controller\UserManagementController:registerFinger')
-        ->setName('registerFinger');
-
 
     /****************************************/
     /*               기기 관리               */

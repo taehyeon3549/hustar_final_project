@@ -346,12 +346,22 @@ final class WebController extends BaseController
           $this->view->render($response, 'Root.html');
           return $response;
       }
-     /************************************
+    
+    /************************************
     * 회원 등록 기기 출력 페이지
     **************************************/
 	public function deviceList(Request $request, Response $response, $args)
     {
         $this->view->render($response, 'hustar_device.html');
+        return $response;
+    }
+
+    /************************************
+    * 회원 지문 출력 페이지
+    **************************************/
+	public function fingerprintList(Request $request, Response $response, $args)
+    {
+        $this->view->render($response, 'hustar_fingerprint.html');
         return $response;
     }
       

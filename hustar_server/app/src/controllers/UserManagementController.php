@@ -794,86 +794,110 @@ public function change_certification_app(Request $request, Response $response, $
 	 * 2 : 지각
 	 * 3 : 퇴근 성공
 	 * 4 : 아직 수업 시간
+	 * 5 : 해킹 시도
+	 * 6 : 날짜가 안맞음
+	 * 7 : 이미 출석 찍음
+	 * 8 : MAC 주소 미입력 또는 장치 미등록자
 	 ***********************************************/
 	public function attendCheck(Request $request, Response $response, $args)
 	{
 		// 출근/퇴근 0/1
 		$flag = $args['what'];
-				
-		//이후 MAC 주소 받아서 USN을 찾고 출석 되게끔 만듬
-		$code = $request->getParsedBody()['MAC'];
-		
 		// code = 암호
 		$code = $request->getParsedBody()['CODE'];
-		//$userInfo['USN'] = $request->getParsedBody()['USN'];
-		$userInfo['USN'] = "1";
+		//이후 MAC 주소 받아서 USN을 찾고 출석 되게끔 만듬
+		$mac = $request->getParsedBody()['MAC'];
 
-		$day = date("m-d");
-		$time = date("H:i:s");		
+		// MAC 주소로 USN 정보 가져옴
+		$userInfo['USN'] = $this->UserManagementModel->checkMacUsn($mac)[0]['DEVICE_USN'];
+		if($userInfo['USN'] == NULL){
+			$result['header'] = "Please register your device first \n 코드".$code."\n해독".$result['Decode']."\nMAC 주소".$mac;
+			$result['message'] = "8";
+		}else{
 
-		$result['Input'] = $code;
-		
-		// 암호 해독
-		$temp = exec("/var/www/html/hustar/hustar-app/KISA/decode $code");
-		$result['Decode'] = $temp;
+			$info['USN'] = $userInfo['USN'];
+			$timestamp = strtotime("Now");
+			$info['FROM'] = date("yy-m-d", $timestamp);
+			$timestamp = strtotime("+1 days");
+			$info['TO'] = date("yy-m-d", $timestamp);		
 
-		//문자열 자르고
-		$decode = explode(' ', $temp);
+			//이미 출결 했는지 체크
+			if(count($this->UserManagementModel->checkAttendance($info)) == 0){
+				$day = date("m-d");
+				$time = date("H:i:s");		
 
-		//날짜 체크
-		if($decode[1] == explode('-', $day)[0]  && $decode[2] == explode('-', $day)[1]){
-			if( ((int)$decode[5] - (int)date("s")) <= 10 && ((int)$decode[5] - (int)date("s")) >= 0){
-				printf(((int)$decode[5] - (int)date("s")));
-				if($flag == 0){				// 출근
-					// DB 삽입
-					$userInfo['GTW'] = date("yy-m-d H:i:s");
-					$attendInfo = $this->UserManagementModel->AttendanceGTW($userInfo);
-					if($attendInfo == 1){
-						$result['header'] = "DB error";
-						$result['message'] = "1";
-					}
-					
-					if($decode[3] == '10' && (int)$decode[4] <= 10){		//시간 체크					
-						if($attendInfo == 0){
-							$result['header'] = "Go to work";
-							$result['message'] = "0";
-						}else{
-							$result['header'] = "DB error";
-							$result['message'] = "1";
-						}				
+				$result['Input'] = $code;
+				
+				// 암호 해독
+				$temp = exec("/var/www/html/hustar/hustar-app/KISA/decode1 $code");
+				$result['Decode'] = $temp;
+
+				//문자열 자르고
+				$decode = explode(' ', $temp);
+
+				//날짜 체크
+				if($decode[1] == explode('-', $day)[0]  && $decode[2] == explode('-', $day)[1]){
+					if((int)$decode[5] >= 50 &&  (int)date("s") < 10){
+						$nowSecond = (int)date("s") + 60;
 					}else{
-						$result['header'] = "Be late for work";
-						$result['message'] = "2";
-					}				
-				}else if($flag == 1){	// 퇴근		
-					if((int)$decode[3] >= 18){		//시간 체크
-						// DB 수정
-						$userInfo['GTH'] = date("yy-m-d H:i:s");
+						$nowSecond = (int)date("s");
+					}
 
-						$attendInfo = $this->UserManagementModel->AttendanceGTH($userInfo);
-						if($attendInfo == 0){
-							$result['header'] = "Go to Home";
-							$result['message'] = "3";
-						}else{
-							$result['header'] = "DB error";
-							$result['message'] = "1";
+					if( ($nowSecond - (int)$decode[5]) <= 20 && ($nowSecond - (int)$decode[5]) >= 0){
+						//printf(((int)$decode[5] - (int)date("s")));
+						if($flag == 0){				// 출근
+							// DB 삽입
+							$userInfo['GTW'] = date("yy-m-d H:i:s");
+							$attendInfo = $this->UserManagementModel->AttendanceGTW($userInfo);
+							if($attendInfo == 1){
+								$result['header'] = "DB error";
+								$result['message'] = "1";
+							}
+							
+							if($decode[3] == '10' && (int)$decode[4] <= 10){		//시간 체크					
+								if($attendInfo == 0){
+									$result['header'] = "Go to work";
+									$result['message'] = "0";
+								}else{
+									$result['header'] = "DB error";
+									$result['message'] = "1";
+								}				
+							}else{
+								$result['header'] = "Be late for work";
+								$result['message'] = "2";
+							}				
+						}else if($flag == 1){	// 퇴근		
+							if((int)$decode[3] >= 18){		//시간 체크
+								// DB 수정
+								$userInfo['GTH'] = date("yy-m-d H:i:s");
+
+								$attendInfo = $this->UserManagementModel->AttendanceGTH($userInfo);
+								if($attendInfo == 0){
+									$result['header'] = "Go to Home";
+									$result['message'] = "3";
+								}else{
+									$result['header'] = "DB error";
+									$result['message'] = "1";
+								}
+							}else{
+								$result['header'] = "It's still class time";
+								$result['message'] = "4";
+							}
 						}
 					}else{
-						$result['header'] = "It's still class time";
-						$result['message'] = "4";
+						$result['header'] = "Are you hacked now?";
+						$result['message'] = "5";
 					}
+				}else{
+					$result['header'] = "Wrong Date\n 코드".$code."\n해독".$result['Decode'];
+					$result['message'] = "6";
 				}
 			}else{
-				$result['header'] = "Are you hacked now?";
-				$result['message'] = "5";
-			}
-		}else{
-			$result['header'] = "Attendance Check";
-			$result['message'] = "Absent";
+				$result['header'] = "Already attend the class";
+				$result['message'] = "7";
 		}
-		
 		//$result['result'] = exec("/var/www/html/hustar/hustar-app/KISA/decode $name");
-		
+	}
 		return $response->withStatus(200)
 		->withHeader('Content-Type', 'application/json')
 		->write(json_encode($result, JSON_NUMERIC_CHECK));
@@ -955,6 +979,10 @@ public function change_certification_app(Request $request, Response $response, $
 	 * 2 : 지각
 	 * 3 : 퇴근 성공
 	 * 4 : 아직 수업 시간
+	 * 5 : 해킹 시도
+	 * 6 : 날짜가 안맞음
+	 * 7 : 이미 출석 찍음
+	 * 8 : 지문 정보 없거나 지문 등록 안한 유저
 	 ***********************************************/
 	public function checkFinger(Request $request, Response $response, $args)
 	{				
@@ -972,85 +1000,100 @@ public function change_certification_app(Request $request, Response $response, $
 
 		// 지문 index를 이용하여 usn 가져오기		
 		$userInfo['USN'] = $this->UserManagementModel->checkFingerCode($slidecode[0])[0]['AUTHENTICATION_USN'];
-		print_r($this->UserManagementModel->checkFingerCode($slidecode[0])[0]['AUTHENTICATION_USN']);
+		//print_r($this->UserManagementModel->checkFingerCode($slidecode[0])[0]['AUTHENTICATION_USN']);
+		if($userInfo['USN'] == NULL){
+			$result['header'] = "Please register your fingerprint first";
+			$result['message'] = "8";
+		}else{
+			$info['USN'] = $userInfo['USN'];
+			$timestamp = strtotime("Now");
+			$info['FROM'] = date("yy-m-d", $timestamp);
+			$timestamp = strtotime("+1 days");
+			$info['TO'] = date("yy-m-d", $timestamp);		
 
-		// 1번째 값이 암호화된 code
-		$result['Input'] = $slidecode[1];
+			//이미 출결 했는지 체크
+			if(count($this->UserManagementModel->checkAttendance($info)) == 0){
+				// 1번째 값이 암호화된 code
+				$result['Input'] = $slidecode[1];
 
-		$inputcode = $slidecode[1];
+				$inputcode = $slidecode[1];
 
-		// 암호 해독
-		$temp = exec("/var/www/html/hustar/hustar-app/KISA/decode1 $inputcode");
-		
-		$result['Decode'] = $temp;
+				// 암호 해독
+				$temp = exec("/var/www/html/hustar/hustar-app/KISA/decode1 $inputcode");
+				
+				$result['Decode'] = $temp;
 
-		//문자열 자르고
-		$decode = explode(' ', $temp);
+				//문자열 자르고
+				$decode = explode(' ', $temp);
 
-		//날짜 체크
-		if($decode[1] == explode('-', $day)[0]  && $decode[2] == explode('-', $day)[1]){
-			if((int)$decode[5] >= 50 &&  (int)date("s") < 10){
-				$nowSecond = (int)date("s") + 60;
-			}else{
-				$nowSecond = (int)date("s");
-			}
-
-			if( ($nowSecond - (int)$decode[5]) <= 20 && ($nowSecond - (int)$decode[5]) >= 0){
-				//printf(((int)$decode[5] - (int)date("s")));
-				if($slidecode[2] == 1){				// 출근
-					// DB 삽입
-					$userInfo['GTW'] = date("yy-m-d H:i:s");
-					
-					//print_r("PUSH >>> USN : ".$userInfo['USN']."GTW : ".$userInfo['GTW']."\n");
-
-					$attendInfo = $this->UserManagementModel->AttendanceGTW($userInfo);
-
-					if($attendInfo == 1){
-						$result['header'] = "DB error";
-						$result['message'] = "1";
-					}
-					
-					if($decode[3] == '10' && (int)$decode[4] <= 10){		//시간 체크					
-						if($attendInfo == 0){
-							$result['header'] = "Go to work";
-							$result['message'] = "0";
-						}else{
-							$result['header'] = "DB error";
-							$result['message'] = "1";
-						}				
+				//날짜 체크
+				if($decode[1] == explode('-', $day)[0]  && $decode[2] == explode('-', $day)[1]){
+					if((int)$decode[5] >= 50 &&  (int)date("s") < 10){
+						$nowSecond = (int)date("s") + 60;
 					}else{
-						$result['header'] = "Be late for work";
-						$result['message'] = "2";
-					}				
-				}else if($slidecode[2] == 2){	// 퇴근		
-					if((int)$decode[3] >= 18){		//시간 체크
-						// DB 수정
-						$userInfo['GTH'] = date("yy-m-d H:i:s");
+						$nowSecond = (int)date("s");
+					}
 
-						$attendInfo = $this->UserManagementModel->AttendanceGTH($userInfo);
-						if($attendInfo == 0){
-							$result['header'] = "Go to Home";
-							$result['message'] = "3";
-						}else{
-							$result['header'] = "DB error";
-							$result['message'] = "1";
+					if( ($nowSecond - (int)$decode[5]) <= 20 && ($nowSecond - (int)$decode[5]) >= 0){
+						//printf(((int)$decode[5] - (int)date("s")));
+						if($slidecode[2] == 1){				// 출근
+							// DB 삽입
+							$userInfo['GTW'] = date("yy-m-d H:i:s");
+							
+							//print_r("PUSH >>> USN : ".$userInfo['USN']."GTW : ".$userInfo['GTW']."\n");
+
+							$attendInfo = $this->UserManagementModel->AttendanceGTW($userInfo);
+
+							if($attendInfo == 1){
+								$result['header'] = "DB error";
+								$result['message'] = "1";
+							}
+							
+							if($decode[3] == '10' && (int)$decode[4] <= 10){		//시간 체크					
+								if($attendInfo == 0){
+									$result['header'] = "Go to work";
+									$result['message'] = "0";
+								}else{
+									$result['header'] = "DB error";
+									$result['message'] = "1";
+								}				
+							}else{
+								$result['header'] = "Be late for work";
+								$result['message'] = "2";
+							}				
+						}else if($slidecode[2] == 2){	// 퇴근		
+							if((int)$decode[3] >= 18){		//시간 체크
+								// DB 수정
+								$userInfo['GTH'] = date("yy-m-d H:i:s");
+
+								$attendInfo = $this->UserManagementModel->AttendanceGTH($userInfo);
+								if($attendInfo == 0){
+									$result['header'] = "Go to Home";
+									$result['message'] = "3";
+								}else{
+									$result['header'] = "DB error";
+									$result['message'] = "1";
+								}
+							}else{
+								$result['header'] = "It's still class time";
+								$result['message'] = "4";
+							}
 						}
 					}else{
-						$result['header'] = "It's still class time";
-						$result['message'] = "4";
+						$result['header'] = "Are you hacked now?";
+						$result['message'] = "5";
 					}
+				}else{
+					$result['header'] = "Attendance Check";
+					$result['message'] = "Absent";
 				}
 			}else{
-				$result['header'] = "Are you hacked now?";
-				$result['message'] = "5";
+				$result['header'] = "Already attend the class";
+				$result['message'] = "7";
 			}
-		}else{
-			$result['header'] = "Attendance Check";
-			$result['message'] = "Absent";
-		}
-		
-		//$result['result'] = exec("/var/www/html/hustar/hustar-app/KISA/decode $name");
-		
+			
+			//$result['result'] = exec("/var/www/html/hustar/hustar-app/KISA/decode $name");
+	}
 		return $response->withStatus(200)
 		->withHeader('Content-Type', 'application/json')
 		->write(json_encode($result, JSON_NUMERIC_CHECK));
@@ -1066,58 +1109,186 @@ public function change_certification_app(Request $request, Response $response, $
 	 * 2 : 이미 지문 3개 등록 다함
 	 * 3 : DB 저장 실패
 	 */
+	// public function registerFinger(Request $request, Response $response, $args)
+	// {		
+	// 	$user['code'] = $request->getParsedBody()['CODE'];
+	// 	$user['usn'] = $request->getParsedBody()['USN'];
+
+	// 	// code 가 이미 지문 등록이 되어있는지 확인
+	// 	$codecheck = $this->UserManagementModel->checkFingerCode($user);
+	// 	if(count($codecheck) == 0 ){
+	// 		// usn 에 해당하는 지문이 이미 3개가 있는지 확인
+	// 		$usncheck = $this->UserManagementModel->checkFingerUsn($user);
+	// 		// print_r($usncheck[0]['AUTHENTICATION_FINGER_3']);
+
+	// 		if($usncheck[0]['AUTHENTICATION_FINGER_3'] == ""){
+	// 			//지문 등록
+	// 			// 지문 등록 위치 찾아서 등록
+	// 			$userfinger = $this->UserManagementModel->getFingerUsn($user);
+				
+	// 			// print_r($userfinger);
+
+	// 			if($userfinger[0]['AUTHENTICATION_FINGER_1'] == NULL){
+	// 				if(($this->UserManagementModel->registerFinger_1($user)) == 0){
+	// 					$result['header'] = "DB insert success";
+	// 					$result['message'] = "0";
+	// 				}else{
+	// 					$result['header'] = "DB insert fail";
+	// 					$result['message'] = "3";
+	// 				}
+	// 			}else if($userfinger[0]['AUTHENTICATION_FINGER_2'] == NULL){
+	// 				if(($this->UserManagementModel->registerFinger_2($user)) == 0){
+	// 					$result['header'] = "DB insert success";
+	// 					$result['message'] = "0";
+	// 				}else{
+	// 					$result['header'] = "DB insert fail";
+	// 					$result['message'] = "3";
+	// 				}
+	// 			}else if($userfinger[0]['AUTHENTICATION_FINGER_3'] == NULL){
+	// 				if(($this->UserManagementModel->registerFinger_3($user)) == 0){
+	// 					$result['header'] = "DB insert success";
+	// 					$result['message'] = "0";
+	// 				}else{
+	// 					$result['header'] = "DB insert fail";
+	// 					$result['message'] = "3";
+	// 				}
+	// 			}
+	// 		}else{
+	// 			$result['header'] = "Already registed fingerprint";
+	// 			$result['message'] = "2";
+	// 		}
+	// 	}else{
+	// 		$result['header'] = "Already registed index";
+	// 		$result['message'] = "1";
+	// 	}
+
+	// 	return $response->withStatus(200)
+	// 	->withHeader('Content-Type', 'application/json')
+	// 	->write(json_encode($result, JSON_NUMERIC_CHECK));		
+	// }
+
+	/**
+	 * 지문 정보 등록
+	 * 
+	 * return
+	 * 0 : DB 저장 성공
+	 * 1 : 이미 등록되어있는 지문 index 번호
+	 * 2 : 이미 지문 3개 등록 다함
+	 * 3 : DB 저장 실패
+	 */
 	public function registerFinger(Request $request, Response $response, $args)
 	{		
-		$user['code'] = $request->getParsedBody()['CODE'];
+		$user['code1'] = $request->getParsedBody()['CODE1'];
+		$user['code2'] = $request->getParsedBody()['CODE2'];
+		$user['code3'] = $request->getParsedBody()['CODE3'];
+
 		$user['usn'] = $request->getParsedBody()['USN'];
 
+		$checkFlag = 0;
+
 		// code 가 이미 지문 등록이 되어있는지 확인
-		$codecheck = $this->UserManagementModel->checkFingerCode($user);
-		if(count($codecheck) == 0 ){
-			// usn 에 해당하는 지문이 이미 3개가 있는지 확인
-			$usncheck = $this->UserManagementModel->checkFingerUsn($user);
-			// print_r($usncheck[0]['AUTHENTICATION_FINGER_3']);
 
+		for($k = 1; $k<4; $k++){
+			$codeIndex = "code".$k;
+			$codecheck = $this->UserManagementModel->checkFingerCode($user[$codeIndex]);
+
+			if(count($codecheck) > 0){
+				$result['header'] = "Already registed index";
+				$result['message'] = "1";
+				$result['index'] = $user[$codeIndex];			
+				$checkFlag = 1;	
+				break;				
+			}
+		}
+		
+		if($checkFlag != 1){
 			if($usncheck[0]['AUTHENTICATION_FINGER_3'] == ""){
-				//지문 등록
-				// 지문 등록 위치 찾아서 등록
-				$userfinger = $this->UserManagementModel->getFingerUsn($user);
-				
-				// print_r($userfinger);
-
-				if($userfinger[0]['AUTHENTICATION_FINGER_1'] == NULL){
-					if(($this->UserManagementModel->registerFinger_1($user)) == 0){
-						$result['header'] = "DB insert success";
-						$result['message'] = "0";
-					}else{
-						$result['header'] = "DB insert fail";
-						$result['message'] = "3";
-					}
-				}else if($userfinger[0]['AUTHENTICATION_FINGER_2'] == NULL){
-					if(($this->UserManagementModel->registerFinger_2($user)) == 0){
-						$result['header'] = "DB insert success";
-						$result['message'] = "0";
-					}else{
-						$result['header'] = "DB insert fail";
-						$result['message'] = "3";
-					}
-				}else if($userfinger[0]['AUTHENTICATION_FINGER_3'] == NULL){
-					if(($this->UserManagementModel->registerFinger_3($user)) == 0){
-						$result['header'] = "DB insert success";
-						$result['message'] = "0";
-					}else{
-						$result['header'] = "DB insert fail";
-						$result['message'] = "3";
-					}
-				}
+				//지문 등록					
+				if(($this->UserManagementModel->registerFinger($user)) == 0){
+					$result['header'] = "DB insert success";
+					$result['message'] = "0";
+				}else{
+					$result['header'] = "DB insert fail";
+					$result['message'] = "3";
+				}					
 			}else{
 				$result['header'] = "Already registed fingerprint";
 				$result['message'] = "2";
 			}
+		}		
+
+		return $response->withStatus(200)
+		->withHeader('Content-Type', 'application/json')
+		->write(json_encode($result, JSON_NUMERIC_CHECK));		
+	}
+
+	/*************************************
+	 * 지문 정보 조회
+	 * 
+	 * return	 * 
+	 ************************************/
+	public function fingerList(Request $request, Response $response, $args)
+	{	
+		$result = $this->UserManagementModel->showFingerprint();		
+		
+		return $response->withStatus(200)
+		->withHeader('Content-Type', 'application/json')
+		->write(json_encode($result, JSON_NUMERIC_CHECK));
+	}
+
+	/**********************************************
+	 * 지문 삭제
+	 * 
+	 * return
+	 * 0 : DB 삭제 성공
+	 * 1 : DB 삭제 실패
+	 ***********************************************/
+	public function deleteFinger(Request $request, Response $response, $args)
+	{		
+		$user['code'] = $request->getParsedBody()['CODE'];		
+		$user['usn'] = $request->getParsedBody()['USN'];
+
+		$check = $this->UserManagementModel->deleteFinger($user);
+
+		if($check == 0){
+			$result['header'] = "Delete success";
+			$result['message'] = "0";
 		}else{
-			$result['header'] = "Already registed index";
+			$result['header'] = "Delete fail";
 			$result['message'] = "1";
 		}
+		
+
+		return $response->withStatus(200)
+		->withHeader('Content-Type', 'application/json')
+		->write(json_encode($result, JSON_NUMERIC_CHECK));		
+	}
+
+	/**********************************************
+	 * 지문 수정
+	 * 
+	 * return
+	 * 0 : DB 수정 성공
+	 * 1 : DB 수정 실패
+	 ***********************************************/
+	public function updateFinger(Request $request, Response $response, $args)
+	{		
+		$user['code1'] = $request->getParsedBody()['CODE1'];		
+		$user['code2'] = $request->getParsedBody()['CODE2'];
+		$user['code3'] = $request->getParsedBody()['CODE3'];
+
+		$user['usn'] = $request->getParsedBody()['USN'];
+
+		$check = $this->UserManagementModel->updateFinger($user);
+
+		if($check == 0){
+			$result['header'] = "Update success";
+			$result['message'] = "0";
+		}else{
+			$result['header'] = "Update fail";
+			$result['message'] = "1";
+		}
+		
 
 		return $response->withStatus(200)
 		->withHeader('Content-Type', 'application/json')

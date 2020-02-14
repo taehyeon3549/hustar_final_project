@@ -21,7 +21,7 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>기기 등록</title>
+        <title>지문 관리</title>
         
         <!-- Custom fonts for this template-->
         <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -203,8 +203,8 @@
                             <a class="dropdown-item" id="adminBook" href="/change_password">도서대출 보기</a>
                             <a class="dropdown-item" id="adminTool" href="/change_password">기자재 대출 보기</a>        
                             <h6 class="dropdown-header">등록 관리</h6>                    
-                            <a class="dropdown-item active" id="adminDevice" href="/admin/device/">기기등록 현황</a>
-                            <a class="dropdown-item" id="adminFingerprint" href="/admin/fingerprint/">지문등록 현황</a>
+                            <a class="dropdown-item" id="adminDevice" href="/admin/device/">기기등록 현황</a>
+                            <a class="dropdown-item active" id="adminFingerprint" href="/admin/fingerprint/">지문등록 현황</a>
                         </div>
 
                     </li>
@@ -247,7 +247,7 @@
                         <!-- 흰 소제목 바 -->
                         <ol class="breadcrumb mb-4">
                             <li class="breadcrumb-item">
-                                <a href="/admin/device/">기기 관리</a>
+                                <a href="/admin/fingerprint/">지문 관리</a>
                             </li>
                             <!-- <li class="breadcrumb-item active">목록</li> -->
                         </ol>
@@ -262,11 +262,12 @@
                                             <thead>
                                                 <tr>
                                                     <th>교육생 이름</th>
-                                                    <th>기기 MAC 주소</th>
-                                                    <th>등록일</th>
-                                                    <th>기기 등록</th>
-                                                    <th>기기 삭제</th>
-                                                    <th>기기 수정</th>                                                    
+                                                    <th>등록 지문 1</th>
+                                                    <th>등록 지문 2</th>
+                                                    <th>등록 지문 3</th>
+                                                    <th>지문 등록</th>
+                                                    <th>지문 삭제</th>
+                                                    <th>지문 수정</th>                                                    
                                                 </tr>
                                             </thead>
                                             <!-- <tfoot>
@@ -359,14 +360,28 @@
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">기기 등록</h5>
+                                <h5 class="modal-title" id="exampleModalLabel">지문 등록</h5>
                                 <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">×</span>
                                 </button>
                             </div>
                             <div class="modal-body">
-                                등록할 기기의 MAC 주소를 입력하세요
-                                <input type="text" class="form-control" id ="registMac">
+                                등록할 지문의 Index 번호를 입력하세요                                
+                                <div class="form-label-group">
+                                    <input type="text" id="finger1" class="form-control" placeholder="지문 1" required="required" autofocus="autofocus">
+                                    <label for="finger1">지문 1</label>
+                                </div>
+                                <br>
+                                <div class="form-label-group">
+                                    <input type="text" id="finger2" class="form-control" placeholder="지문 2" required="required" autofocus="autofocus">
+                                    <label for="finger2">지문 2</label>
+                                </div>
+                                <br>
+                                <div class="form-label-group">
+                                    <input type="text" id="finger3" class="form-control" placeholder="지문 3" required="required" autofocus="autofocus">
+                                    <label for="finger3">지문 3</label>
+                                </div>
+
                                 <input id ="tt" style='display: none'></input>
                             </div>
                             <div class="modal-footer">
@@ -377,7 +392,7 @@
                     </div>
                 </div>
 
-                <!-- 기기 삭제 모달 -->
+                <!-- 지문 삭제 모달 -->
                 <div
                     class="modal fade"
                     id="deleteModal"
@@ -388,13 +403,13 @@
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">기기 삭제</h5>
+                                <h5 class="modal-title" id="exampleModalLabel">지문 삭제</h5>
                                 <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">×</span>
                                 </button>
                             </div>
                             <div class="modal-body">
-                                기기를 삭제하시겠습니까?                                
+                                지문 정보를 삭제하시겠습니까?                                
                                 <input id ="tt" style='display: none'></input>
                                 <input id ="kk" style='display: none'></input>
                             </div>
@@ -406,7 +421,7 @@
                     </div>
                 </div>
 
-                <!-- 기기 수정 모달 -->
+                <!-- 지문 수정 모달 -->
                 <div
                     class="modal fade"
                     id="updateModal"
@@ -417,14 +432,27 @@
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">기기 수정</h5>
+                                <h5 class="modal-title" id="exampleModalLabel">지문 수정</h5>
                                 <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">×</span>
                                 </button>
                             </div>
                             <div class="modal-body">
-                                변경할 기기의 MAC 주소를 입력해주세요
-                                <input type="text" class="form-control" id ="newMac">
+                                변경할 지문 정보를 입력해주세요
+                                <div class="form-label-group">
+                                    <input type="text" id="refinger1" class="form-control" placeholder="지문 1" required="required" autofocus="autofocus">
+                                    <label for="finger1">지문 1</label>
+                                </div>
+                                <br>
+                                <div class="form-label-group">
+                                    <input type="text" id="refinger2" class="form-control" placeholder="지문 2" required="required" autofocus="autofocus">
+                                    <label for="finger2">지문 2</label>
+                                </div>
+                                <br>
+                                <div class="form-label-group">
+                                    <input type="text" id="refinger3" class="form-control" placeholder="지문 3" required="required" autofocus="autofocus">
+                                    <label for="finger3">지문 3</label>
+                                </div>
                                 <input id ="tt" style='display: none'></input>
                             </div>
                             <div class="modal-footer">
@@ -460,30 +488,34 @@
                     });
             </script>
 
-             <!-- 등록 버튼 동작 -->
+             <!-- 지문 등록 버튼 동작 -->
              <script type="text/javascript">
                 document.getElementById("registb").addEventListener('click', function () {
                     // Check the value are all filled
                     var usn = document.getElementById("tt").value;     
-                    var mac = document.getElementById("registMac").value;                    
+                    var finger1 = document.getElementById("finger1").value; 
+                    var finger2 = document.getElementById("finger2").value; 
+                    var finger3 = document.getElementById("finger3").value; 
                     //send json
                     $.ajax({
                         method: "POST",
-                        url: "/device/register",
+                        url: "/register/fingerprint/",
                         data: {
                                 "USN": usn,
-                                "MAC": mac
+                                "CODE1": finger1,
+                                "CODE2": finger2,
+                                "CODE3": finger3
                             }
                         }).done(function (msg) {
                             if (msg.message == 0) {                                
                                 alert("등록 성공");
-                                location.href = "/admin/device/";
+                                location.href = "/admin/fingerprint/";
                             }else if (msg.message == 1) {
-                                alert("이미 등록된 기기 입니다.");
+                                alert("지문 "+msg.index+"는 이미 등록된 지문 입니다.");
                             }else if (msg.message == 2) {
-                                alert("등록 실패");
+                                alert("지문 3개다 등록 되어있습니다.");
                             }else if(msg.message == 3){
-                                alert("이미 기기 등록한 회원입니다.");
+                                alert("DB 입력 실패");
                             }
                         });
                     });
@@ -494,22 +526,22 @@
                 document.getElementById("deleteb").addEventListener('click', function () {
                     // Check the value are all filled
                     var usn = document.getElementById("tt").value;     
-                    var mac = document.getElementById("kk").value;
+                    var finger = document.getElementById("kk").value;
                     //send json
                     $.ajax({
                         method: "POST",
-                        url: "/device/deregistration",
+                        url: "/delete/fingerprint/",
                         data: {
                                 "USN": usn,
-                                "MAC": mac
+                                "CODE": finger
                             }
                         }).done(function (msg) {
                             if (msg.message == 0) {                                
                                 alert("삭제 되었습니다.");
-                                location.href = "/admin/device/";
+                                location.href = "/admin/fingerprint/";
                             }else if (msg.message == 1) {
                                 alert("삭제 실패 하였습니다.");
-                                location.href = "/admin/device/";
+                                location.href = "/admin/fingerprint/";
                             }
                         });
                     });
@@ -520,22 +552,27 @@
                 document.getElementById("updateb").addEventListener('click', function () {
                     // Check the value are all filled
                     var usn = document.getElementById("tt").value;     
-                    var mac = document.getElementById("newMac").value;
+                    var code1 = document.getElementById("refinger1").value;
+                    var code2 = document.getElementById("refinger2").value;
+                    var code3 = document.getElementById("refinger3").value;
+                    
                     //send json
                     $.ajax({
                         method: "POST",
-                        url: "/device/update",
+                        url: "/update/fingerprint/",
                         data: {
                                 "USN": usn,
-                                "MAC": mac
+                                "CODE1": code1,
+                                "CODE2": code2,
+                                "CODE3": code3
                             }
                         }).done(function (msg) {
                             if (msg.message == 0) {                                
                                 alert("수정 되었습니다.");
-                                location.href = "/admin/device/";
+                                location.href = "/admin/fingerprint/";
                             }else if (msg.message == 1) {
                                 alert("수정 실패 하였습니다.");
-                                location.href = "/admin/device/";
+                                location.href = "/admin/fingerprint/";
                             }
                         });
                     });
@@ -562,7 +599,7 @@
             <script>
                 $.ajax({
                     method: "post",
-                    url: "/device/list/",
+                    url: "/fingerprint/list/",
                     dataType: 'json',
                     data: {                               
                         }
@@ -573,21 +610,24 @@
                             html += "<tr>";
                             html += "<td id = 'no' >"+msg[i]['USER_NAME']+"</td>";
                               
-                            if(msg[i]['DEVICE_MAC'] == null){
-                                msg[i]['DEVICE_MAC'] = "-";
-                                msg[i]['DEVICE_REGISTER_DAY'] = "-";
+                            if(msg[i]['AUTHENTICATION_FINGER_1'] == null){
+                                msg[i]['AUTHENTICATION_FINGER_1'] = "-";
+                                msg[i]['AUTHENTICATION_FINGER_2'] = "-";
+                                msg[i]['AUTHENTICATION_FINGER_3'] = "-";
 
                                 html += "<td style='display: none'>"+msg[i]['USER_USN']+"</td>";
-                                html += "<td >"+msg[i]['DEVICE_MAC']+"</td>";
-                                html += "<td>"+msg[i]['DEVICE_REGISTER_DAY']+"</td>";                                    
+                                html += "<td >"+msg[i]['AUTHENTICATION_FINGER_1']+"</td>";
+                                html += "<td>"+msg[i]['AUTHENTICATION_FINGER_2']+"</td>";                                    
+                                html += "<td>"+msg[i]['AUTHENTICATION_FINGER_3']+"</td>";   
                                 html += "<td>"+"<input type='submit' class='btn btn-success'  name = 'insertb' id = 'insertb' data-toggle='modal' data-target='#registModal'style='width: 80%;'' value='등록'>"+"</td>";
                                 html += "<td>"+"<input type='submit' class='btn btn-danger' disabled='disabled' id = 'eraseb' style='width: 80%;'' value='삭제' disable>"+"</td>";
                                 html += "<td>"+"<input type='submit' class='btn btn-secondary' disabled='disabled' id = 'changeb' style='width: 80%;'' value='수정' disable>"+"</td>";
                                 html += "<tr>";
                             }else{
                                 html += "<td style='display: none'>"+msg[i]['USER_USN']+"</td>";
-                                html += "<td >"+msg[i]['DEVICE_MAC']+"</td>";
-                                html += "<td>"+msg[i]['DEVICE_REGISTER_DAY']+"</td>";                                    
+                                html += "<td >"+msg[i]['AUTHENTICATION_FINGER_1']+"</td>";
+                                html += "<td>"+msg[i]['AUTHENTICATION_FINGER_2']+"</td>";                                    
+                                html += "<td>"+msg[i]['AUTHENTICATION_FINGER_3']+"</td>";                                     
                                 html += "<td>"+"<input type='submit' class='btn btn-success' disabled='disabled' id = 'insertb' style='width: 80%;'' value='등록'>"+"</td>";
                                 html += "<td>"+"<input type='submit' class='btn btn-danger' id = 'eraseb' data-toggle='modal' data-target='#deleteModal' style='width: 80%;'' value='삭제'>"+"</td>";
                                 html += "<td>"+"<input type='submit' class='btn btn-secondary' id = 'changeb' data-toggle='modal' data-target='#updateModal' style='width: 80%;'' value='수정'>"+"</td>";
@@ -646,10 +686,10 @@
                         var td = tr.children();
                         
                         var userid = td.eq(1).text();
-                        var userdevice = td.eq(2).text();                        
+                        var userfinger = td.eq(2).text();                        
 
                         document.getElementById("tt").value = userid;
-                        document.getElementById("kk").value = userdevice;                             
+                        document.getElementById("kk").value = userfinger;                        
                     });
                     
                     $(document).on('click', '#changeb', function(){
@@ -661,10 +701,14 @@
                         var td = tr.children();
                         
                         var userid = td.eq(1).text();
-                        var userdevice = td.eq(2).text();                        
+                        var userfinger1 = td.eq(2).text();                  
+                        var userfinger2 = td.eq(3).text();                        
+                        var userfinger3 = td.eq(4).text();                        
 
                         document.getElementById("tt").value = userid;
-                        document.getElementById("newMac").value = userdevice;
+                        document.getElementById("refinger1").value = userfinger1;
+                        document.getElementById("refinger2").value = userfinger2;
+                        document.getElementById("refinger3").value = userfinger3;
                     });
                 </script>
             </body>

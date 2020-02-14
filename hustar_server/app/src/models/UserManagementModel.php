@@ -452,12 +452,13 @@ public function getUserName(){
 /**********************
  * 지문 index 체크
  **********************/
-public function checkFingerCode($user){
+public function checkFingerCode($index){
 	$sql = "SELECT * FROM hustar_final.AUTHENTICATION
 			WHERE AUTHENTICATION_FINGER_1 = ? OR AUTHENTICATION_FINGER_2 = ? OR AUTHENTICATION_FINGER_3 = ?;";
 			
 	$sth = $this->db->prepare($sql);
-	$sth->execute(array($user,$user,$user));
+	$sth->execute(array($index,$index,$index));
+
 	$result = $sth->fetchAll();
 	
 	return $result;
@@ -494,7 +495,54 @@ public function getFingerUsn($user){
 }
 
 /**********************
- * 지문 등록  1
+ * 지문 등록 
+ **********************/
+public function registerFinger($user){
+	$sql = "INSERT INTO `hustar_final`.`AUTHENTICATION` (`AUTHENTICATION_USN`, `AUTHENTICATION_FINGER_1`,`AUTHENTICATION_FINGER_2`,`AUTHENTICATION_FINGER_3`) 
+			VALUES (?, ?, ?, ?);";
+			
+	$sth = $this->db->prepare($sql);
+	if($sth->execute(array($user['usn'],$user['code1'],$user['code2'],$user['code3']))){
+		return 0;
+	}else{
+		return 1;
+	}	
+}
+
+/**********************
+ * 지문 삭제
+ **********************/
+public function deleteFinger($user){
+	$sql = "DELETE FROM `hustar_final`.`AUTHENTICATION` 
+			WHERE (`AUTHENTICATION_USN` = ?) AND (`AUTHENTICATION_FINGER_1` = ?);";
+			
+	$sth = $this->db->prepare($sql);
+	if($sth->execute(array($user['usn'],$user['code']))){
+		return 0;
+	}else{
+		return 1;
+	}	
+}
+
+/**********************
+ * 지문 수정
+ **********************/
+public function updateFinger($user){
+	$sql = "UPDATE `hustar_final`.`AUTHENTICATION` 
+			SET `AUTHENTICATION_FINGER_1` = ?, `AUTHENTICATION_FINGER_2` = ?, `AUTHENTICATION_FINGER_3` = ? 
+			WHERE (`AUTHENTICATION_USN` = ?);";
+			
+	$sth = $this->db->prepare($sql);
+	if($sth->execute(array($user['code1'],$user['code2'],$user['code3'],$user['usn']))){
+		return 0;
+	}else{
+		return 1;
+	}	
+}
+
+
+/**********************
+ * 지문 등록   1
  **********************/
 public function registerFinger_1($user){
 	$sql = "INSERT INTO `hustar_final`.`AUTHENTICATION` (`AUTHENTICATION_USN`, `AUTHENTICATION_FINGER_1`) 
@@ -537,5 +585,52 @@ public function registerFinger_3($user){
 		return 1;
 	}	
 }
+
+/***********************
+ * 지문 리스트
+ ***********************/
+public function showFingerprint(){
+	$sql = "SELECT USER.USER_NAME, USER.USER_USN, AUTHENTICATION.*
+			FROM USER
+			LEFT OUTER JOIN AUTHENTICATION
+			ON USER_USN = AUTHENTICATION_USN;";
+
+	$sth = $this->db->prepare($sql);
+	$sth->execute();
+	$result = $sth->fetchAll();
+	return $result;
+}
+
+/**********************
+ * Mac 주소에 해당하는 USN
+ **********************/
+public function checkMacUsn($mac){
+	$sql = "SELECT DEVICE_USN
+			FROM DEVICE
+			WHERE DEVICE_MAC  = ?;";
+			
+	$sth = $this->db->prepare($sql);
+	$sth->execute(array($mac));
+	$result = $sth->fetchAll();
+	
+	return $result;
+}
+
+/*****************************
+ * 오늘 날짜 출근 찍었는지 확인
+ ******************************/
+public function checkAttendance($info){
+	$sql = "SELECT * FROM ATTENDANCE
+			WHERE ATTENDANCE_USN = ? AND 
+			ATTENDANCE_GTW >= ? AND 
+			ATTENDANCE_GTW < ?;";
+			
+	$sth = $this->db->prepare($sql);
+	$sth->execute(array($info['USN'], $info['FROM'], $info['TO']));
+	$result = $sth->fetchAll();
+	
+	return $result;
+}
+
 
 }
