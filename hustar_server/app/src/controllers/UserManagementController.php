@@ -1004,15 +1004,7 @@ public function change_certification_app(Request $request, Response $response, $
 		if($userInfo['USN'] == NULL){
 			$result['header'] = "Please register your fingerprint first";
 			$result['message'] = "8";
-		}else{
-			$info['USN'] = $userInfo['USN'];
-			$timestamp = strtotime("Now");
-			$info['FROM'] = date("yy-m-d", $timestamp);
-			$timestamp = strtotime("+1 days");
-			$info['TO'] = date("yy-m-d", $timestamp);		
-
-			//이미 출결 했는지 체크
-			if(count($this->UserManagementModel->checkAttendance($info)) == 0){
+		}else{						
 				// 1번째 값이 암호화된 code
 				$result['Input'] = $slidecode[1];
 
@@ -1037,30 +1029,41 @@ public function change_certification_app(Request $request, Response $response, $
 					if( ($nowSecond - (int)$decode[5]) <= 20 && ($nowSecond - (int)$decode[5]) >= 0){
 						//printf(((int)$decode[5] - (int)date("s")));
 						if($slidecode[2] == 1){				// 출근
-							// DB 삽입
-							$userInfo['GTW'] = date("yy-m-d H:i:s");
-							
-							//print_r("PUSH >>> USN : ".$userInfo['USN']."GTW : ".$userInfo['GTW']."\n");
+							$info['USN'] = $userInfo['USN'];
+							$timestamp = strtotime("Now");
+							$info['FROM'] = date("yy-m-d", $timestamp);
+							$timestamp = strtotime("+1 days");
+							$info['TO'] = date("yy-m-d", $timestamp);		
 
-							$attendInfo = $this->UserManagementModel->AttendanceGTW($userInfo);
+							//이미 출결 했는지 체크
+							if(count($this->UserManagementModel->checkAttendance($info)) == 0){
+								// DB 삽입
+								$userInfo['GTW'] = date("yy-m-d H:i:s");
+											
+								//print_r("PUSH >>> USN : ".$userInfo['USN']."GTW : ".$userInfo['GTW']."\n");
+								$attendInfo = $this->UserManagementModel->AttendanceGTW($userInfo);
 
-							if($attendInfo == 1){
-								$result['header'] = "DB error";
-								$result['message'] = "1";
-							}
-							
-							if($decode[3] == '10' && (int)$decode[4] <= 10){		//시간 체크					
-								if($attendInfo == 0){
-									$result['header'] = "Go to work";
-									$result['message'] = "0";
-								}else{
+								if($attendInfo == 1){
 									$result['header'] = "DB error";
 									$result['message'] = "1";
-								}				
+								}
+											
+								if($decode[3] == '10' && (int)$decode[4] <= 10){		//시간 체크					
+									if($attendInfo == 0){
+										$result['header'] = "Go to work";
+										$result['message'] = "0";
+									}else{
+										$result['header'] = "DB error";
+										$result['message'] = "1";
+									}				
+								}else{
+									$result['header'] = "Be late for work";
+									$result['message'] = "2";
+								}	
 							}else{
-								$result['header'] = "Be late for work";
-								$result['message'] = "2";
-							}				
+								$result['header'] = "Already attend the class";
+								$result['message'] = "7";
+							}			
 						}else if($slidecode[2] == 2){	// 퇴근		
 							if((int)$decode[3] >= 18){		//시간 체크
 								// DB 수정
@@ -1087,10 +1090,11 @@ public function change_certification_app(Request $request, Response $response, $
 					$result['header'] = "Attendance Check";
 					$result['message'] = "Absent";
 				}
-			}else{
-				$result['header'] = "Already attend the class";
-				$result['message'] = "7";
-			}
+			
+			// else{
+			// 	$result['header'] = "Already attend the class";
+			// 	$result['message'] = "7";
+			// }
 			
 			//$result['result'] = exec("/var/www/html/hustar/hustar-app/KISA/decode $name");
 	}
