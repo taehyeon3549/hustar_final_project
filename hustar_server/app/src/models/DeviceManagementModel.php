@@ -115,6 +115,21 @@ final class DeviceManagementModel extends BaseModel
 		return $result;
 	}
 	
+	/***********************
+	 * 기기 등록 체크
+	 ***********************/
+	public function deviceCheck($userInfo){
+		$sql = "SELECT *
+				FROM DEVICE
+				WHERE DEVICE_USN = ?;";
+
+		$sth = $this->db->prepare($sql);
+		$sth->execute(array($userInfo['USN']));
+		$result = $sth->fetchAll();
+		return $result;
+	}
+
+
 	//Get sensor list by ssn
 	public function getSensorByssn($sensor){   
 		$sql = "SELECT s_name FROM Sensor WHERE SSN = ? ";

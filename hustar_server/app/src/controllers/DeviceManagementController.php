@@ -141,6 +141,33 @@ final class DeviceManagementController extends BaseController
 		->withHeader('Content-Type', 'application/json')
 		->write(json_encode($result, JSON_NUMERIC_CHECK));
 	}
+
+	/*************************************
+	 * 기기 등록 유무 체크
+	 * 
+	 * return
+	 * 0 : 기기 등록 되어있음
+	 * 1 : 기기 등록 안되어 있음
+	 ************************************/
+	public function deviceCheck(Request $request, Response $response, $args)
+	{	
+		$userInfo['USN'] = $request->getParsedBody()['USN'];
+
+		$check = $this->DeviceManagementModel->deviceCheck($userInfo);		
+		
+		if(count($check) != 0){
+			$result['header'] = "Device registed";
+			$result['message'] = "0";
+		}else{
+			$result['header'] = "Device not registed";
+			$result['message'] = "1";
+		}
+		return $response->withStatus(200)
+		->withHeader('Content-Type', 'application/json')
+		->write(json_encode($result, JSON_NUMERIC_CHECK));
+	}
+
+
 	
 	//Deregistratioin sensor info	
 	//0: Delete sensor success, 1: Delete Air sensor value fail, 2: Delete Polar sensor value fail

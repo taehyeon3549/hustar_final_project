@@ -672,11 +672,11 @@ public function getAttendanceDate(Request $request, Response $response, $args)
     public function getAttendanceCount(Request $request, Response $response, $args)
     {
          // 년, 월, 일별 수업시간 입력 받음
-        //  $year = $request->getParsedBody()['YEAR'];
-        //  $month = $request->getParsedBody()['MONTH'];
+         $year = $request->getParsedBody()['YEAR'];
+         $month = $request->getParsedBody()['MONTH'];
         //  $ctime = $request->getParsedBody()['CLASSTIME'];
-        $year = "2020";
-        $month = "2";
+        // $year = "2020";
+        // $month = "2";
 
         $time = mktime(0,0,0,$month, 1, $year);
 

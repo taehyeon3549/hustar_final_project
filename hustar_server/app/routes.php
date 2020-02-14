@@ -253,6 +253,10 @@ $app->get('/admin/fingerprint/', 'App\Controller\WebController:fingerprintList')
     $app->post('/device/list/', 'App\Controller\DeviceManagementController:deviceList')
         ->setName('deviceList');
 
+    // 기기 등록 유무 체크
+    $app->post('/device/check/', 'App\Controller\DeviceManagementController:deviceCheck')
+        ->setName('deviceCheck');
+
     /****************************************/
     /*             관리자 기능               */
     /****************************************/
