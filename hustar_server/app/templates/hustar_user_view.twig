@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="kr">
+
+    <head>       
+        <!-- 로그인 SESSION이 없으면 로그인 페이지로 이동 -->
+        <script>
+            if (sessionStorage.getItem('usn') == null) {
+                location.href = "/";
+            }
+        </script>
+
+        <link
+            rel="stylesheet"
+            href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"/>
+
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+        <title>공지 사항</title>
+        
+        <!-- Custom fonts for this template-->
+        <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+        
+        <!-- Page level plugin CSS-->
+        <link href="/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
+      
+        <!-- <link href="/css/bootstrap/bootstrap.css" rel="stylesheet"> -->        
+
+        <!-- Tab 왼쪽 아이콘-->
+        <link rel="shortcut icon" href="/icon/hustar.ico" type="image/x-icon"/>       
+
+        <!-- 팝업 테이블 css -->
+        <style>
+            .mytable {
+                border-collapse: collapse;
+            }
+
+            .mytable td,
+            .mytable th {
+                border: 1px solid black;
+            }
+        </style>       
+
+        <!-- include jquery -->
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js"></script>
+
+        <!-- include libs stylesheets -->
+        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.css" />
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.js"></script>
+        <script src="http://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.js"></script>
+
+        <!--  summernote 추가-->
+        <link rel="stylesheet" href="/js/dist/summernote-bs4.css">
+        <script type="text/javascript" src="/js/dist/summernote-bs4.js"></script>
+
+        <link rel="stylesheet" href="/js/dist/example.css">
+        
+        <script type="text/javascript">
+            $(document).ready(function() {
+              $('.summernote').summernote({
+                height: 700,
+                minHeight: 500,
+                maxHeight: 1000,
+                lang : 'ko-KR'
+              });
+            });
+          </script>       
+
+          <!-- Custom styles for this template-->
+        <link href="/css/sb-admin.css" rel="stylesheet">
+    
+    </head>
+
+    <body id="page-top" style="margin-top: 0px;margin-bottom: 0px;">
+            <!-- 최상단 바 -->
+            <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
+                <!-- 왼쪽 상단 마크 -->
+                <a class="navbar-brand mr-1" href="/notification/">
+                    <img src="/icon/hustar_icon.ico" class="LogoPNG" style="width: 25px;">
+                    HUSTAR                    
+                </a>
+                <!-- 메뉴 숨김/보이기 버튼-->
+                <button
+                    class="btn btn-link btn-sm text-white order-1 order-sm-0"
+                    id="sidebarToggle"
+                    href="#">
+                    <i class="fas fa-bars"></i>
+                </button>
+
+                <!-- Navbar 검색바 - 현재 검색기능 삭제 -->
+                <form
+                    class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
+                    <div class="input-group">
+                        <div class="input-group-append">
+                            <i>
+                                <!-- 삭제부분 -->
+                            </i>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- 우측 상단 user 아이콘 메뉴 -->
+                <ul class="navbar-nav ml-auto ml-md-0">
+                    <!-- 회원 아이콘 -->
+                    <li class="nav-item dropdown no-arrow">
+                        <a
+                            class="nav-link dropdown-toggle"
+                            href="#"
+                            id="userDropdown"
+                            role="button"
+                            data-toggle="dropdown"
+                            aria-haspopup="true"
+                            aria-expanded="false">
+                            <i class="fas fa-user-circle fa-fw"></i>
+                        </a>
+
+                        <!-- 메뉴 박스 -->
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                            <!-- 1번 메뉴-->
+                            <a class="dropdown-name">
+                                <script>
+                                    var name = sessionStorage.getItem('name');
+                                    document.write(name);
+                                </script>
+                            </a>
+                            <!-- 경계선 -->
+                            <div class="dropdown-divider"></div>
+                            <!-- 2번 선택 메뉴 -->
+                            <a
+                                class="dropdown-item"
+                                id="signoutb"
+                                href="#"
+                                data-toggle="modal"
+                                data-target="#logoutModal">로그아웃
+                            </a>
+                        </div>
+
+                    </li>
+                </ul>
+            </nav>
+
+            <div id="wrapper">
+
+                <!-- 왼쪽 사이드바 -->
+                <ul class="sidebar navbar-nav">
+                    <!-- 메인 메뉴 -->
+                    <!-- 공지사항 -->
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/notification/">
+                            <i class="fas fa-fw fas fa-bell"></i>                            
+                            <span>공지사항</span>
+                        </a>                        
+                    </li>
+
+                    <!-- 출결 -->
+                    <li class="nav-item dropdown">
+                        <a
+                            class="nav-link dropdown-toggle"
+                            href="#"
+                            id="pagesDropdown"
+                            role="button"
+                            data-toggle="dropdown"
+                            aria-haspopup="true"
+                            aria-expanded="false">
+                            <i class="fas fa-fw fa-chart-area"></i>
+                            <span>출결</span>
+                        </a>
+
+                        <!-- 서브 메뉴-->
+                        <div class="dropdown-menu" aria-labelledby="pagesDropdown">
+                            <h6 class="dropdown-header">출결</h6>
+                            <a class="dropdown-item" id="myAttend" href="/PI">내 출결 상황</a>         
+                            <h6 class="dropdown-header">사유서</h6>               
+                            <a class="dropdown-item" id="myWhyWrite" href="/PI">사유서 작성</a>
+                            <a class="dropdown-item" id="myWhy" href="/PI">내 사유서</a>
+                        </div>
+                    </li>
+
+                    <!-- 도서대출  -->
+                    <li class="nav-item ">
+                        <a class="nav-link" href="/charts">
+                            <i class="fas fa-fw fa-book-open"></i>
+                            <span>도서 대출</span>
+                        </a>
+                    </li>
+
+                    <!-- 기자재 대출  -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="/maps">
+                            <i class="fas fa-fw fa-box-open"></i>
+                            <span>기자재 대출</span>
+                        </a>
+                    </li>
+
+                    <!-- 개인 신상 수정  -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="/maps">
+                            <i class="fas fa-fw fa-file"></i>
+                            <span>내 신상 기록 카드</span>
+                        </a>
+                    </li>
+
+                     <!-- 관리자 기능 -->
+                     <li class="nav-item dropdown">
+                        <a
+                            class="nav-link dropdown-toggle active"
+                            href="#"
+                            id="pagesDropdown"
+                            role="button"
+                            data-toggle="dropdown"
+                            aria-haspopup="true"
+                            aria-expanded="false">
+                            <i class="fas fa-fw fa-tools"></i>
+                            <span>관리자 기능</span>
+                        </a>
+
+                        <!-- 서브 메뉴-->
+                        <div class="dropdown-menu" aria-labelledby="pagesDropdown">
+                            <a class="dropdown-item" id="adminStudent" href="/myaccount">교육생 현황</a>
+                            <a class="dropdown-item" id="adminNotifi" href="/notification/wirte/">공지사항 입력</a>
+                            <a class="dropdown-item active toggle" id="adminAttend" href="/admin/user/attendance/page/">출결 상황보기</a>
+                            <a class="dropdown-item" id="adminWhy" href="/change_password">사유서 보기</a>
+                            <a class="dropdown-item" id="adminBook" href="/change_password">도서대출 보기</a>
+                            <a class="dropdown-item" id="adminTool" href="/change_password">기자재 대출 보기</a>                            
+                            <h6 class="dropdown-header">기기 관리</h6>                    
+                            <a class="dropdown-item" id="adminDevice" href="/admin/device/">기기등록 현황</a>
+                        </div>
+
+                    </li>
+
+                    <!-- 내 계정관리 -->
+                    <li class="nav-item dropdown">
+                        <a
+                            class="nav-link dropdown-toggle"
+                            href="#"
+                            id="pagesDropdown"
+                            role="button"
+                            data-toggle="dropdown"
+                            aria-haspopup="true"
+                            aria-expanded="false">
+                            <i class="fas fa-fw fa-folder"></i>
+                            <span>내 계정관리</span>
+                        </a>
+
+                        <!-- 서브 메뉴-->   
+                        <div class="dropdown-menu" aria-labelledby="pagesDropdown">
+                            <a class="dropdown-item" id="myaccountb" href="/myaccount">내 계정</a>
+                            <a class="dropdown-item" href="/change_password">비밀번호 변경</a>
+                            <a
+                                class="dropdown-item"
+                                id="signoutb"
+                                href="#"
+                                data-toggle="modal"
+                                data-target="#logoutModal">로그아웃</a>
+                            <a class="dropdown-item" href="/change_idcancellation">회원 탈퇴</a>
+                        </div>
+                    </li>
+
+                    
+                </ul>
+
+                <!-- 우측 메인 화면 -->
+                <div id="content-wrapper" style="padding-bottom: 0px;">
+                    
+                    <div class="container-fluid">
+                        <!-- 흰 소제목 바 -->
+                        <ol class="breadcrumb mb-4">
+                            <li class="breadcrumb-item">
+                                <a href="index.html">공지사항</a>
+                            </li>
+                            <li class="breadcrumb-item active">게시글 보기</li>
+                        </ol>
+
+                        <!-- 페이지 내용 -->
+                        <div id="layoutSidenav_content" style="padding-bottom: 50px;">
+                            <table class="table table-striped table-bordered"> 
+                                <tr>
+                                    <th>index</th>
+                                    <td id="notiNo" value={{index}}>{{index}}</td>
+                                </tr>                               
+                                <tr>
+                                    <th>제목</th>                                     <!-- 제목 입력 -->
+                                    <td><input id="title" type="text" class="form-control" name="title" value="{{title}}"></td>                                    
+                                </tr>
+                                <tr>
+                                    <th>작성자</th>                                    <!-- 작성자 입력 -->
+                                    <td>{{ name }}</td>
+                                </tr>
+                                <tr>
+                                    <th>작성일</th>
+                                    <td>{{ date }}</td>
+                                </tr>
+                                <tr>
+                                    <th>내용</th>                                     <!-- 내용 입력 -->
+                                    <td>
+                                        <textarea name="notibody" id = "notibody" class="summernote"><p>{{body}}</p></textarea>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <a class="btn btn-primary pull-right" id="rewriteb">수정</a> 
+                            <a class="btn btn-primary pull-right" data-target="#deleteModal" data-toggle="modal">삭제</a> 
+                            <a class="btn btn-primary pull-right" href="/notification/">뒤로가기</a> 
+                            
+                        </div>
+                    </div>
+                    <!-- /.container-fluid -->
+
+                    <!-- 맨 밑 하다 copyright 부분-->
+                    <footer class="footer py-4 bg-light mt-auto">
+                        <div class="container-fluid">
+                            <div class="d-flex align-items-center justify-content-between small">
+                                <div class="text-muted">Copyright &copy; Your Website 2019</div>
+                                <div>
+                                    <a href="#">Privacy Policy</a>
+                                    &middot;
+                                    <a href="#">Terms &amp; Conditions</a>
+                                </div>
+                            </div>
+                        </div>
+                    </footer>
+
+                </div>
+                <!-- /content-wrapper -->
+            </div>
+            <!-- /#wrapper -->
+
+            <!-- 최상단으로 이동하는 버튼 -->
+            <a class="scroll-to-top rounded" href="#page-top">
+                <i class="fas fa-angle-up"></i>
+            </a>
+
+                <!-- 로그아웃 모달 -->
+                <div
+                    class="modal fade"
+                    id="logoutModal"
+                    tabindex="-1"
+                    role="dialog"
+                    aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">로그아웃</h5>
+                                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">로그아웃 하실래요?</div>
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" type="button" data-dismiss="modal">닫기</button>
+                                <a class="btn btn-primary" id="logoutb">로그아웃</a>                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 삭제 모달 -->
+                <div
+                    class="modal fade"
+                    id="deleteModal"
+                    tabindex="-1"
+                    role="dialog"
+                    aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="notiDeleteModalLabel">공지사항 삭제</h5>
+                                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">삭제 하시겠습니까?</div>
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" type="button" data-dismiss="modal">닫기</button>
+                                <a class="btn btn-primary" id="deleteb">삭제</a>                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            <!-- 로그아웃 버튼 동작 -->
+            <script type="text/javascript">
+                document.getElementById("logoutb").addEventListener('click', function () {
+                    // Check the value are all filled
+                    var usn = sessionStorage.getItem('usn');
+                    //send json
+                    $.ajax({
+                        method: "POST",
+                        url: "/signout",
+                        data: {
+                                "USN": usn
+                            }
+                        }).done(function (msg) {
+                            if (msg.message == 0) {
+                                //logout success sessionStorage clear
+                                sessionStorage.clear();
+                                location.href = "/";
+                            }
+                            if (msg.message == 1) {
+                                alert("로그아웃 다시해주세요");
+                            }
+                        });
+                    });
+            </script>
+
+            <!-- 삭제 버튼 동작 -->
+            <script type="text/javascript">
+                document.getElementById("deleteb").addEventListener('click', function () {
+                    // Check the value are all filled
+                    var usn = sessionStorage.getItem('usn');
+                    var no = document.getElementsByTagName('td')[0].childNodes[0].nodeValue;
+                    //send json
+                    $.ajax({
+                        method: "POST",
+                        url: "/admin/notice/delete",
+                        data: {
+                                "USN": usn,
+                                "NO": no
+                            }
+                        }).done(function (msg) {
+                            if (msg.message == 0) {                                                                
+                                location.href = "/notification/";
+                            }
+                            if (msg.message == 1) {
+                                alert("삭제 실패하셨습니다.\n"+msg.message);
+                            }
+                        });
+                    });
+            </script>
+
+            <!-- 수정 버튼 동작 -->
+            <script type="text/javascript">
+                document.getElementById("rewriteb").addEventListener('click', function () {
+                    // Check the value are all filled
+                    var usn = sessionStorage.getItem('usn');
+                    var no = document.getElementsByTagName('td')[0].childNodes[0].nodeValue;
+                    var title = document.getElementById("title").value;
+                    //var body = document.getElementById("notibody").value;
+                    var body = $('textarea[name="notibody"]').summernote('code');
+                    
+                    //send json
+                    $.ajax({
+                        method: "POST",
+                        url: "/admin/notice/update",
+                        data: {
+                                "USN": usn,
+                                "NO": no,
+                                "TITLE": title,
+                                "BODY": body,
+                            }
+                        }).done(function (msg) {                                                        
+                            if (msg.message == 0) {
+                                alert("수정 성공");
+                                location.href = "/notification/";
+                            }else if (msg.message == 1) {
+                                console.log(msg);
+                                alert("수정 실패");
+                            }else{
+                                console.log(msg);
+                            }
+                        });
+                    });
+            </script>
+           asdf;
+            <!-- 필수 js-->
+            <!-- Bootstrap core JavaScript-->
+            <!-- <script src="/vendor/jquery/jquery.min.js"></script> -->
+            <!-- <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script> -->
+
+            <!-- Core plugin JavaScript-->
+            <!-- <script src="/vendor/jquery-easing/jquery.easing.min.js"></script> -->
+
+            <!-- Custom scripts for all pages-->
+            <script src="sunggin/js/sb-admin.min.js"></script>
+
+            <!-- /. 필수 js -->    
+
+            
+            
+           
+            </body>
+        </html>
