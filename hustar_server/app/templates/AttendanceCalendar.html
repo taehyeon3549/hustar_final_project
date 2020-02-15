@@ -328,7 +328,7 @@
 
                         <!-- 페이지 내용 -->
                         <div id="layoutSidenav_content" style="padding-bottom: 50px;">                            
-                            <!-- 달력 출력-->
+                            <!-- 달력 출력-->   
                             <div id='calendar'></div>
                             <div style='clear:both'></div>                            
                         </div>
@@ -408,7 +408,8 @@
                                             <tr>
                                                 <th>지각</th>
                                                 <th>결석</th>
-                                                <th>출석</th>                                                
+                                                <th>정상 출석</th>
+                                                <th>에러(미퇴근자)</th>
                                             </tr>
                                         </thead>                                       
                                         <tbody id="attendList">                                            
@@ -418,6 +419,47 @@
                             </div>
                             <div class="modal-footer">
                                 <button class="btn btn-secondary" type="button" data-dismiss="modal">닫기</button>                                                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 엑셀 다운 모달 -->
+                <div
+                    class="modal fade"
+                    id="excelDownModal"
+                    tabindex="-1"
+                    role="dialog"
+                    aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">엑셀 다운</h5>
+                                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">                                
+                                <label for="sel1">엑셀로 변환할 달을 선택하세요:</label>
+                                <select class="form-control" id="sel1">
+                                    <option value="1">1월</option>
+                                    <option value="2">2월</option>
+                                    <option value="3">3월</option>
+                                    <option value="4">4월</option>
+                                    <option value="5">5월</option>
+                                    <option value="6">6월</option>
+                                    <option value="7">7월</option>
+                                    <option value="8">8월</option>
+                                    <option value="9">9월</option>
+                                    <option value="10">10월</option>
+                                    <option value="11">11월</option>
+                                    <option value="12">12월</option>
+                                </select>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" type="button" data-dismiss="modal">닫기</button>
+                                <a class="btn btn-primary" id="downb">다운</a>
                             </div>
                         </div>
                     </div>
@@ -446,6 +488,40 @@
                             }
                         });
                     });
+            </script>
+
+            <!-- 엑셀 다운 버튼 동작 -->
+            <script type="text/javascript">
+                document.getElementById("downb").addEventListener('click', function () {
+                    // Check the value are all filled
+                    var usn = sessionStorage.getItem('usn');
+                    var s = document.getElementById("sel1");
+                    var selectedMonth = s.options[s.selectedIndex].value;
+                    console.log(selectedMonth);        
+                    window.location = "/admin/user/attendance/excel/"+selectedMonth;
+                    // var _url = '/admin/user/attendance/excel';
+                    // var _jsonData = {
+                    //     "MONTH": selectedMonth
+                    // };
+
+                    // var xhr = new XMLHttpRequest();
+                    // xhr.onreadystatechange = function() {
+                    // if (this.readyState == 4 && this.status == 200) {
+                    //     var _data = this.response;
+                    //     var _blob = new Blob([_data], {type : 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+
+                    //     var link = document.createElement('a');
+                    //     link.href = window.URL.createObjectURL(_blob);
+                    //     link.download = 'text.xlsx';
+                    //     link.click();
+                    // };
+                    // };
+
+                    // xhr.open('POST', _url);
+                    // xhr.responseType = 'blob';
+                    // xhr.setRequestHeader('Content-type', 'application/json');
+                    // xhr.send(_jsonData);
+                });
             </script>
 
             <!-- 필수 js-->
@@ -496,8 +572,8 @@
                   -----------------------------------------------------------------*/                  
                   var calendar = $('#calendar').fullCalendar({
                     header: {
-                      left: 'title',
-                      center: 'agendaDay,agendaWeek,month',
+                      left: 'action',
+                      center: 'title',
                       right: 'prev,next today'
                     },
                     editable: true,
@@ -542,6 +618,67 @@
                             // fadeDuration:250
                         });
                         document.getElementById("attendDate").innerHTML = strDate[1] + "월" + strDate[2] + "일";
+
+                        $.ajax({
+                            method: "POST",
+                            url: "/admin/user/attendance/attendedList/",
+                            dataType: 'json',
+                            data: {
+                                "MONTH" : strDate[1],
+                                "DAY" : strDate[2]
+                                }
+                            }).done(function (msg) {                               
+                                 console.log(msg);
+                                 var result = msg;
+                                 var html = '';     
+                                 
+                                 for(var i = 0; i<msg['MAX']; i++){   
+                                    html += "<tr>";
+                                    
+                                    if(msg['LATE']==null){
+                                        html += "<td id = 'late' >"+"  "+"</td>";
+                                    }else{
+                                        if(msg['LATE'][i] == null){
+                                            html += "<td id = 'late' >"+"  "+"</td>";
+                                        }else
+                                            html += "<td id = 'late' >"+msg['LATE'][i]+"</td>";    
+                                    }
+                               
+
+                                    if(msg['ABSENT']==null){
+                                        html += "<td id = 'absent' >"+" "+"</td>";
+                                    }else{
+                                        if(msg['ABSENT'][i] == null){
+                                            html += "<td id = 'absent' >"+"  "+"</td>";
+                                        }else
+                                            html += "<td id = 'absent' >"+msg['ABSENT'][i]+"</td>";    
+                                    }
+
+                                    if(msg['OK']==null){
+                                        html += "<td id = 'ok' >"+"  "+"</td>";
+                                    }else{
+                                        if(msg['OK'][i] == null){
+                                            html += "<td id = 'ok' >"+"  "+"</td>";
+                                        }else
+                                            html += "<td id = 'ok' >"+msg['OK'][i]+"</td>";    
+                                    }
+                                    
+                                    if(msg['ERROR']==null){
+                                        html += "<td id = 'error' >"+" "+"</td>";
+                                    }else{
+                                        if(msg['ERROR'][i] == null){
+                                            html += "<td id = 'error' >"+" "+"</td>";
+                                        }else
+                                            html += "<td id = 'error' >"+msg['ERROR'][i]+"</td>";    
+                                    }
+
+                                    html += "</tr>";                                                                                               
+                                }
+
+                                $("#attendList").html(html);
+
+                                console.log(msg['MAX']);
+                            }); 
                     },
                     droppable: false, // this allows things to be dropped onto the calendar !!!
                     // drop: function(date, allDay) { // this function is called when something is dropped
@@ -592,7 +729,7 @@
                                             start: result[i]['start'],
                                             title: result[i]['title'][2]
                                         };
-                                        $("#calendar").fullCalendar('renderEvent', t1);
+                                        //$("#calendar").fullCalendar('renderEvent', t1);
                                         $("#calendar").fullCalendar('renderEvent', t2);
                                         $("#calendar").fullCalendar('renderEvent', t3);
                                      

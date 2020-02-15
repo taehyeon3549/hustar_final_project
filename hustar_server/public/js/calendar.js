@@ -60,8 +60,8 @@ var defaults = {
 	firstDay: 0,
 	monthNames: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
 	monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
-	dayNames: ['월','화','수','목','금','토','일'],
-	dayNamesShort: ['월','화','수','목','금','토','일'],
+	dayNames: ['일','월','화','수','목','금','토'],
+	dayNamesShort: ['일','월','화','수','목','금','토'],
 	buttonText: {
 		prev: "<span class='fc-text-arrow'>‹</span>",
 		next: "<span class='fc-text-arrow'>›</span>",
@@ -828,6 +828,13 @@ function Header(calendar, options) {
 							prevButton = button;
 						}
 					}
+
+					/** 엑셀 변환 버튼 추가 **/
+					if (buttonName == 'action') {
+						e.append("<a class='btn btn-success pull-right' data-toggle='modal' data-target='#excelDownModal' style='color: white'>엑셀 다운</a>");
+											
+					}
+
 				});
 				if (prevButton) {
 					prevButton.addClass(tm + '-corner-right');

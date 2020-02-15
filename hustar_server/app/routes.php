@@ -282,7 +282,7 @@ $app->get('/admin/fingerprint/', 'App\Controller\WebController:fingerprintList')
         ->setName('noticeList'); 
        
     // Hustar 출결 출력
-    $app->get('/admin/user/attendance/excel', 'App\Controller\AdminController:printUserAttendance')
+    $app->get('/admin/user/attendance/excel/{month}', 'App\Controller\AdminController:printUserAttendance')
         ->setName('attendance'); 
 
     // Hustar 출결 papge 출력 하기 위한 json
@@ -292,6 +292,16 @@ $app->get('/admin/fingerprint/', 'App\Controller\WebController:fingerprintList')
     // Hustar 출결 papge 출력 하기 위한 일별 출결 인원 json
     $app->post('/admin/user/attendance/page/count/', 'App\Controller\AdminController:getAttendanceCount')
         ->setName('getAttendanceDate'); 
+
+    // 해당일 출석 정보 json
+    $app->post('/admin/user/attendance/attendedList/', 'App\Controller\AdminController:attendedList')
+        ->setName('attendedList'); 
+    
+    // 휴스타 인원 명단 json
+    $app->post('/admin/user/list/', 'App\Controller\AdminController:userListJson')
+    ->setName('userList'); 
+    
+    
         
     
     

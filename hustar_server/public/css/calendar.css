@@ -242,6 +242,7 @@ span.fc-button {
   text-align: center;
   transition: all 0.2s;
   -webkit-transition: all 0.2s;
+  display: none;
 }
 .fc-state-hover,
 .fc-state-down,
