@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="kr">
 
-    <head>
+    <head>       
         <!-- 로그인 SESSION이 없으면 로그인 페이지로 이동 -->
         <script>
             if (sessionStorage.getItem('usn') == null) {
                 location.href = "/";
-            }
-        </script>
+            }        
+        </script>              
 
         <link
             rel="stylesheet"
@@ -21,34 +21,21 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>내 신상 기록 카드</title>
-
+        <title>교육생 현황</title>
+        
         <!-- Custom fonts for this template-->
-        <link
-            href="/vendor/fontawesome-free/css/all.min.css"
-            rel="stylesheet"
-            type="text/css">
-
+        <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+        
         <!-- Page level plugin CSS-->
         <link href="/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
 
         <!-- Custom styles for this template-->
         <link href="/css/sb-admin.css" rel="stylesheet">
+
+        <!-- <link href="/css/bootstrap/bootstrap.css" rel="stylesheet"> -->        
 
         <!-- Tab 왼쪽 아이콘-->
-        <link rel="shortcut icon" href="/icon/hustar.ico" type="image/x-icon"/>
-
-        <!-- Custom fonts for this template-->
-        <link
-            href="/vendor/fontawesome-free/css/all.min.css"
-            rel="stylesheet"
-            type="text/css">
-
-        <!-- Page level plugin CSS-->
-        <link href="/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
-
-        <!-- Custom styles for this template-->
-        <link href="/css/sb-admin.css" rel="stylesheet">
+        <link rel="shortcut icon" href="/icon/hustar.ico" type="image/x-icon"/>       
 
         <!-- 팝업 테이블 css -->
         <style>
@@ -60,78 +47,77 @@
             .mytable th {
                 border: 1px solid black;
             }
-        </style>
+        </style>        
+    
     </head>
 
-    <body id="page-top">
-        <!-- 최상단 바 -->
-        <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
-            <!-- 왼쪽 상단 마크 -->
-            <a class="navbar-brand mr-1" href="/main">
-                <img src="/icon/hustar_icon.ico" class="LogoPNG" style="width: 25px;">
-                HUSTAR
-            </a>
-            <!-- 메뉴 숨김/보이기 버튼-->
-            <button
-                class="btn btn-link btn-sm text-white order-1 order-sm-0"
-                id="sidebarToggle"
-                href="#">
-                <i class="fas fa-bars"></i>
-            </button>
+    <body id="page-top" style="margin-top: 0px;margin-bottom: 0px;">
+            <!-- 최상단 바 -->
+            <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
+                <!-- 왼쪽 상단 마크 -->
+                <a class="navbar-brand mr-1" href="/notification/">
+                    <img src="/icon/hustar_icon.ico" class="LogoPNG" style="width: 25px;">
+                    HUSTAR                    
+                </a>
+                <!-- 메뉴 숨김/보이기 버튼-->
+                <button
+                    class="btn btn-link btn-sm text-white order-1 order-sm-0"
+                    id="sidebarToggle"
+                    href="#">
+                    <i class="fas fa-bars"></i>
+                </button>
 
-            <!-- Navbar 검색바 - 현재 검색기능 삭제 -->
-            <form
-                class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
-                <div class="input-group">
-                    <div class="input-group-append">
-                        <i>
-                            <!-- 삭제부분 -->
-                        </i>
+                <!-- Navbar 검색바 - 현재 검색기능 삭제 -->
+                <form
+                    class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
+                    <div class="input-group">
+                        <div class="input-group-append">
+                            <i>
+                                <!-- 삭제부분 -->
+                            </i>
+                        </div>
                     </div>
-                </div>
-            </form>
+                </form>
 
-            <!-- 우측 상단 user 아이콘 메뉴 -->
-            <ul class="navbar-nav ml-auto ml-md-0">
-                <!-- 회원 아이콘 -->
-                <li class="nav-item dropdown no-arrow">
-                    <a
-                        class="nav-link dropdown-toggle"
-                        href="#"
-                        id="userDropdown"
-                        role="button"
-                        data-toggle="dropdown"
-                        aria-haspopup="true"
-                        aria-expanded="false">
-                        <i class="fas fa-user-circle fa-fw"></i>
-                    </a>
-
-                    <!-- 메뉴 박스 -->
-                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
-                        <!-- 1번 메뉴-->
-                        <a class="dropdown-name">
-                            <script>
-                                var name = sessionStorage.getItem('name');
-                                document.write(name);
-                            </script>
-                        </a>
-                        <!-- 경계선 -->
-                        <div class="dropdown-divider"></div>
-                        <!-- 2번 선택 메뉴 -->
+                <!-- 우측 상단 user 아이콘 메뉴 -->
+                <ul class="navbar-nav ml-auto ml-md-0">
+                    <!-- 회원 아이콘 -->
+                    <li class="nav-item dropdown no-arrow">
                         <a
-                            class="dropdown-item"
-                            id="signoutb"
+                            class="nav-link dropdown-toggle"
                             href="#"
-                            data-toggle="modal"
-                            data-target="#logoutModal">로그아웃
+                            id="userDropdown"
+                            role="button"
+                            data-toggle="dropdown"
+                            aria-haspopup="true"
+                            aria-expanded="false">
+                            <i class="fas fa-user-circle fa-fw"></i>
                         </a>
-                    </div>
 
-                </li>
-            </ul>
-        </nav>
+                        <!-- 메뉴 박스 -->
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                            <!-- 1번 메뉴-->
+                            <a class="dropdown-name">
+                                <script>
+                                    var name = sessionStorage.getItem('name');
+                                    document.write(name);
+                                </script>
+                            </a>
+                            <!-- 경계선 -->
+                            <div class="dropdown-divider"></div>
+                            <!-- 2번 선택 메뉴 -->
+                            <a
+                                class="dropdown-item"
+                                id="signoutb"
+                                href="#"
+                                data-toggle="modal"
+                                data-target="#logoutModal">로그아웃
+                            </a>
+                        </div>
 
-        <div id="wrapper">
+                    </li>
+                </ul>
+            </nav>
 
             <div id="wrapper">
 
@@ -140,10 +126,10 @@
                     <!-- 메인 메뉴 -->
                     <!-- 공지사항 -->
                     <li class="nav-item">
-                        <a class="nav-link" href="/maps">
-                            <i class="fas fa-fw fas fa-bell"></i>
+                        <a class="nav-link" href="/notification/">
+                            <i class="fas fa-fw fas fa-bell"></i>                            
                             <span>공지사항</span>
-                        </a>
+                        </a>                        
                     </li>
 
                     <!-- 출결 -->
@@ -162,13 +148,15 @@
 
                         <!-- 서브 메뉴-->
                         <div class="dropdown-menu" aria-labelledby="pagesDropdown">
-                            <a class="dropdown-item" id="myAttend" href="/PI">내 출결 상황</a>
+                            <h6 class="dropdown-header">출결</h6>
+                            <a class="dropdown-item" id="myAttend" href="/PI">내 출결 상황</a>         
+                            <h6 class="dropdown-header">사유서</h6>               
                             <a class="dropdown-item" id="myWhyWrite" href="/PI">사유서 작성</a>
                             <a class="dropdown-item" id="myWhy" href="/PI">내 사유서</a>
                         </div>
                     </li>
 
-                    <!-- 도서대출 -->
+                    <!-- 도서대출  -->
                     <li class="nav-item ">
                         <a class="nav-link" href="/charts">
                             <i class="fas fa-fw fa-book-open"></i>
@@ -176,7 +164,7 @@
                         </a>
                     </li>
 
-                    <!-- 기자재 대출 -->
+                    <!-- 기자재 대출  -->
                     <li class="nav-item">
                         <a class="nav-link" href="/maps">
                             <i class="fas fa-fw fa-box-open"></i>
@@ -184,18 +172,18 @@
                         </a>
                     </li>
 
-                    <!-- 개인 신상 수정 -->
+                    <!-- 개인 신상 수정  -->
                     <li class="nav-item">
-                        <a class="nav-link" href="/admin/user/">
+                        <a class="nav-link" href="/maps">
                             <i class="fas fa-fw fa-file"></i>
                             <span>내 신상 기록 카드</span>
                         </a>
                     </li>
 
-                    <!-- 관리자 기능 -->
-                    <li class="nav-item dropdown">
+                     <!-- 관리자 기능 -->
+                     <li class="nav-item dropdown active">
                         <a
-                            class="nav-link dropdown-toggle"
+                            class="nav-link dropdown-toggle active"
                             href="#"
                             id="pagesDropdown"
                             role="button"
@@ -208,12 +196,15 @@
 
                         <!-- 서브 메뉴-->
                         <div class="dropdown-menu" aria-labelledby="pagesDropdown">
-                            <a class="dropdown-item" id="adminStudent" href="/myaccount">교육생 현황</a>
-                            <a class="dropdown-item" id="adminNotifi" href="/myaccount">공지사항 입력</a>
-                            <a class="dropdown-item" id="adminAttend" href="/change_password">출결 상황보기</a>
+                            <a class="dropdown-item active" id="adminStudent" href="/admin/user/">교육생 현황</a>
+                            <a class="dropdown-item" id="adminNotifi" href="/notification/wirte/">공지사항 입력</a>
+                            <a class="dropdown-item" id="adminAttend" href="/admin/user/attendance/page/">출결 상황보기</a>
                             <a class="dropdown-item" id="adminWhy" href="/change_password">사유서 보기</a>
                             <a class="dropdown-item" id="adminBook" href="/change_password">도서대출 보기</a>
-                            <a class="dropdown-item" id="adminTool" href="/change_password">기자재 대출 보기</a>
+                            <a class="dropdown-item" id="adminTool" href="/change_password">기자재 대출 보기</a>        
+                            <h6 class="dropdown-header">등록 관리</h6>                    
+                            <a class="dropdown-item" id="adminDevice" href="/admin/device/">기기등록 현황</a>
+                            <a class="dropdown-item" id="adminFingerprint" href="/admin/fingerprint/">지문등록 현황</a>
                         </div>
 
                     </li>
@@ -232,7 +223,7 @@
                             <span>내 계정관리</span>
                         </a>
 
-                        <!-- 서브 메뉴-->
+                        <!-- 서브 메뉴-->   
                         <div class="dropdown-menu" aria-labelledby="pagesDropdown">
                             <a class="dropdown-item" id="myaccountb" href="/myaccount">내 계정</a>
                             <a class="dropdown-item" href="/change_password">비밀번호 변경</a>
@@ -246,79 +237,104 @@
                         </div>
                     </li>
 
+                    
                 </ul>
+
                 <!-- 우측 메인 화면 -->
-                <div id="layoutSidenav_content">
-                    <main>
-                        <div style="margin-top:10px;">
-                            <div class="container-fluid">
+                <div id="content-wrapper" style="padding-bottom: 0px;">
+                    
+                    <div class="container-fluid">
+                        <!-- 흰 소제목 바 -->
+                        <ol class="breadcrumb mb-4">
+                            <li class="breadcrumb-item">
+                                <a href="/admin/user/">교육생 현황</a>
+                            </li>
+                            <!-- <li class="breadcrumb-item active">목록</li> -->
+                        </ol>
 
-                                <ol class="breadcrumb mb-4">
-                                    <li class="breadcrumb-item">
-                                        <a href="index.html">휴스타</a>
-                                    </li>
-                                    <li class="breadcrumb-item active">개인신상카드</li>
-                                </ol>
-                            </div>
-
+                        <!-- 페이지 내용 -->
+                        <div id="layoutSidenav_content" style="padding-bottom: 50px;">                            
                             <div class="card mb-4">
-
+                                <!-- <div class="card-header"><i class="fas fa-table mr-1"></i>DataTable Example</div> -->
                                 <div class="card-body">
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                    <div class="table-responsive">                                        
+                                        <table class ="table table-bordered">
                                             <thead>
                                                 <tr>
+                                                    <th>No</th>
                                                     <th>이름</th>
                                                     <th>성별</th>
+                                                    <th>생년월일</th>
+                                                    <th>학교</th>
                                                     <th>전공</th>
-                                                    <th>나이</th>
-                                                    <th>트랙</th>
-                                                    <th>개인신상카드</th>
+                                                    <th>부전공</th>
+                                                    <th>학위</th>
+                                                    <th>전화번호</th>
+                                                    <th>이메일</th>
+                                                    <th>소속</th>
+                                                    <th>분반</th>
+                                                    <th>교육생 카드</th>
                                                 </tr>
                                             </thead>
-
-                                            <tbody id='notiList'></tbody>
+                                            <!-- <tfoot>
+                                                <tr>
+                                                    <th>No</th>
+                                                    <th>이름</th>
+                                                    <th>성별</th>
+                                                    <th>생년월일</th>
+                                                    <th>학교</th>
+                                                    <th>전공</th>
+                                                    <th>부전공</th>
+                                                    <th>학위</th>
+                                                    <th>전화번호</th>
+                                                    <th>이메일</th>
+                                                    <th>소속</th>
+                                                    <th>분반</th>    
+                                                    <th>교육생 카드</th>                                                
+                                                </tr>
+                                            </tfoot> -->
+                                            <tbody id = "userList">                                                                            
+                                            </tbody>
                                         </table>
-                                        <div
-                                            id='paging'
-                                            style="position: relative; width: 80%; margin: 0 auto; text-align: center; margin-top: 250px;">
-                                            <ul class="pagination ">
-                                                <li class="left-etc">
-                                                    <a href="#">&laquo;</a>
-                                                </li>
-                                                <li class="active">
-                                                    <a href="#">1</a>
-                                                </li>
-                                                <li >
-                                                    <a href="#">2</a>
-                                                </li>
-                                                <li>
-                                                    <a href="#">3</a>
-                                                </li>
-                                                <li>
-                                                    <a href="#">4</a>
-                                                </li>
-                                                <li class="right-etc">
-                                                    <a href="#">&raquo;</a>
-                                                </li>
-                                            </ul>
-                                        </div>
+                                        <a class="btn btn-primary pull-right" href="/admin/user/list">엑셀 다운로드</a>
                                     </div>
                                 </div>
+                            </div>                            
 
-                            </div>
-                        </main>
-
+                            <!-- <div id='paging' style="position: relative; width: 80%; margin: 0 auto; text-align: center; margin-top: 250px;">
+                                <ul class="pagination ">
+                                    <li class="left-etc"><a href="#">&laquo;</a></li>
+                                    <li class="active"><a href="#">1</a></li>
+                                    <li ><a href="#">2</a></li>
+                                    <li><a href="#">3</a></li>
+                                    <li><a href="#">4</a></li>                                   
+                                    <li class="right-etc"><a href="#">&raquo;</a></li>
+                                </ul>
+                            </div> -->
+                        </div>
                     </div>
-                    <!-- /.content-wrapper -->
+                    <!-- /.container-fluid -->
+
+                    <!-- 맨 밑 하다 copyright 부분-->
+                    <footer class="footer py-4 bg-light mt-auto">
+                        <div class="container-fluid">
+                            <div class="d-flex align-items-center justify-content-between small">                                
+                                <div class="copyright text-center my-auto">
+                                    <span>Copyright © HUSTAR 2020 &nbsp 첨단정보통신융합산업기술원 동내로 70 &nbsp 010-5737-0114</span>        
+                                </div>
+                            </div>
+                        </div>
+                    </footer>
 
                 </div>
-                <!-- /#wrapper -->
+                <!-- /content-wrapper -->
+            </div>
+            <!-- /#wrapper -->
 
-                <!-- 최상단으로 이동하는 버튼 -->
-                <a class="scroll-to-top rounded" href="#page-top">
-                    <i class="fas fa-angle-up"></i>
-                </a>
+            <!-- 최상단으로 이동하는 버튼 -->
+            <a class="scroll-to-top rounded" href="#page-top">
+                <i class="fas fa-angle-up"></i>
+            </a>
 
                 <!-- 로그아웃 모달 -->
                 <div
@@ -339,246 +355,88 @@
                             <div class="modal-body">로그아웃 하실래요?</div>
                             <div class="modal-footer">
                                 <button class="btn btn-secondary" type="button" data-dismiss="modal">닫기</button>
-                                <a class="btn btn-primary" id="logoutb">로그아웃</a>
-                                <!-- LogOut btn action -->
-                                <script type="text/javascript">
-                                    document
-                                        .getElementById("logoutb")
-                                        .addEventListener('click', function () {
-                                            // Check the value are all filled
-                                            var usn = sessionStorage.getItem('usn');
-                                            //send json
-                                            $
-                                                .ajax({
-                                                    method: "POST",
-                                                    url: "/signout",
-                                                    data: {
-                                                        "USN": usn
-                                                    }
-                                                })
-                                                .done(function (msg) {
-                                                    if (msg.message == 0) {
-                                                        //logout success sessionStorage clear
-                                                        sessionStorage.clear();
-                                                        location.href = "/";
-                                                    }
-                                                    if (msg.message == 1) {
-                                                        alert("로그아웃 다시해주세요");
-                                                    }
-                                                });
-                                        });
-                                </script>
+                                <a class="btn btn-primary" id="logoutb">로그아웃</a>                                
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- My Account-->
-                <!-- <div class="modal fade" id="MyaccountModal" tabindex="-1" role="dialog"
-                aria-labelledby="exampleModalLabel" aria-hidden="true"> <div
-                class="modal-dialog" role="document"> <div class="modal-content"> <div
-                class="modal-header"> <h5 class="modal-title" id="accountModalLabel">My
-                Account</h5> <button class="close" type="button" data-dismiss="modal"
-                aria-label="Close"> <span aria-hidden="true">×</span> </button> </div> <div
-                class="modal-body">Your Email: teamciot2019@gmail.com<br>Your Name: Jane</div>
-                <div class="modal-footer"> <button class="btn btn-secondary" type="button"
-                data-dismiss="modal">Cancel</button> <a class="btn btn-primary"
-                href="login.html">Change</a> </div> </div> </div> </div> -->
-
-                <!-- Bootstrap core JavaScript-->
-                <script src="/vendor/jquery/jquery.min.js"></script>
-                <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-                <!-- Core plugin JavaScript-->
-                <script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
-
-                <!-- Page level plugin JavaScript-->
-                <script src="/vendor/chart.js/Chart.min.js"></script>
-                <script src="/vendor/datatables/jquery.dataTables.js"></script>
-                <script src="/vendor/datatables/dataTables.bootstrap4.js"></script>
-
-                <!-- Custom scripts for all pages-->
-                <script src="/js/sb-admin.min.js"></script>
-
-                <!-- 사용자 이름 가져오는 ajax -->
-                <script type="text/javascript">
-                    $
-                        .ajax({
-                            url: "/user/name", // 클라이언트가 요청을 보낼 서버의 URL 주소
-                            data: {}, // HTTP 요청과 함께 서버로 보낼 데이터
-                            type: "GET", // HTTP 요청 방식(GET, POST)
-                            dataType: "json" // 서버에서 보내줄 데이터의 타입
-                        })
-
-                        // HTTP 요청이 성공하면 요청한 데이터가 done() 메소드로 전달됨.
-                        .done(function (json) {
-                            NAME = json;
-
-                            console.log(NAME);
-
-                            //통신 끝나면 값넣음
-                            $('#inputtest').html(json[0]['USER_NAME']);
-
-                        })
-
-                        // HTTP 요청이 실패하면 오류와 상태에 관한 정보가 fail() 메소드로 전달됨.
-                        .fail(function (xhr, status, errorThrown) {
-                            alert("오류가 발생 오류명" + errorThrown + "<br>상태:" + status);
-                        })
-                </script>
-
-                <!-- 출석 현황 가져오는 ajax <script type="text/javascript"> $ .ajax({ url:
-                "/admin/user/attendance/page/getdata", // 클라이언트가 요청을 보낼 서버의 URL 주소 data: {
-                "YEAR": "2020", "MONTH": "2", "CLASSTIME":
-                "8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8," }, // HTTP 요청과 함께 서버로 보낼 데이터 type:
-                "POST", // HTTP 요청 방식(GET, POST) dataType: "json" // 서버에서 보내줄 데이터의 타입 }) // HTTP
-                요청이 성공하면 요청한 데이터가 done() 메소드로 전달됨. .done(function (json) { ATTENDANCE = json;
-                console.log(ATTENDANCE['TOP']); console.log(ATTENDANCE['LEFT']);
-                $('#userAttendance').html( <table id="table"> <caption>출결 Excel</caption>
-                <thead> <tr> <th></th> <th>sample1</th> <th>sample2</th> <th>sample3</th> </tr>
-                </thead> <tbody> <tr> <th>sample11</th> <td>Text1</td> <td>Text1</td>
-                <td>Text1</td> </tr> <tr> <th>sample22</th> <td>Text2</td> <td>Text2</td>
-                <td>Text2</td> </tr> <tr> <th>sample33</th> <td>Text3</td> <td>Text3</td>
-                <td>Text3</td> </tr> </tbody> </table> ); // 통신 끝나면 값넣음
-                $('#inputtest').html(json[0]['USER_NAME']); //
-                document.getElementById('inputtest').value = json[0]['USER_NAME']; }) // HTTP
-                요청이 실패하면 오류와 상태에 관한 정보가 fail() 메소드로 전달됨. .fail(function (xhr, status,
-                errorThrown) { alert("오류가 발생 오류명" + errorThrown + "<br>상태:" + status); }) //
-                HTTP 요청이 성공하거나 실패하는 것에 상관없이 언제나 always() 메소드가 실행됨. .always(function (xhr, //
-                status) { alert("요청이 완료되었습니다!"); }); </script> <!-- 엑셀 다운로드 기능 -->
-                <script>
-                    function fnExcelReport(id, title) {
-                        var tab_text = '<html xmlns:x="urn:schemas-microsoft-com:office:excel">';
-                        tab_text = tab_text + '<head><meta http-equiv="content-type" content="applicati' +
-                                'on/vnd.ms-excel; charset=UTF-8">';
-                        tab_text = tab_text + '<xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorkshe' +
-                                'et>';
-                        tab_text = tab_text + '<x:Name>Test Sheet</x:Name>';
-                        tab_text = tab_text + '<x:WorksheetOptions><x:Panes></x:Panes></x:WorksheetOpti' +
-                                'ons></x:ExcelWorksheet>';
-                        tab_text = tab_text +
-                                '</x:ExcelWorksheets></x:ExcelWorkbook></xml></head><body>';
-                        tab_text = tab_text + "<table border='1px'>";
-                        var exportTable = $('#' + id).clone();
-                        exportTable
-                            .find('input')
-                            .each(function (index, elem) {
-                                $(elem).remove();
-                            });
-                        tab_text = tab_text + exportTable.html();
-                        tab_text = tab_text + '</table></body></html>';
-                        var data_type = 'data:application/vnd.ms-excel';
-                        var ua = window.navigator.userAgent;
-                        var msie = ua.indexOf("MSIE ");
-                        var fileName = title + '.xls';
-                        //Explorer 환경에서 다운로드
-                        if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./)) {
-                            if (window.navigator.msSaveBlob) {
-                                var blob = new Blob([tab_text], {type: "application/csv;charset=utf-8;"});
-                                navigator.msSaveBlob(blob, fileName);
+                
+                
+            <!-- 로그아웃 버튼 동작 -->
+            <script type="text/javascript">
+                document.getElementById("logoutb").addEventListener('click', function () {
+                    // Check the value are all filled
+                    var usn = sessionStorage.getItem('usn');
+                    //send json
+                    $.ajax({
+                        method: "POST",
+                        url: "/signout",
+                        data: {
+                                "USN": usn
                             }
-                        } else {
-                            var blob2 = new Blob([tab_text], {type: "application/csv;charset=utf-8;"});
-                            var filename = fileName;
-                            var elem = window
-                                .document
-                                .createElement('a');
-                            elem.href = window
-                                .URL
-                                .createObjectURL(blob2);
-                            elem.download = filename;
-                            document
-                                .body
-                                .appendChild(elem);
-                            elem.click();
-                            document
-                                .body
-                                .removeChild(elem);
-                        }
-                    }
-                </script>
-                <script
-                    src="https://code.jquery.com/jquery-3.4.1.min.js"
-                    crossorigin="anonymous"></script>
-                <script
-                    src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"
-                    crossorigin="anonymous"></script>
-                <script src="/js/scripts.js"></script>
-                <script
-                    src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"
-                    crossorigin="anonymous"></script>
-                <script
-                    src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"
-                    crossorigin="anonymous"></script>
-                <script src="/assets/demo/datatables-demo.js"></script>
-
-                <!-- Demo scripts for this page-->
-                <!-- <script src="js/demo/datatables-demo.js"></script> <script
-                src="js/demo/chart-area-demo.js"></script> -->
-
-                <!-- pagination 클릭부분-->
-                <script>
-                    $('li').click(function () {
-                        $(this)
-                            .addClass('active')
-                            .siblings()
-                            .removeClass('active');
+                        }).done(function (msg) {
+                            if (msg.message == 0) {
+                                //logout success sessionStorage clear
+                                sessionStorage.clear();
+                                location.href = "/";
+                            }
+                            if (msg.message == 1) {
+                                alert("로그아웃 다시해주세요");
+                            }
+                        });
                     });
+            </script>            
 
-                    function callFunction() {
-                        var str = ""
-                        var tdArr = new Array(); // 배열 선언
+            <!-- Core plugin JavaScript-->
+            <script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
 
-                        // 현재 클릭된 Row(<tr>)
-                        var tr = $(this);
-                        var td = tr.children();
+            <!-- 필수 js-->
+            <!-- Bootstrap core JavaScript-->
+            <script src="/vendor/jquery/jquery.min.js"></script>
+            <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-                        // tr.text()는 클릭된 Row 즉 tr에 있는 모든 값을 가져온다.
-                        console.log("클릭한 Row의 모든 데이터 : " + tr.text());
+            <!-- Core plugin JavaScript-->
+            <script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
 
-                        // 반복문을 이용해서 배열에 값을 담아 사용할 수 도 있다.
-                        td.each(function (i) {
-                            tdArr.push(td.eq(i).text());
-                        });
+            <!-- Custom scripts for all pages-->
+            <script src="/js/sb-admin.min.js"></script>
 
-                        console.log("배열에 담긴 값 : " + tdArr);
-                        alert(tdArr);
-                        //open_modeling(tdArr)
-                    }
-                </script>
+            <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
+            <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
+            <script src="/assets/demo/datatables-demo.js"></script>
+            <!-- /. 필수 js -->    
 
-                <!-- 계시판 리스트 가져오는 부분-->
-                <script>
-                    $
-                        .ajax({method: "POST", url: "/admin/user/getList", dataType: 'json', data: {}})
-                        .done(function (msg) {
-                            console.log(msg[0]);
-                            var html = '';
-                            var index = msg[i]
-                            for (var i = 0; i < msg.length; i++) {
-                                html += "<tr>";
-                                html += "<td id = 'no' >" + msg[i]['NOTICE_NO'] + "</td>";
-                                html += "<td > <a href='/admin/user/view" + msg[i]['NOTICE_NO'] +
-                                        "' style='color: black;'>" + msg[i]['NOTICE_TITLE'] + "</a>";
-                                html += "<td>" + msg[i]['USER_NAME'];
-                                html += "<td>" + msg[i]['NOTICE_DATE'];
-                                html += "<tr>";
-                            }
+            <script>
+                $.ajax({
+                    method: "post",
+                    url: "/admin/user/list/",
+                    dataType: 'json',
+                    data: {                               
+                        }
+                    }).done(function (msg) {                        
+                        var html = '';
+                        var index = msg[i]
+                        for(var i = 0; i<msg.length; i++){   
+                            html += "<tr>";
+                            html += "<td id = 'no' >"+msg[i]['NO']+"</td>";
+                            html += "<td id = 'name' >"+msg[i]['NAME']+"</td>";
+                            html += "<td id = 'gender' >"+msg[i]['GENDER']+"</td>";
+                            html += "<td id = 'birth' >"+msg[i]['BIRTH']+"</td>";
+                            html += "<td id = 'univ' >"+msg[i]['UNIV']+"</td>";
+                            html += "<td id = 'major' >"+msg[i]['MAJOR']+"</td>";
+                            html += "<td id = 'submajor' >"+msg[i]['SUB_MAJOR']+"</td>";
+                            html += "<td id = 'degree' >"+msg[i]['DEGREE']+"</td>";
+                            html += "<td id = 'phone' >"+msg[i]['PHONE']+"</td>";
+                            html += "<td id = 'email' >"+msg[i]['EMAIL']+"</td>";
+                            html += "<td id = 'hustar' >"+msg[i]['HUSTAR']+"</td>";
+                            html += "<td id = 'class' >"+msg[i]['CLASS']+"</td>";    
+                            html += "<td id = 'file' >"+"<input type='button' style='width: 100%; 'value='신상카드'/>"+"</td>";                               
 
-                            $("#notiList").html(html);
-                        });
-                </script>
-
-                <footer class="sticky-footer" style="width: 100%;">
-                    <div class="container my-auto">
-
-                        <div class="copyright text-center my-auto">
-
-                            <span>Copyright © HUSTAR 2020 &nbsp 첨단정보통신융합산업기술원 동내로 70 &nbsp 010-5737-0114</span>
-
-                        </div>
-                    </div>
-                </footer>
-
+                            $("#userList").html(html);
+                            //$("#dataTable").DataTable();                           
+                        }                             
+                    });
+                </script> 
             </body>
         </html>
