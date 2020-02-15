@@ -863,7 +863,7 @@ public function getAttendanceDate(Request $request, Response $response, $args)
         }
 
         /******************** 지각 ****************** */
-        $date['START'] = "2020-".$month."-".$day." 10:00:01";
+        $date['START'] = "2020-".$month."-".$day." 10:10:01";
         $date['END'] = "2020-".$month."-".$day." 18:00:00";
 
         $lateList = $this->AdminModel->getAttendList($date);
