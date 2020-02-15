@@ -193,6 +193,10 @@ $app->get('/admin/fingerprint/', 'App\Controller\WebController:fingerprintList')
     // 지문 리스트
     $app->post('/fingerprint/list/', 'App\Controller\UserManagementController:fingerList')
         ->setName('fingerList');
+    
+    // 내 출석 현황 가져오기    
+    $app->post('/attendance/myattend/', 'App\Controller\UserManagementController:getAttendanceUser')
+        ->setName('myattend');
 
     /****************************************/
     /*          certification page          */

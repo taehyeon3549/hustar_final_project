@@ -219,15 +219,23 @@ final class UserManagementController extends BaseController
 		$userInfo['USER_EMAIL'] = $request->getParsedBody()['EMAIL'];
 		$userInfo['PASSWORD'] = $request->getParsedBody()['PASSWORD'];
 		$userInfo['USER_NAME'] = $request->getParsedBody()['NAME'];
-		$userInfo['USER_PHONE'] = $request->getParsedBody()['PHONE'];		
+		$userInfo['USER_PHONE'] = $request->getParsedBody()['PHONE'];
+
+		$userInfo['USER_UNIV'] = $request->getParsedBody()['UNIV'];
+		$userInfo['USER_MAJOR'] = $request->getParsedBody()['MAJOR'];
+		$userInfo['USER_SUBMAJOR'] = $request->getParsedBody()['SUBMAJOR'];
+		$userInfo['USER_DEGREE'] = $request->getParsedBody()['DEGREE'];
+
 		$userInfo['USER_GENDER'] = $request->getParsedBody()['GENDER'];
 		$userInfo['USER_BIRTH'] = $request->getParsedBody()['BIRTH'];		
+
+		$userInfo['USER_CLASS'] = $request->getParsedBody()['CLASS'];
 
 		/* 이메일 중복 체크 */
 		if($this->UserManagementModel->duplicateEmail($userInfo['USER_EMAIL']) == 0){
 			// 0: 해당 이메일 없음, 1: 해당 이메일 있음						
 			$userInfo['USER_ADMIN'] = 0;
-			$userInfo['USER_CLASS'] = 1;
+			// $userInfo['USER_CLASS'] = 1;
 
 			//패스워드 암호화
 			$HASHED_PASSWORD = password_hash($userInfo['PASSWORD'], PASSWORD_DEFAULT);
@@ -1298,4 +1306,83 @@ public function change_certification_app(Request $request, Response $response, $
 		->withHeader('Content-Type', 'application/json')
 		->write(json_encode($result, JSON_NUMERIC_CHECK));		
 	}
+
+
+	/******************************************************
+     * 개인에 해당하는 월별 출결 정보 가져오기
+     *******************************************************/
+    public function getAttendanceUser(Request $request, Response $response, $args)
+    {
+         // 년, 월, 일별 수업시간 입력 받음
+        $year = $request->getParsedBody()['YEAR'];
+		$month = $request->getParsedBody()['MONTH'];
+		$info['USN'] = $request->getParsedBody()['USN'];
+		 
+        $time = mktime(0,0,0,$month, 1, $year);
+
+        $yoil = array("일","월","화","수","목","금","토");
+        $index = 0;
+       
+		$result = array();
+		
+        // 해당하는 달 전체 주말 빼고 탐색
+        while($month == date('m', $time)){
+            if(date('w', $time) != 6 && date('w', $time) != 0){
+				$result[$index]['DATE'] = "2020-".date("m-d",$time);
+
+                $info['START'] = "2020-".date("m-d",$time)." 0:0:0";
+                $info['END'] = "2020-".date("m-d",$time)." 23:59:59";
+
+				$userAttendace = $this->UserManagementModel->checkAttendanceEach($info);
+
+				if(count($userAttendace) != 0){
+					$result[$index]['GTW'] = $userAttendace[0]['ATTENDANCE_GTW'];
+					$result[$index]['GTH'] = $userAttendace[0]['ATTENDANCE_GTH'];				
+
+					$GTW_time_H = date("H:i:s", strtotime( $userAttendace[0]['ATTENDANCE_GTW'] ) );
+					$cutTime = explode(':', $GTW_time_H);
+
+					$GTH_time_H = date("H:i:s", strtotime( $userAttendace[0]['ATTENDANCE_GTH'] ) );
+					$cutTime1 = explode(':', $GTH_time_H);
+					
+					//print_r((int)$cutTime[1]."\n");
+
+					//10시 10분 아래면
+					if( (((int)$cutTime[0]) < 10) ){
+						$result[$index]['STATE'] = "정상";						
+					}else if( (((int)$cutTime[0]) == 10)){
+						if((((int)$cutTime[1]) <= 10) ){
+							$result[$index]['STATE'] = "정상";						
+						}else{
+							$result[$index]['STATE'] = "지각";	
+						}
+					}else if( (((int)$cutTime[0]) >= 11) ){
+						$result[$index]['STATE'] = "지각";	
+					}
+
+					if( ((int)$cutTime1[0]) <= 17 && ((int)$cutTime1[1]) <= 59 ){
+							if($result[$index]['STATE'] == "정상")
+								$result[$index]['STATE'] = "조기퇴근";							
+							else
+							$result[$index]['STATE'] = "지각,조기퇴근";
+					}					
+				}else{
+					$result[$index]['GTW'] = NULL;
+					$result[$index]['GTH'] = NULL;
+					$result[$index]['STATE'] = "결석";
+				}
+
+				$result[$index]['REASON'] = $userAttendace[0]['ATTENDANCE_REASON'];
+				
+                $index +=1;
+            }            
+            
+            //하루씩 증가
+            $time = strtotime("+1 days",$time);                     
+        }
+
+        return $response->withStatus(200)
+		->withHeader('Content-Type', 'application/json')
+		->write(json_encode($result, JSON_NUMERIC_CHECK));
+    }
 }

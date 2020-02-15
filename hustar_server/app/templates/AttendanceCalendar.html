@@ -713,14 +713,14 @@
                                 }
                             }).done(function (msg) {
                                  //console.log(msg);
-                                 var result = msg;
-                                 result.length;
+                                 var result = msg;                                 
 
                                  for(var i = 0; i<result.length; i++){                                    
                                         var t1 = {
                                             start: result[i]['start'],
                                             title: result[i]['title'][0]
                                         };
+                                        //console.log(t1);
                                         var t2 = {
                                             start: result[i]['start'],
                                             title: result[i]['title'][1]
