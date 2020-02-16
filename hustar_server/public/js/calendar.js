@@ -22,7 +22,7 @@
 			center: '',
 			right: 'today prev,next'
 		},
-		weekends: false,
+		weekends: true,
 		weekNumbers: false,
 		weekNumberCalculation: 'iso',
 		weekNumberTitle: 'W',

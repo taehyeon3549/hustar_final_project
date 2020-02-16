@@ -328,37 +328,58 @@ final class AdminController extends BaseController
                     $userAttendace = $this->AdminModel->attendanceList($user);
                     if(count($userAttendace) != 0){
                         $GTW_time_H = date("H:i:s", strtotime( $userAttendace[0]["ATTENDANCE_GTW"] ) );
-                        //$GTH_time_H = date("H:m:s", strtotime( $userAttendace[0]["ATTENDANCE_GTH"] ) );
+                        $GTH_time_H_st = date("H:i:s", strtotime( $userAttendace[0]["ATTENDANCE_GTH"] ) );
+
                         $GTH_time_H = date("H:i:s", strtotime("2020-02-02 18:00:00" ));
 
                         $HourGab = (strtotime($GTH_time_H) - strtotime($GTW_time_H))/3600;
                         $MinGab = (strtotime($GTH_time_H) - strtotime($GTW_time_H))/60;
                         
-                        // 정상 출결이라면 그날 하루 시간을 표시1
-                        if($MinGab >=470.0){                       
-                            //print_r("정상");
-                            $spreadsheet->getActiveSheet()
-                                ->setCellvalue($cellborder[$row].$column,"출석(".$daytime[$row].")");
-                            // 색깔 변경
-                            $spreadsheet->getActiveSheet()->getStyle($cellborder[$row].$column)->getFill()
-                                ->setFillType('solid')->getStartColor()->setARGB("FF90EE90");
+                        // print_r($userAttendace);
+                        // print_r($GTW_time_H."::::::".$GTH_time_H_st."\n");
 
-                            // 총 이수시간 더하기
-                            $totalTime += $daytime[$row];
-                        }else{                        
+                        if($GTW_time_H == $GTH_time_H_st){      //미 퇴근자                            
                             $spreadsheet->getActiveSheet()
-                                ->setCellvalue($cellborder[$row].$column,"지각(".(int)$HourGab.")");
-                                //->setCellvalue($cellborder[$row].$column,(int)$HourGab);
-                            // 색깔 변경
-                            $spreadsheet->getActiveSheet()->getStyle($cellborder[$row].$column)->getFill()
-                                ->setFillType("solid")->getStartColor()->setARGB("FFFAFAD2");                            
-                            
+                                    ->setCellvalue($cellborder[$row].$column,"미퇴근(0)");
+                                // 색깔 변경
+                                $spreadsheet->getActiveSheet()->getStyle($cellborder[$row].$column)->getFill()
+                                    ->setFillType('solid')->getStartColor()->setARGB("ededed");
 
-                            // 총 이수시간 더하기
-                            $totalTime += (int)$HourGab;
-                            // 차감 시간 더하기
-                            $minusTime += ($daytime[$row] - (int)$HourGab);
-                        }
+                                // 총 이수시간 더하기
+                                $totalTime += 0;
+                                // print_r($GTH_time_H."::::::".$GTH_time_H_st);
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
+                        }else{
+                            // 정상 출결이라면 그날 하루 시간을 표시1
+                            if($MinGab >=470.0){                       
+                                //print_r("정상");
+                                $spreadsheet->getActiveSheet()
+                                    ->setCellvalue($cellborder[$row].$column,"출석(".$daytime[$row].")");
+                                // 색깔 변경
+                                $spreadsheet->getActiveSheet()->getStyle($cellborder[$row].$column)->getFill()
+                                    ->setFillType('solid')->getStartColor()->setARGB("FF90EE90");
+
+                                // 총 이수시간 더하기
+                                $totalTime += $daytime[$row];
+                            }else{                        
+                                $spreadsheet->getActiveSheet()
+                                    ->setCellvalue($cellborder[$row].$column,"지각(".(int)$HourGab.")");
+                                    //->setCellvalue($cellborder[$row].$column,(int)$HourGab);
+                                // 색깔 변경
+                                $spreadsheet->getActiveSheet()->getStyle($cellborder[$row].$column)->getFill()
+                                    ->setFillType("solid")->getStartColor()->setARGB("FFFAFAD2");                            
+                                
+
+                                // 총 이수시간 더하기
+                                $totalTime += (int)$HourGab;
+                                // 차감 시간 더하기
+                                $minusTime += ($daytime[$row] - (int)$HourGab);
+                            }
+                        }                        
                     }else{
                         $spreadsheet->getActiveSheet()
                                 ->setCellvalue($cellborder[$row].$column,"결석(0)");
@@ -846,7 +867,10 @@ public function getAttendanceDate(Request $request, Response $response, $args)
         $date['END'] = "2020-".$month."-".$day." 10:10:00";        
 
         $attendList = $this->AdminModel->getAttendList($date);
-        $errorList = $this->AdminModel->errorList($date);
+
+        $check['START'] = "2020-".$month."-".$day." 00:00:00";
+        $check['END'] = "2020-".$month."-".$day." 23:59:59"; 
+        $errorList = $this->AdminModel->errorList($check);
         
         $count = count($attendList);        
 
@@ -912,6 +936,33 @@ public function getAttendanceDate(Request $request, Response $response, $args)
             $result[$i]['USN'] = $noticeInfo[$i]['USER_USN'];
         }
         
+
+        return $response->withStatus(200)
+		->withHeader('Content-Type', 'application/json')
+		->write(json_encode($result, JSON_NUMERIC_CHECK));
+    }
+
+    /***************************************
+     * 23시59분 59초 동작
+     * 
+     * 미퇴근자 미복귀자 DB 오류 처리     
+     ***************************************/
+    public function dayEnd(Request $request, Response $response, $args)
+    {     
+        $today = date("m-d");
+        $info['day'] = "2020-".$today." 0:0:0";        
+
+        /** 미퇴근자 처리 */
+        $notGTH = $this->AdminModel->notGTH($info);       
+        for($i = 0; $i<count($notGTH); $i++){
+            $this->AdminModel->notGTHgetGTH($notGTH[$i]);            
+        }
+
+        /** 미 복귀자 처리 */
+        $notComeBack = $this->AdminModel->notComeBack($info);
+        for($k = 0; $k<count($notComeBack); $k++){
+            $this->AdminModel->notComeBackDoing($notComeBack[$k], $info);       
+        }         
 
         return $response->withStatus(200)
 		->withHeader('Content-Type', 'application/json')

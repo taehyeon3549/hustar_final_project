@@ -1089,6 +1089,30 @@ public function change_certification_app(Request $request, Response $response, $
 								$result['header'] = "It's still class time";
 								$result['message'] = "4";
 							}
+						}else if($slidecode[2] == 3){		//외출
+							$userInfo['TIME'] = date("yy-m-d H:i:s");
+							$attendInfo = $this->UserManagementModel->OuttingOut($userInfo);
+
+							if($attendInfo == 0){
+								$result['header'] = "Outting Success";
+								$result['message'] = "9";
+							}else{
+								$result['header'] = "Outting DB error";
+								$result['message'] = "10";
+							}
+						}else if($slidecode[2] == 4){		//복귀
+							$userInfo['TIME'] = date("yy-m-d H:i:s");
+							$userInfo['last'] = $this->UserManagementModel->lastOutting($userInfo)[0]['OUTING_NO'];
+
+							$attendInfo = $this->UserManagementModel->OuttingBack($userInfo);
+
+							if($attendInfo == 0){
+								$result['header'] = "Outting Back Success";
+								$result['message'] = "11";
+							}else{
+								$result['header'] = "Outting Back DB error";
+								$result['message'] = "12";
+							}
 						}
 					}else{
 						$result['header'] = "Are you hacked now?";
@@ -1096,7 +1120,7 @@ public function change_certification_app(Request $request, Response $response, $
 					}
 				}else{
 					$result['header'] = "Attendance Check";
-					$result['message'] = "Absent";
+					$result['message'] = "Day wrong";
 				}
 			
 			// else{
@@ -1347,24 +1371,28 @@ public function change_certification_app(Request $request, Response $response, $
 					
 					//print_r((int)$cutTime[1]."\n");
 
-					//10시 10분 아래면
-					if( (((int)$cutTime[0]) < 10) ){
-						$result[$index]['STATE'] = "정상";						
-					}else if( (((int)$cutTime[0]) == 10)){
-						if((((int)$cutTime[1]) <= 10) ){
+					if($GTW_time_H == $GTH_time_H){
+						$result[$index]['STATE'] = "오류(미퇴근)";						
+					}else{
+						//10시 10분 아래면
+						if( (((int)$cutTime[0]) < 10) ){
 							$result[$index]['STATE'] = "정상";						
-						}else{
+						}else if( (((int)$cutTime[0]) == 10)){
+							if((((int)$cutTime[1]) <= 10) ){
+								$result[$index]['STATE'] = "정상";						
+							}else{
+								$result[$index]['STATE'] = "지각";	
+							}
+						}else if( (((int)$cutTime[0]) >= 11) ){
 							$result[$index]['STATE'] = "지각";	
 						}
-					}else if( (((int)$cutTime[0]) >= 11) ){
-						$result[$index]['STATE'] = "지각";	
-					}
 
-					if( ((int)$cutTime1[0]) <= 17 && ((int)$cutTime1[1]) <= 59 ){
-							if($result[$index]['STATE'] == "정상")
-								$result[$index]['STATE'] = "조기퇴근";							
-							else
-							$result[$index]['STATE'] = "지각,조기퇴근";
+						if( ((int)$cutTime1[0]) <= 17 && ((int)$cutTime1[1]) <= 59 ){
+								if($result[$index]['STATE'] == "정상")
+									$result[$index]['STATE'] = "조기퇴근";							
+								else
+								$result[$index]['STATE'] = "지각,조기퇴근";
+						}
 					}					
 				}else{
 					$result[$index]['GTW'] = NULL;

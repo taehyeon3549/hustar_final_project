@@ -269,6 +269,72 @@ public function noticeList(){
 		return $result;
 	}
 
+	/*****************************
+	 * 퇴근 안찍은 인원 가져오기
+	 *****************************/
+	public function notGTH($date) {  
+		$sql = "SELECT *
+				FROM ATTENDANCE
+				WHERE ATTENDANCE_GTW >= ? AND ATTENDANCE_GTH is NULL;";
+		$sth = $this->db->prepare($sql);
+		
+		$sth->execute(array($date['day']));
+		$result = $sth->fetchAll();
+
+		return $result;
+	}
+
+	/*****************************
+	 * 퇴근 안찍은 인원 GTH을 GTW과 같게 만들기
+	 *****************************/
+	public function notGTHgetGTH($user) {  
+		$sql = "UPDATE `hustar_final`.`ATTENDANCE` 
+				SET `ATTENDANCE_GTH` = ? 
+				WHERE (`ATTENDANCE_NO` = ?) 
+				and (`ATTENDANCE_USN` = ?);";
+
+		$sth = $this->db->prepare($sql);
+		if($sth->execute(array($user['ATTENDANCE_GTW'],$user['ATTENDANCE_NO'],$user['ATTENDANCE_USN']))){
+			return 0;
+		}else{
+			return 1;
+		}		
+	}
+
+	/*****************************
+	 * 복귀 안찍은 인원 가져오기
+	 *****************************/
+	public function notComeBack($date) {  
+		$sql = "SELECT *
+				FROM OUTING
+				WHERE OUTING_OUT >= ? AND OUTING_BACK is NULL;";
+		$sth = $this->db->prepare($sql);
+		
+		$sth->execute(array($date['day']));
+		$result = $sth->fetchAll();
+
+		return $result;
+	}
+
+	/*****************************
+	 * 복귀 안찍은 인원 복귀 시간을 0시0분0초로 만들기
+	 *****************************/
+	public function notComeBackDoing($user,$picks) {  
+		$sql = "UPDATE `hustar_final`.`OUTING` 
+				SET `OUTING_BACK` = ? 
+				WHERE (`OUTING_NO` = ?) 
+				and (`OUTING_USN` = ?);";
+
+		$sth = $this->db->prepare($sql);
+
+		if($sth->execute(array($picks['day'],$user['OUTING_NO'],$user['OUTING_USN']))){
+			return 0;
+		}else{
+			return 1;
+		}		
+	}
+
+	
 	
 
 }

@@ -430,6 +430,21 @@ final class UserManagementModel extends BaseModel
 	}
 
 /***************************************
+ * 마지막 외출 정보 가지고 오기
+ ***************************************/
+public function lastOutting($usn) {  
+	$sql = "SELECT * FROM OUTING
+			WHERE OUTING_USN = ? AND OUTING_BACK is NULL
+			ORDER BY OUTING_NO DESC LIMIT 1;";
+
+	$sth = $this->db->prepare($sql);
+	$sth->execute(array($usn['USN']));
+	$result = $sth->fetchAll();
+	
+	return $result;
+}
+
+/***************************************
  * OUTTING 테이블 검색 - USN
  * return 0 성공
  * return 1 실패

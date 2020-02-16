@@ -314,6 +314,10 @@ $app->get('/admin/user/attendance/search/', 'App\Controller\WebController:userat
      $app->post('/admin/user/namelist/', 'App\Controller\AdminController:getStudentNameList')
      ->setName('getStudentNameList'); 
     
+
+     // 23시 59분에 하는 동작
+     $app->get('/admin/last/dayend/', 'App\Controller\AdminController:dayEnd')
+     ->setName('dayEnd'); 
     
     
         
