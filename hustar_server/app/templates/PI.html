@@ -135,7 +135,7 @@
                     <!-- 메인 메뉴 -->
                     <!-- 공지사항 -->
                     <li class="nav-item">
-                        <a class="nav-link" href="/maps">
+                        <a class="nav-link" href="/notification/">
                             <i class="fas fa-fw fas fa-bell"></i>                            
                             <span>공지사항</span>
                         </a>                        
@@ -157,7 +157,9 @@
 
                         <!-- 서브 메뉴-->
                         <div class="dropdown-menu" aria-labelledby="pagesDropdown">
-                            <a class="dropdown-item" id="myAttend" href="/PI">내 출결 상황</a>                        
+                            <h6 class="dropdown-header">출결</h6>
+                            <a class="dropdown-item" id="myAttend" href="/PI">내 출결 상황</a>         
+                            <h6 class="dropdown-header">사유서</h6>               
                             <a class="dropdown-item" id="myWhyWrite" href="/PI">사유서 작성</a>
                             <a class="dropdown-item" id="myWhy" href="/PI">내 사유서</a>
                         </div>
@@ -181,16 +183,16 @@
 
                     <!-- 개인 신상 수정  -->
                     <li class="nav-item">
-                        <a class="nav-link" href="/admin/user/">
+                        <a class="nav-link" href="/maps">
                             <i class="fas fa-fw fa-file"></i>
                             <span>내 신상 기록 카드</span>
                         </a>
                     </li>
 
                      <!-- 관리자 기능 -->
-                     <li class="nav-item dropdown">
+                     <li class="nav-item dropdown active">
                         <a
-                            class="nav-link dropdown-toggle"
+                            class="nav-link dropdown-toggle active"
                             href="#"
                             id="pagesDropdown"
                             role="button"
@@ -203,12 +205,17 @@
 
                         <!-- 서브 메뉴-->
                         <div class="dropdown-menu" aria-labelledby="pagesDropdown">
-                            <a class="dropdown-item" id="adminStudent" href="/myaccount">교육생 현황</a>
-                            <a class="dropdown-item" id="adminNotifi" href="/myaccount">공지사항 입력</a>
-                            <a class="dropdown-item" id="adminAttend" href="/change_password">출결 상황보기</a>
-                            <a class="dropdown-item" id="adminWhy" href="/change_password">사유서 보기</a>
-                            <a class="dropdown-item" id="adminBook" href="/change_password">도서대출 보기</a>
-                            <a class="dropdown-item" id="adminTool" href="/change_password">기자재 대출 보기</a>                            
+                            <a class="dropdown-item active" id="adminStudent" href="/admin/user/">교육생 현황</a>
+                            <a class="dropdown-item" id="adminNotifi" href="/notification/wirte/">공지사항 입력</a>
+                            <h6 class="dropdown-header">출결</h6> 
+                            <a class="dropdown-item" id="adminAttend" href="/admin/user/attendance/page/">출결 상황보기</a>
+                            <a class="dropdown-item" id="adminAttend" href="/admin/user/attendance/search/">교육생 출결 검색</a>
+                            <h6 class="dropdown-header">대출</h6>                             
+                            <a class="dropdown-item" id="adminBook" href="/change_password">도서 대출 보기</a>
+                            <a class="dropdown-item" id="adminTool" href="/change_password">기자재 대출 보기</a>        
+                            <h6 class="dropdown-header">등록 관리</h6>                    
+                            <a class="dropdown-item" id="adminDevice" href="/admin/device/">기기등록 현황</a>
+                            <a class="dropdown-item" id="adminFingerprint" href="/admin/fingerprint/">지문등록 현황</a>
                         </div>
 
                     </li>
