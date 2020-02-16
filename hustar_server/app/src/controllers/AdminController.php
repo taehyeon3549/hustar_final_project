@@ -895,4 +895,26 @@ public function getAttendanceDate(Request $request, Response $response, $args)
 		->withHeader('Content-Type', 'application/json')
 		->write(json_encode($result, JSON_NUMERIC_CHECK));
     }    
+
+    /***************************************
+     * 교육생 이름 USN 가져오기
+     * return 
+     * 정보
+     ***************************************/
+    public function getStudentNameList(Request $request, Response $response, $args)
+    {     
+        $noticeInfo = $this->AdminModel->userNameList();
+
+        $count = count($noticeInfo);
+
+        for($i = 0; $i < $count; $i++){
+            $result[$i]['NAME'] = $noticeInfo[$i]['USER_NAME'];
+            $result[$i]['USN'] = $noticeInfo[$i]['USER_USN'];
+        }
+        
+
+        return $response->withStatus(200)
+		->withHeader('Content-Type', 'application/json')
+		->write(json_encode($result, JSON_NUMERIC_CHECK));
+    }
 }

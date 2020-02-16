@@ -106,6 +106,11 @@ $app->get('/notification/wirte/', 'App\Controller\WebController:notiWrite')
 $app->get('/admin/fingerprint/', 'App\Controller\WebController:fingerprintList')
     ->setName('fingerprintList');
 
+// 교육생별 출결 정보 검색
+$app->get('/admin/user/attendance/search/', 'App\Controller\WebController:userattendancesearch')
+    ->setName('userattendancesearch');    
+    
+
 /****************************************/
 /*          User Management             */
 /****************************************/
@@ -304,6 +309,11 @@ $app->get('/admin/fingerprint/', 'App\Controller\WebController:fingerprintList')
     // 휴스타 인원 명단 json
     $app->post('/admin/user/list/', 'App\Controller\AdminController:userListJson')
     ->setName('userList'); 
+
+     // 휴스타 인원 이름 가져오기
+     $app->post('/admin/user/namelist/', 'App\Controller\AdminController:getStudentNameList')
+     ->setName('getStudentNameList'); 
+    
     
     
         
