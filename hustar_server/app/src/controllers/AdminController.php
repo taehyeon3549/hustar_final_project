@@ -198,20 +198,57 @@ final class AdminController extends BaseController
         // $helper->write($spreadsheet, __FILE__);
     }
 
+    /*************************************************
+     * Hustar 회원 목록 json 변환
+     *************************************************/
+    public function userListJson(Request $request, Response $response, $args)
+    {      
+        // User 정보 가져옴
+        $userinfo = $this->AdminModel->userList();
+
+        //반복문을 돌며 각 row의 cell에 데이터 추가
+        for($i=0; $i<count($userinfo); $i++) {    
+            $result[$i]['NO'] = $i+1;
+            $result[$i]['NAME'] = $userinfo[$i]['USER_NAME'];
+            
+            if($userinfo[$i]['USER_GENDER'] == 0){
+                $result[$i]['GENDER'] = "남";
+            }else{
+                $result[$i]['GENDER'] = "여";
+            }
+            $result[$i]['BIRTH'] = $userinfo[$i]['USER_BIRTH'];
+            $result[$i]['UNIV'] = $userinfo[$i]['USER_UNIV'];
+            $result[$i]['MAJOR'] = $userinfo[$i]['USER_MAJOR'];
+            $result[$i]['SUB_MAJOR'] = $userinfo[$i]['USER_SUBMAJOR'];
+            $result[$i]['DEGREE'] = $userinfo[$i]['USER_DEGREE'];            
+            $result[$i]['PHONE'] = $userinfo[$i]['USER_PHONE'];
+            $result[$i]['EMAIL'] = $userinfo[$i]['USER_EMAIL'];
+            $result[$i]['HUSTAR'] = $userinfo[$i]['HUSTAR_NAME'];
+            $result[$i]['CLASS'] = $userinfo[$i]['SUB_CLASS_NAME'];    
+        }
+
+        return $response->withStatus(200)
+		->withHeader('Content-Type', 'application/json')
+		->write(json_encode($result, JSON_NUMERIC_CHECK));
+
+    }
+
+
      /*************************************************
      * Hustar 출결 기록 Excel 파일로 출력
      *************************************************/
     public function printUserAttendance(Request $request, Response $response, $args)
     {
         // 년, 월, 일별 수업시간 입력 받음
-        // $year = $request->getParsedBody()['YEAR'];
-        // $month = $request->getParsedBody()['MONTH'];
+        //$year = $request->getParsedBody()['YEAR'];        
+        //$month = $request->getParsedBody()['MONTH'];
+        $month = $args['month'];
         // $ctime = $request->getParsedBody()['CLASSTIME'];
         $ctime = "8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8";
         $daytime = explode(',',$ctime);
 
         $year = "2020";
-        $month = "2";
+        //$month = "2";
 
         $time = mktime(0,0,0,$month, 1, $year);
 
@@ -783,6 +820,98 @@ public function getAttendanceDate(Request $request, Response $response, $args)
 
         // }     
         //print_r($result);
+
+        return $response->withStatus(200)
+		->withHeader('Content-Type', 'application/json')
+		->write(json_encode($result, JSON_NUMERIC_CHECK));
+    }
+
+    /***************************************
+     * 출석 인원 이름 가져오기
+     * return 
+     * 정보
+     ***************************************/
+    public function attendedList(Request $request, Response $response, $args)
+    {     
+        $month = $request->getParsedBody()['MONTH'];
+        $day = $request->getParsedBody()['DAY'];
+
+        $ok_c = 0;
+        $error_c = 0;
+        $late_c = 0;
+        $absent_c = 0;
+
+        /******************** 정상 ****************** */
+        $date['START'] = "2020-".$month."-".$day." 06:00:00";
+        $date['END'] = "2020-".$month."-".$day." 10:10:00";        
+
+        $attendList = $this->AdminModel->getAttendList($date);
+        $errorList = $this->AdminModel->errorList($date);
+        
+        $count = count($attendList);        
+
+        for($i = 0; $i < $count; $i++){
+            $result['OK'][$i] = $attendList[$i]['USER_NAME'];
+            $ok_c+=1;
+        }
+
+        $count = count($errorList);        
+
+        for($i = 0; $i < $count; $i++){
+            $result['ERROR'][$i] = $errorList[$i]['USER_NAME'];
+            $error_c+=1;
+        }
+
+        /******************** 지각 ****************** */
+        $date['START'] = "2020-".$month."-".$day." 10:10:01";
+        $date['END'] = "2020-".$month."-".$day." 18:00:00";
+
+        $lateList = $this->AdminModel->getAttendList($date);
+        
+        $count = count($lateList);
+
+        for($i = 0; $i < $count; $i++){
+            $result['LATE'][$i] = $lateList[$i]['USER_NAME'];
+            $late_c+=1;
+        }
+
+        /******************** 결석 ****************** */
+        $date['START'] = "2020-".$month."-".$day." 00:00:00";
+        $date['END'] = "2020-".$month."-".$day." 23:59:00";
+
+        $absentList = $this->AdminModel->getAbsentList($date);
+        
+        $count = count($absentList);
+
+        for($i = 0; $i < $count; $i++){
+            $result['ABSENT'][$i] = $absentList[$i]['USER_NAME'];
+            $absent_c+=1;
+        }
+        
+        $result['MAX'] = max($ok_c,$error_c,$absent_c,$late_c);
+        
+
+        return $response->withStatus(200)
+		->withHeader('Content-Type', 'application/json')
+		->write(json_encode($result, JSON_NUMERIC_CHECK));
+    }    
+
+    /***************************************
+     * 교육생 이름 USN 가져오기
+     * return 
+     * 정보
+     ***************************************/
+    public function getStudentNameList(Request $request, Response $response, $args)
+    {     
+        $noticeInfo = $this->AdminModel->userNameList();
+
+        $count = count($noticeInfo);
+
+        for($i = 0; $i < $count; $i++){
+            $result[$i]['NAME'] = $noticeInfo[$i]['USER_NAME'];
+            $result[$i]['USN'] = $noticeInfo[$i]['USER_USN'];
+        }
+        
 
         return $response->withStatus(200)
 		->withHeader('Content-Type', 'application/json')

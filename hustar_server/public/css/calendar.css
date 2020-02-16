@@ -242,6 +242,7 @@ span.fc-button {
   text-align: center;
   transition: all 0.2s;
   -webkit-transition: all 0.2s;
+  display: none;
 }
 .fc-state-hover,
 .fc-state-down,
@@ -416,6 +417,7 @@ table.fc-border-separate {
 
 .fc-border-separate tr.fc-last td {
 }
+
 .fc-border-separate .fc-week .fc-first {
   border-left: 0;
 }

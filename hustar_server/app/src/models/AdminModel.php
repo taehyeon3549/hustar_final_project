@@ -214,4 +214,61 @@ public function noticeList(){
 
 		return $result[0];
 	}
+
+	/*****************************
+	 * 정상 출석 인원 이름 가져오기
+	 *****************************/
+	public function getAttendList($date) {  
+		$sql = "SELECT USER_NAME
+				FROM ATTENDANCE
+				LEFT OUTER JOIN USER
+				ON ATTENDANCE_USN = USER_USN
+				WHERE ATTENDANCE_GTW >= ? AND ATTENDANCE_GTW <= ? AND USER_ADMIN = 0;";
+		$sth = $this->db->prepare($sql);
+		
+		$sth->execute(array($date['START'], $date['END']));
+		$result = $sth->fetchAll();
+
+		return $result;
+	}
+
+	/*****************************
+	 * 결석 인원 이름 가져오기
+	 *****************************/
+	public function getAbsentList($date) {  
+		$sql = "SELECT USER_NAME
+				FROM USER
+				WHERE NOT USER_USN IN(
+					SELECT ATTENDANCE_USN
+					FROM ATTENDANCE
+					WHERE ATTENDANCE_GTW >= ? AND ATTENDANCE_GTW <= ?) AND USER_ADMIN = 0;";
+
+		$sth = $this->db->prepare($sql);
+		
+		$sth->execute(array($date['START'], $date['END']));
+		$result = $sth->fetchAll();
+
+		return $result;
+	}
+
+	/*****************************
+	 * 퇴근 안찍은 인원 이름 가져오기
+	 *****************************/
+	public function errorList($date) {  
+		$sql = "SELECT USER_NAME
+				from ATTENDANCE
+				LEFT OUTER JOIN USER
+				ON ATTENDANCE_USN = USER_USN
+				WHERE ATTENDANCE_GTW >= ? AND ATTENDANCE_GTW <= ? 
+				AND ATTENDANCE_GTW = ATTENDANCE_GTH AND USER_ADMIN = 0;";
+		$sth = $this->db->prepare($sql);
+		
+		$sth->execute(array($date['START'], $date['END']));
+		$result = $sth->fetchAll();
+
+		return $result;
+	}
+
+	
+
 }

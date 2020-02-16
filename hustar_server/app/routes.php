@@ -106,6 +106,11 @@ $app->get('/notification/wirte/', 'App\Controller\WebController:notiWrite')
 $app->get('/admin/fingerprint/', 'App\Controller\WebController:fingerprintList')
     ->setName('fingerprintList');
 
+// 교육생별 출결 정보 검색
+$app->get('/admin/user/attendance/search/', 'App\Controller\WebController:userattendancesearch')
+    ->setName('userattendancesearch');    
+    
+
 /****************************************/
 /*          User Management             */
 /****************************************/
@@ -193,6 +198,10 @@ $app->get('/admin/fingerprint/', 'App\Controller\WebController:fingerprintList')
     // 지문 리스트
     $app->post('/fingerprint/list/', 'App\Controller\UserManagementController:fingerList')
         ->setName('fingerList');
+    
+    // 내 출석 현황 가져오기    
+    $app->post('/attendance/myattend/', 'App\Controller\UserManagementController:getAttendanceUser')
+        ->setName('myattend');
 
     /****************************************/
     /*          certification page          */
@@ -282,7 +291,7 @@ $app->get('/admin/fingerprint/', 'App\Controller\WebController:fingerprintList')
         ->setName('noticeList'); 
        
     // Hustar 출결 출력
-    $app->get('/admin/user/attendance/excel', 'App\Controller\AdminController:printUserAttendance')
+    $app->get('/admin/user/attendance/excel/{month}', 'App\Controller\AdminController:printUserAttendance')
         ->setName('attendance'); 
 
     // Hustar 출결 papge 출력 하기 위한 json
@@ -292,6 +301,21 @@ $app->get('/admin/fingerprint/', 'App\Controller\WebController:fingerprintList')
     // Hustar 출결 papge 출력 하기 위한 일별 출결 인원 json
     $app->post('/admin/user/attendance/page/count/', 'App\Controller\AdminController:getAttendanceCount')
         ->setName('getAttendanceDate'); 
+
+    // 해당일 출석 정보 json
+    $app->post('/admin/user/attendance/attendedList/', 'App\Controller\AdminController:attendedList')
+        ->setName('attendedList'); 
+    
+    // 휴스타 인원 명단 json
+    $app->post('/admin/user/list/', 'App\Controller\AdminController:userListJson')
+    ->setName('userList'); 
+
+     // 휴스타 인원 이름 가져오기
+     $app->post('/admin/user/namelist/', 'App\Controller\AdminController:getStudentNameList')
+     ->setName('getStudentNameList'); 
+    
+    
+    
         
     
     

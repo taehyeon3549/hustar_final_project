@@ -364,5 +364,14 @@ final class WebController extends BaseController
         $this->view->render($response, 'hustar_fingerprint.html');
         return $response;
     }
+
+    /************************************
+    * 회원 출결 검색
+    **************************************/
+	public function userattendancesearch(Request $request, Response $response, $args)
+    {
+        $this->view->render($response, 'hustarUserAttend.html');
+        return $response;
+    }
       
 }

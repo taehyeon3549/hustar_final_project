@@ -49,15 +49,23 @@ final class UserManagementModel extends BaseModel
  *  DB 삽입
  *********************/
     public function addUser($user) {        
-		$sql = "INSERT into USER (USER_USN, USER_PASSWORD, USER_EMAIL, USER_PHONE, USER_NAME, USER_GENDER, USER_BIRTH ,USER_ADMIN, USER_CLASS) 
-				values (?, ?, ?, ?, ? , ?, ?, ?, ? )";
+		$sql = "INSERT INTO `hustar_final`.`USER` (USER_USN, USER_EMAIL, USER_PASSWORD, USER_NAME, 
+				USER_PHONE, USER_UNIV, USER_MAJOR, USER_SUBMAJOR, USER_DEGREE, 
+				USER_GENDER, USER_BIRTH, USER_ADMIN, USER_CLASS) 
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+
+
+	// $sql = "INSERT into USER (USER_USN, USER_PASSWORD, USER_EMAIL, USER_PHONE, USER_NAME, USER_GENDER, USER_BIRTH ,USER_ADMIN, USER_CLASS) 
+	// 			values (?, ?, ?, ?, ? , ?, ?, ?, ? )";
 		$sth = $this->db->prepare($sql);
 
-		if($sth->execute(array($user['USER_USN'], $user['USER_PASSWORD'], 
-								$user['USER_EMAIL'], $user['USER_PHONE'], 
-								$user['USER_NAME'], $user['USER_GENDER'], 
-								$user['USER_BIRTH'], $user['USER_ADMIN'], 
-								$user['USER_CLASS']))){
+		if($sth->execute(array($user['USER_USN'], $user['USER_EMAIL'],
+							$user['USER_PASSWORD'], $user['USER_NAME'],
+							$user['USER_PHONE'], $user['USER_UNIV'],
+							$user['USER_MAJOR'], $user['USER_SUBMAJOR'],
+							$user['USER_DEGREE'], $user['USER_GENDER'],
+							$user['USER_BIRTH'], $user['USER_ADMIN'],
+							$user['USER_CLASS']))){
 			$val = "0";
 			return $val;
 		}else{
@@ -632,5 +640,20 @@ public function checkAttendance($info){
 	return $result;
 }
 
+/*****************************
+ * 유저별 출결 정보 가져오기
+ ******************************/
+public function checkAttendanceEach($info){
+	$sql = "SELECT * FROM ATTENDANCE
+			WHERE ATTENDANCE_USN = ? 
+			AND ATTENDANCE_GTW >= ? 
+			AND ATTENDANCE_GTH <= ?;";
+			
+	$sth = $this->db->prepare($sql);
+	$sth->execute(array($info['USN'], $info['START'], $info['END']));
+	$result = $sth->fetchAll();
+	
+	return $result;
+}
 
 }
