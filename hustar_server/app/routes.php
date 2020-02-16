@@ -78,7 +78,7 @@ $app->post('/admin/user/getList', 'App\Controller\WebController:getuserList')
 
 
 // 내 신상 기록 카드 출력
-$app->get('/admin/user/view/{index}', 'App\Controller\WebController:userView')
+$app->get('/admin/user/view/{card}', 'App\Controller\WebController:userView')
     ->setName('userView');
 
 

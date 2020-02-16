@@ -271,16 +271,16 @@ final class WebController extends BaseController
       public function userView(Request $request, Response $response, $args)
     {
         // 호출 index 받고
-        $index = $args['index'];
+        $card = $args['card'];
        
         // index에 해당하는 공지사항 가져오기
-        $TITLE = $this->WebModel->getuserView($index)[0]['NOTICE_TITLE'];
-        $BODY = $this->WebModel->getuserView($index)[0]['NOTICE_BODY'];
-        $NAME = $this->WebModel->getuserView($index)[0]['USER_NAME'];
-        $DATE = $this->WebModel->getuserView($index)[0]['NOTICE_DATE'];
+        $TITLE = $this->WebModel->getuserView($card)[0]['NOTICE_TITLE'];
+        $BODY = $this->WebModel->getuserView($card)[0]['NOTICE_BODY'];
+        $NAME = $this->WebModel->getuserView($card)[0]['USER_NAME'];
+        $DATE = $this->WebModel->getuserView($card)[0]['NOTICE_DATE'];
 
-        $this->view->render($response, 'notificationView.twig', 
-                            ['index' => $index , 'title' => $TITLE, 
+        $this->view->render($response, 'hustar_user_view.twig', 
+                            ['card' => $card , 'title' => $TITLE, 
                             'body' => $BODY , 'name' => $NAME , 'date' => $DATE]);
         
         return $response;
