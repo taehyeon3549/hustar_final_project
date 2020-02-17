@@ -391,5 +391,14 @@ final class WebController extends BaseController
         $this->view->render($response, 'hustarUserOuting.html');
         return $response;
     }
+
+    /************************************
+    * 교육생 전체 외출 복귀 보기
+    **************************************/
+	public function hustarOuting(Request $request, Response $response, $args)
+    {
+        $this->view->render($response, 'hustarUserOutingAdmin.html');
+        return $response;
+    }
       
 }

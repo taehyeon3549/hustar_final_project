@@ -127,7 +127,7 @@
                 <ul class="sidebar navbar-nav">
                     <!-- 메인 메뉴 -->
                     <!-- 공지사항 -->
-                    <li class="nav-item">
+                    <li class="nav-item active">
                         <a class="nav-link" href="/notification/">
                             <i class="fas fa-fw fas fa-bell"></i>                            
                             <span>공지사항</span>
@@ -153,8 +153,7 @@
                             <h6 class="dropdown-header">출결</h6>
                             <a class="dropdown-item" id="myAttend" href="/user/attendance/">내 출결 상황</a>         
                             <h6 class="dropdown-header">사유서</h6>               
-                            <a class="dropdown-item" id="myWhyWrite" href="/PI">사유서 작성</a>
-                            <a class="dropdown-item" id="myWhy" href="/PI">내 사유서</a>
+                            <a class="dropdown-item" id="myWhyWrite" href="/user/outing/">사유서 작성</a>                            
                         </div>
                     </li>
 
@@ -170,9 +169,9 @@
                     </li>
 
                      <!-- 관리자 기능 -->
-                     <li class="nav-item dropdown active">
+                     <li class="nav-item dropdown">
                         <a
-                            class="nav-link dropdown-toggle active"
+                            class="nav-link dropdown-toggle"
                             href="#"
                             id="pagesDropdown"
                             role="button"
@@ -185,13 +184,14 @@
 
                         <!-- 서브 메뉴-->
                         <div class="dropdown-menu" aria-labelledby="pagesDropdown">
-                            <a class="dropdown-item active" id="adminStudent" href="/admin/user/">교육생 현황</a>
+                            <a class="dropdown-item" id="adminStudent" href="/admin/user/">교육생 현황</a>
                             <a class="dropdown-item" id="adminNotifi" href="/notification/wirte/">공지사항 입력</a>
                             
                             <h6 class="dropdown-header">출결</h6> 
                             <a class="dropdown-item" id="adminAttend" href="/admin/user/attendance/page/">출결 상황보기</a>
                             <a class="dropdown-item" id="adminAttend" href="/admin/user/attendance/search/">교육생 출결 검색</a>
-    
+                            <a class="dropdown-item" id="adminOuting" href="/admin/outing/">교육생 외출/복귀 검색</a>                            
+
                             <h6 class="dropdown-header">등록 관리</h6>                    
                             <a class="dropdown-item" id="adminDevice" href="/admin/device/">기기등록 현황</a>
                             <a class="dropdown-item" id="adminFingerprint" href="/admin/fingerprint/">지문등록 현황</a>

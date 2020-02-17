@@ -1489,9 +1489,9 @@ public function change_certification_app(Request $request, Response $response, $
 		$info['USN'] = $request->getParsedBody()['USN'];
 
 		$result = $this->UserManagementModel->setReasonOuting($info);
-		
+
 		return $response->withStatus(200)
 		->withHeader('Content-Type', 'application/json')
 		->write(json_encode($result, JSON_NUMERIC_CHECK));
-	}
+	}	
 }
