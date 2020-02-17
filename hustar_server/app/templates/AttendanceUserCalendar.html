@@ -670,11 +670,31 @@
                             }).done(function (msg) {
                                  //console.log(msg);
                                  var result = msg;                                 
-
-                                 for(var i = 0; i<result.length; i++){                                    
+                                 var text_color = "";
+                                 var back_color = "";
+                                 for(var i = 0; i<result.length; i++){
+                                     if(result[i]['title'][0] == "결석"){
+                                         text_color = "white";
+                                         back_color = "#FFB6C1";
+                                     }else if(result[i]['title'][0] == "출석"){
+                                        text_color = "white";
+                                        back_color = "#90EE90";
+                                     }else if(result[i]['title'][0] == "지각"){
+                                        text_color = "white";
+                                        back_color = "#FAFAD2";
+                                     }else if(result[i]['title'][0] == "조기퇴근"){
+                                        text_color = "black";
+                                        back_color = "#EDEDED";
+                                     }else{
+                                        text_color = "white";
+                                        back_color = "#EDEDED";
+                                     }
                                         var t1 = {
                                             start: result[i]['start'],
-                                            title: result[i]['title'][0]
+                                            title: result[i]['title'][0],
+                                            color : back_color,
+                                            backgroundColor : back_color,
+                                            textColor : text_color
                                         };
                                         
                                         $("#calendar").fullCalendar('renderEvent', t1);                                        

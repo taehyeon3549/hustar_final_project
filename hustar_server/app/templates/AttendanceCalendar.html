@@ -702,8 +702,7 @@
                                 }
                             }).done(function (msg) {
                                  //console.log(msg);
-                                 var result = msg;                                 
-
+                                 var result = msg;
                                  for(var i = 0; i<result.length; i++){                                    
                                         var t1 = {
                                             start: result[i]['start'],
@@ -712,11 +711,15 @@
                                         //console.log(t1);
                                         var t2 = {
                                             start: result[i]['start'],
-                                            title: result[i]['title'][1]
+                                            title: result[i]['title'][1],
+                                            color : "#FFB6C1",
+                                            backgroundColor : "#FFB6C1"                                          
                                         };
                                         var t3 = {
                                             start: result[i]['start'],
-                                            title: result[i]['title'][2]
+                                            title: result[i]['title'][2],
+                                            color : "#FAFAD2",
+                                            backgroundColor : "#FAFAD2"
                                         };
                                         //$("#calendar").fullCalendar('renderEvent', t1);
                                         $("#calendar").fullCalendar('renderEvent', t2);
