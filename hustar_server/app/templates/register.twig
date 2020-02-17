@@ -107,6 +107,7 @@
               </div>
             </div>
           </div>
+          
           <div class="form-group">
             <div class="form-row">
               <div class="col-md-6">
@@ -117,6 +118,56 @@
               </div>
             </div>
           </div>
+
+          <div class="form-group">
+            <div class="form-row">
+              <div class="col-md-6">
+                <div class="form-label-group">
+                  <input type="text" name = "univ" id="univ" class="form-control" placeholder="학교" required="required">
+                  <label for="univ">학교</label>
+                </div>
+              </div>            
+              <div class="col-md-6">
+                <div class="form-label-group" style="padding-bottom: 5px; padding-top: 8px;">
+                  <input type="radio" name ="gender" value ='0'>전문학사
+						      <input type="radio" name ="gender" value ='1'>학사				
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="form-row">
+              <div class="col-md-6">
+                <div class="form-label-group">
+                  <input type="text" name = "major" id="major" class="form-control" placeholder="전공" required="required">
+                  <label for="major">전공</label>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-label-group">
+                  <input type="minior" name = "minior" id="minior" class="form-control" placeholder="부전공" required="required">
+                  <label for="minior">부전공</label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="form-row">
+              <div class="col-md-6">
+                <div class="form-label-group">
+                  <select id="studentList" class="form-control"> </select> 
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-label-group">
+                  <select id="studentList" class="form-control"> </select> 
+                </div>
+              </div>
+            </div>
+          </div>
+         
+                                        
           <a class="btn btn-primary btn-block" id = "registerb">회원 가입</a>
         </form>
         <div class="text-center">
@@ -124,6 +175,62 @@
           
         </div>
 
+        <!-- 검색 버튼 동작 -->
+            <script type="text/javascript">
+                document.getElementById("studentSearch").addEventListener('click', function () {
+                    console.log($('#monthpicker').val());                    
+                    console.log($("#studentList option:selected").val());
+
+                    var daypicked = $('#monthpicker').val();
+                    var slideday = daypicked.split('-');
+                    var year = slideday[0];
+                    var month = slideday[1];
+                    var usn = $("#studentList option:selected").val();
+
+                    $.ajax({
+                        method: "post",
+                        url: "/attendance/myattend/",
+                        dataType: 'json',
+                        data: {                  
+                            "YEAR" : slideday[0],
+                            "MONTH" :slideday[1],
+                            "USN" : $("#studentList option:selected").val()
+                        }
+                    }).done(function (msg) {
+                        var html = '';                        
+                        for(var i = 0; i<msg.length; i++){   
+                            html += "<tr>";
+                            html += "<td id = 'date' >"+msg[i]['DATE']+"</td>";
+                            if(msg[i]['GTW'] == null){
+                                html += "<td id = 'gtw' >"+ " - "+"</td>";
+                            }else{
+                                html += "<td id = 'gtw' >"+msg[i]['GTW']+"</td>";
+                            }
+                            
+                            if(msg[i]['GTH'] == null){
+                                html += "<td id = 'gth' >"+ " - " +"</td>";
+                            }else{
+                                html += "<td id = 'gth' >"+msg[i]['GTH']+"</td>";
+                            }
+                            
+                            html += "<td id = 'state' >"+msg[i]['STATE']+"</td>";
+
+                            if(msg[i]['REASON'] == null){
+                                html += "<td id = 'reason' >"+ " 미등록 " +"</td>";
+                            }else{
+                                html += "<td id = 'reason' >"+msg[i]['REASON']+"</td>";
+                            }
+                            
+                            //$("#dataTable").DataTable();                           
+                        }     
+                                       
+                        $("#userAttendList").html(html);
+                        });
+                    });
+            </script> 
+
+
+            
         <!-- Button Action -->
         <script type="text/javascript">
           document.getElementById("registerb").addEventListener('click', function(){
