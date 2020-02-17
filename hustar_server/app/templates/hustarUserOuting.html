@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="kr">
+
+    <head>       
+        <!-- 로그인 SESSION이 없으면 로그인 페이지로 이동 -->
+        <script>
+            if (sessionStorage.getItem('usn') == null) {
+                location.href = "/";
+            }        
+        </script>              
+
+        <link
+            rel="stylesheet"
+            href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"/>
+
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+        <title>내 외출 복귀 현황</title>
+        
+        <!-- Custom fonts for this template-->
+        <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+        
+        <!-- Page level plugin CSS-->
+        <link href="/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
+
+        <!-- Custom styles for this template-->
+        <link href="/css/sb-admin.css" rel="stylesheet">
+
+        <!-- <link href="/css/bootstrap/bootstrap.css" rel="stylesheet"> -->     
+
+        <!-- Tab 왼쪽 아이콘-->
+        <link rel="shortcut icon" href="/icon/hustar.ico" type="image/x-icon"/>       
+
+        <!-- 팝업 테이블 css -->
+        <style>
+            .mytable {
+                border-collapse: collapse;
+            }
+
+            .mytable td,
+            .mytable th {
+                border: 1px solid black;
+            }
+
+            .inputWithIcon input[type=text]{
+                padding-left: 40px;
+            }
+
+            .inputWithIcon{
+                position: relative;
+            }
+
+            .inputWithIcon i{
+                position: absolute;
+                left:0;
+                top:8px;
+                padding:9px 8ox;
+                color:#aaa;
+                transition: .3s;
+            }
+
+            .inputWithIcon input[type=text] :focus+ i{
+                color:dodgerBlue;
+            }
+        </style>        
+    
+    </head>
+
+    <body id="page-top" style="margin-top: 0px;margin-bottom: 0px;">
+            <!-- 최상단 바 -->
+            <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
+                <!-- 왼쪽 상단 마크 -->
+                <a class="navbar-brand mr-1" href="/notification/">
+                    <img src="/icon/hustar_icon.ico" class="LogoPNG" style="width: 25px;">
+                    HUSTAR                    
+                </a>
+                <!-- 메뉴 숨김/보이기 버튼-->
+                <button
+                    class="btn btn-link btn-sm text-white order-1 order-sm-0"
+                    id="sidebarToggle"
+                    href="#">
+                    <i class="fas fa-bars"></i>
+                </button>
+
+                <!-- Navbar 검색바 - 현재 검색기능 삭제 -->
+                <form
+                    class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
+                    <div class="input-group">
+                        <div class="input-group-append">
+                            <i>
+                                <!-- 삭제부분 -->
+                            </i>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- 우측 상단 user 아이콘 메뉴 -->
+                <ul class="navbar-nav ml-auto ml-md-0">
+                    <!-- 회원 아이콘 -->
+                    <li class="nav-item dropdown no-arrow">
+                        <a
+                            class="nav-link dropdown-toggle"
+                            href="#"
+                            id="userDropdown"
+                            role="button"
+                            data-toggle="dropdown"
+                            aria-haspopup="true"
+                            aria-expanded="false">
+                            <i class="fas fa-user-circle fa-fw"></i>
+                        </a>
+
+                        <!-- 메뉴 박스 -->
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                            <!-- 1번 메뉴-->
+                            <a class="dropdown-name">
+                                <script>
+                                    var name = sessionStorage.getItem('name');
+                                    document.write(name);
+                                </script>
+                            </a>
+                            <!-- 경계선 -->
+                            <div class="dropdown-divider"></div>
+                            <!-- 2번 선택 메뉴 -->
+                            <a
+                                class="dropdown-item"
+                                id="signoutb"
+                                href="#"
+                                data-toggle="modal"
+                                data-target="#logoutModal">로그아웃
+                            </a>
+                        </div>
+
+                    </li>
+                </ul>
+            </nav>
+
+            <div id="wrapper">
+
+                <!-- 왼쪽 사이드바 -->
+                <ul class="sidebar navbar-nav">
+                    <!-- 메인 메뉴 -->
+                    <!-- 공지사항 -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="/notification/">
+                            <i class="fas fa-fw fas fa-bell"></i>                            
+                            <span>공지사항</span>
+                        </a>                        
+                    </li>
+
+                    <!-- 출결 -->
+                    <li class="nav-item dropdown active">
+                        <a
+                            class="nav-link dropdown-toggle active"
+                            href="#"
+                            id="pagesDropdown"
+                            role="button"
+                            data-toggle="dropdown"
+                            aria-haspopup="true"
+                            aria-expanded="false">
+                            <i class="fas fa-fw fa-chart-area"></i>
+                            <span>출결</span>
+                        </a>
+
+                        <!-- 서브 메뉴-->
+                        <div class="dropdown-menu active" aria-labelledby="pagesDropdown">
+                            <h6 class="dropdown-header">출결</h6>
+                            <a class="dropdown-item" id="myAttend" href="/user/attendance/">내 출결 상황</a>         
+                            <h6 class="dropdown-header">사유서</h6>               
+                            <a class="dropdown-item active" id="myWhyWrite" href="/user/outing/">사유서 작성</a>                            
+                        </div>
+                    </li>
+
+                  
+
+                    <!-- 개인 신상 수정  -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="/maps">
+                            <i class="fas fa-fw fa-file"></i>
+                            <span>내 신상 기록 카드</span>
+                        </a>
+                    </li>
+
+                     <!-- 관리자 기능 -->
+                     <li class="nav-item dropdown ">
+                        <a
+                            class="nav-link dropdown-toggle "
+                            href="#"
+                            id="pagesDropdown"
+                            role="button"
+                            data-toggle="dropdown"
+                            aria-haspopup="true"
+                            aria-expanded="false">
+                            <i class="fas fa-fw fa-tools"></i>
+                            <span>관리자 기능</span>
+                        </a>
+
+                        <!-- 서브 메뉴-->
+                        <div class="dropdown-menu" aria-labelledby="pagesDropdown">
+                            <a class="dropdown-item" id="adminStudent" href="/admin/user/">교육생 현황</a>
+                            <a class="dropdown-item" id="adminNotifi" href="/notification/wirte/">공지사항 입력</a>
+                            <h6 class="dropdown-header">출결</h6> 
+                            <a class="dropdown-item" id="adminAttend" href="/admin/user/attendance/page/">출결 상황보기</a>
+                            <a class="dropdown-item" id="adminAttend" href="/admin/user/attendance/search/">교육생 출결 검색</a>
+                             
+                            <h6 class="dropdown-header">등록 관리</h6>                    
+                            <a class="dropdown-item" id="adminDevice" href="/admin/device/">기기등록 현황</a>
+                            <a class="dropdown-item" id="adminFingerprint" href="/admin/fingerprint/">지문등록 현황</a>
+                        </div>
+
+                    </li>
+
+                    <!-- 내 계정관리 -->
+                    <li class="nav-item dropdown">
+                        <a
+                            class="nav-link dropdown-toggle"
+                            href="#"
+                            id="pagesDropdown"
+                            role="button"
+                            data-toggle="dropdown"
+                            aria-haspopup="true"
+                            aria-expanded="false">
+                            <i class="fas fa-fw fa-folder"></i>
+                            <span>내 계정관리</span>
+                        </a>
+
+                        <!-- 서브 메뉴-->   
+                        <div class="dropdown-menu" aria-labelledby="pagesDropdown">
+                            <a class="dropdown-item" id="myaccountb" href="/myaccount">내 계정</a>
+                            <a class="dropdown-item" href="/change_password">비밀번호 변경</a>
+                            <a
+                                class="dropdown-item"
+                                id="signoutb"
+                                href="#"
+                                data-toggle="modal"
+                                data-target="#logoutModal">로그아웃</a>
+                            <a class="dropdown-item" href="/change_idcancellation">회원 탈퇴</a>
+                        </div>
+                    </li>
+
+                    
+                </ul>
+
+                <!-- 우측 메인 화면 -->
+                <div id="content-wrapper" style="padding-bottom: 0px;">
+                    
+                    <div class="container-fluid">
+                        <!-- 흰 소제목 바 -->
+                        <ol class="breadcrumb mb-4">
+                            <li class="breadcrumb-item">
+                                <a href="/user/outing/">외출 복귀 검색</a>
+                            </li>
+                            <!-- <li class="breadcrumb-item active">목록</li> -->
+                        </ol>
+
+                        <!-- 페이지 내용 -->
+                        <div id="layoutSidenav_content" style="padding-bottom: 50px;">                            
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <i class="fas fa-search mr-1">
+                                        검색할 달을 입력하세요
+                                    </i>
+                                    
+                                    <div>
+                                        <!-- <input type="text" id="datePicker" class="form-control" value="2019-06-27"> -->
+                                        
+                                        <div class="inputWithIcon" style="float: left; width: 10%; margin-right: 20px;">      
+                                            <a>날짜 :</a><br>                                                            
+                                            <input type="text" class="form-control" id="monthpicker" >
+                                            <i class="fa fa-calendar fa-lg fa-fw" aria-hidden="true" style="margin-left: 10px;margin-top: 27px;border-top-width: 30px;"></i>
+                                        </div>                                        
+                                        <div style="float: left; width: 25%;">
+                                            <a id="studentSearch" class="btn btn-primary pull-right" style="margin-top: 24px;margin-left: 30px;">검색</a>
+                                        </div>
+                                    </div>                                   
+                                      
+                                    
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">                                        
+                                        <table class ="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>날짜</th>
+                                                    <th>외출 시간</th>
+                                                    <th>복귀 시간</th>                                                    
+                                                    <th>비고</th>
+                                                    <th>사유서</th>                                                    
+                                                </tr>
+                                            </thead>
+                                            <!-- <tfoot>
+                                                <tr>
+                                                    <th>No</th>
+                                                    <th>이름</th>
+                                                    <th>성별</th>
+                                                    <th>생년월일</th>
+                                                    <th>학교</th>
+                                                    <th>전공</th>
+                                                    <th>부전공</th>
+                                                    <th>학위</th>
+                                                    <th>전화번호</th>
+                                                    <th>이메일</th>
+                                                    <th>소속</th>
+                                                    <th>분반</th>    
+                                                    <th>교육생 카드</th>                                                
+                                                </tr>
+                                            </tfoot> -->
+                                            <tbody id = "userOutingList">                                                                            
+                                            </tbody>
+                                        </table>                                        
+                                    </div>
+                                </div>
+                            </div>                            
+
+                            <!-- <div id='paging' style="position: relative; width: 80%; margin: 0 auto; text-align: center; margin-top: 250px;">
+                                <ul class="pagination ">
+                                    <li class="left-etc"><a href="#">&laquo;</a></li>
+                                    <li class="active"><a href="#">1</a></li>
+                                    <li ><a href="#">2</a></li>
+                                    <li><a href="#">3</a></li>
+                                    <li><a href="#">4</a></li>                                   
+                                    <li class="right-etc"><a href="#">&raquo;</a></li>
+                                </ul>
+                            </div> -->
+                        </div>
+                    </div>
+                    <!-- /.container-fluid -->
+
+                    <!-- 맨 밑 하다 copyright 부분-->
+                    <footer class="footer py-4 bg-light mt-auto">
+                        <div class="container-fluid">
+                            <div class="d-flex align-items-center justify-content-between small">                                
+                                <div class="copyright text-center my-auto">
+                                    <span>Copyright © HUSTAR 2020 &nbsp 첨단정보통신융합산업기술원 동내로 70 &nbsp</span>        
+                                </div>
+                            </div>
+                        </div>
+                    </footer>
+
+                </div>
+                <!-- /content-wrapper -->
+            </div>
+            <!-- /#wrapper -->
+
+            <!-- 최상단으로 이동하는 버튼 -->
+            <a class="scroll-to-top rounded" href="#page-top">
+                <i class="fas fa-angle-up"></i>
+            </a>
+
+                <!-- 로그아웃 모달 -->
+                <div
+                    class="modal fade"
+                    id="logoutModal"
+                    tabindex="-1"
+                    role="dialog"
+                    aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">로그아웃</h5>
+                                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">로그아웃 하실래요?</div>
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" type="button" data-dismiss="modal">닫기</button>
+                                <a class="btn btn-primary" id="logoutb">로그아웃</a>                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                 <!-- 사유서 작성 모달 -->
+                 <div
+                 class="modal fade"
+                 id="reasonModal"
+                 tabindex="-1"
+                 role="dialog"
+                 aria-labelledby="exampleModalLabel"
+                 aria-hidden="true">
+                 <div class="modal-dialog" role="document">
+                     <div class="modal-content">
+                         <div class="modal-header">
+                             <h5 class="modal-title" id="exampleModalLabel">사유서 작성</h5>
+                             <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                 <span aria-hidden="true">×</span>
+                             </button>
+                         </div>
+                         <div class="modal-body">
+                            사유를 입력해주세요 :
+                            <div>
+                                <input id ="tt" style='display: none'></input>
+                                <table class ="table table-bordered">                                    
+                                    <tbody id = "reasonSave">
+                                        <tr>
+                                            <td>외출 시간</td>
+                                            <td><input type="text" id='reasonTime' class="form-control" readonly></td>
+                                        </tr>                 
+                                        <tr>
+                                            <td>사유</td>
+                                            <td><input type="text" id='outingReason' class="form-control"></td>
+                                        </tr>                                        
+                                    </tbody>
+                                </table>            
+                            </div> 
+                        </div>
+                         <div class="modal-footer">
+                             <button class="btn btn-secondary" type="button" data-dismiss="modal">닫기</button>
+                             <a class="btn btn-primary" id="saveb">저장</a>                                
+                         </div>
+                     </div>
+                 </div>
+             </div>
+
+            <!-- 로그아웃 버튼 동작 -->
+            <script type="text/javascript">
+                document.getElementById("logoutb").addEventListener('click', function () {
+                    // Check the value are all filled
+                    var usn = sessionStorage.getItem('usn');
+                    //send json
+                    $.ajax({
+                        method: "POST",
+                        url: "/signout",
+                        data: {
+                                "USN": usn
+                            }
+                        }).done(function (msg) {
+                            if (msg.message == 0) {
+                                //logout success sessionStorage clear
+                                sessionStorage.clear();
+                                location.href = "/";
+                            }
+                            if (msg.message == 1) {
+                                alert("로그아웃 다시해주세요");
+                            }
+                        });
+                    });
+            </script> 
+
+            <!-- 저장 버튼 동작 -->
+            <script type="text/javascript">
+                document.getElementById("saveb").addEventListener('click', function () {
+                    var usn = sessionStorage.getItem('usn');
+                    var reason = document.getElementById("outingReason").value;
+                    var no = document.getElementById("tt").value;                    
+
+                    $.ajax({
+                        method: "POST",
+                        url: "/outting/monthmyoutting/setreason/",
+                        data: {
+                                "USN": usn,
+                                "REASON" : reason,
+                                "NO":no
+                            }
+                        }).done(function (msg) {
+                            if (msg == 0) {                                
+                                alert("저장 완료");
+                                location.href = "/user/outing/";
+                            }
+                            if (msg == 1) {
+                                alert("다시 시도해 주세요");
+                            }
+                        });
+                    });
+            </script> 
+            
+            <!-- 검색 버튼 동작 -->
+            <script type="text/javascript">
+                document.getElementById("studentSearch").addEventListener('click', function () {
+                    console.log($('#monthpicker').val());                    
+                    console.log($("#studentList option:selected").val());
+
+                    var daypicked = $('#monthpicker').val();
+                    var slideday = daypicked.split('-');
+                    var year = slideday[0];
+                    var month = slideday[1];
+                    var usn = $("#studentList option:selected").val();
+
+                    $.ajax({
+                        method: "post",
+                        url: "/outting/monthmyoutting/",
+                        dataType: 'json',
+                        data: {                  
+                            "YEAR" : slideday[0],
+                            "MONTH" :slideday[1],
+                            "USN" : sessionStorage.getItem('usn')
+                        }
+                    }).done(function (msg) {
+                        console.log(msg);
+                        
+                        var html = '';        
+                        if(msg != null){
+                            for(var i = 0; i<msg.length; i++){   
+                                html += "<tr>";
+                                html += "<td id = 'no' style='display: none' >"+msg[i]['NO']+"</td>";
+                                html += "<td id = 'date' >"+msg[i]['DATE']+"</td>";                            
+                                html += "<td id = 'out' >"+msg[i]['OUT']+"</td>";
+                                html += "<td id = 'back' >"+msg[i]['BACK']+"</td>";
+                                html += "<td id = 'state' >"+msg[i]['STATE']+"</td>";
+
+                                if(msg[i]['REASON'] == null || msg[i]['REASON'] == ""){
+                                    html += "<td id = 'reason' >"+"<a id ='writeReason' href='#' data-toggle='modal' data-target='#reasonModal'>작성</a>"+"</td>";
+                                }else{
+                                    html += "<td id = 'reason' >"+msg[i]['REASON']+"</td>";
+                                }
+                                
+                                
+                                
+                                //$("#dataTable").DataTable();                           
+                            }
+                        }                            
+                                       
+                        $("#userOutingList").html(html);                        
+                        });
+                    });
+            </script> 
+            
+            <!-- jQuery 충돌 방지 -->
+            <script type="text/javascript">
+                jQuery.noConflict();
+                var jq$=jQuery;
+            </script>
+    
+
+            <!-- Core plugin JavaScript-->
+            <script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+            <!-- 필수 js-->
+            <!-- Bootstrap core JavaScript-->
+            <script src="/vendor/jquery/jquery.min.js"></script>
+            <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+            <!-- Core plugin JavaScript-->
+            <script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+            <!-- Custom scripts for all pages-->
+            <script src="/js/sb-admin.min.js"></script>
+            <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>  
+            <script src="/js/bootstrap-monthpicker.js"></script> 
+            
+            <link rel="stylesheet" href="/css/bootstrap-monthpicker.css">  
+
+            
+
+            <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
+            <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
+            <script src="/assets/demo/datatables-demo.js"></script>
+            <!-- /. 필수 js -->    
+
+             
+            <!-- DayPicker 사용
+            <link rel="stylesheet" href="/css/bootstrap-datepicker.css">       
+            <script src="https://code.jquery.com/jquery-3.2.1.js"></script> 
+            <script src="/js/bootstrap-datepicker.js"></script>            
+            <script src="/js/bootstrap-datepicker.kr.min.js"></script>  -->
+            
+            
+           
+                <!-- DayPicker -->
+                <!-- <script>
+                    $(function() {	
+                        $('#datePicker').datepicker({
+                            format: "yyyy-mm",	//데이터 포맷 형식(yyyy : 년 mm : 월 dd : 일 )                            
+                            autoclose : true,	//사용자가 날짜를 클릭하면 자동 캘린더가 닫히는 옵션
+                            calendarWeeks : false, //캘린더 옆에 몇 주차인지 보여주는 옵션 기본값 false 보여주려면 true
+                            clearBtn : false, //날짜 선택한 값 초기화 해주는 버튼 보여주는 옵션 기본값 false 보여주려면 true                                                                                    
+                            disableTouchKeyboard : false,	//모바일에서 플러그인 작동 여부 기본값 false 가 작동 true가 작동 안함.
+                            immediateUpdates: false,	//사용자가 보는 화면으로 바로바로 날짜를 변경할지 여부 기본값 :false 
+                            multidate : false, //여러 날짜 선택할 수 있게 하는 옵션 기본값 :false 
+                            multidateSeparator :",", //여러 날짜를 선택했을 때 사이에 나타나는 글짜 2019-05-01,2019-06-01
+                            templates : {
+                                leftArrow: '&laquo;',
+                                rightArrow: '&raquo;'
+                            }, //다음달 이전달로 넘어가는 화살표 모양 커스텀 마이징 
+                            showWeekDays : true ,// 위에 요일 보여주는 옵션 기본값 : true                            
+                            todayHighlight : true ,	//오늘 날짜에 하이라이팅 기능 기본값 :false 
+                            toggleActive : true,	//이미 선택된 날짜 선택하면 기본값 : false인경우 그대로 유지 true인 경우 날짜 삭제
+                            weekStart : 0 ,//달력 시작 요일 선택하는 것 기본값은 0인 일요일 
+                            language : "kr"	//달력의 언어 선택, 그에 맞는 js로 교체해줘야한다.
+                            
+                        });//datepicker end
+                    });//ready end
+                </script> -->
+
+                <!-- MonthPicker-->
+                <script>
+                    //실제 보여지는 날짜 정의
+                    $('#month_text').val(new Date().getFullYear() + '년' + (new Date().getMonth() + 1) + '월');
+
+
+                    //monthpicker에서 사용할 초기 날짜 정의
+                    $('#monthpicker').val(new Date().getFullYear() + '-' + (new Date().getMonth() + 1));
+
+
+                    //monthpicker 적용
+                    $('#monthpicker').bootstrapMonthpicker({
+                        autoclose: true,//자동닫힘
+                        from: '2020-01',//달력 시작 월
+                    
+                        //month를 선택한 다음의 이벤트 정의
+                        onSelect: function(value){
+                            var workMonthStr = '';
+                            
+                            /* monthpicker 라이브러리에서 기본으로 "-"을 사용 */
+                            var splitDate = $.trim(value).split("-");
+                            //표현하고 싶으신 포멧으로 알아서 정의하기.
+                            $.each(splitDate, function (_idx, _date){
+                                if (_idx == 0)
+                                workMonthStr += _date + '년';
+                                if (_idx == 1)
+                                workMonthStr += _date + '월';
+                            });
+                            $("#month_text").val(workMonthStr);
+                        }
+                    });
+                    $("#month_text").click(function(){
+                        $("#monthpicker").click();
+                    });
+                    $("#month_icon").click(function(){
+                        $("#monthpicker").click();
+                    });                    
+                </script>
+                <script>
+                    $(document).on('click', '#writeReason', function(){
+                        console.log("작성 버튼 클릭");
+
+                        var str = ""
+                        var tdArr = new Array();	// 배열 선언
+                        var checkBtn = $(this);                        
+                        
+                        var tr = checkBtn.parent().parent();
+                        var td = tr.children();
+                        
+                        var no = td.eq(0).text();
+                        var out = td.eq(2).text();
+
+                        console.log(no)
+                        console.log(out);
+
+                        document.getElementById("tt").value = no;
+                        document.getElementById("reasonTime").value = out;
+                    });
+                </script>
+
+                
+            </body>
+        </html>

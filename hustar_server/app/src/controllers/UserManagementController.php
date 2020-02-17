@@ -1429,5 +1429,69 @@ public function change_certification_app(Request $request, Response $response, $
         return $response->withStatus(200)
 		->withHeader('Content-Type', 'application/json')
 		->write(json_encode($result, JSON_NUMERIC_CHECK));
-    }
+	}
+	
+	/*************************************
+	 * 외출 정보 조회
+	 * 
+	 * return	 * 
+	 ************************************/
+	public function getMyOuting(Request $request, Response $response, $args)
+	{	
+		$year = $request->getParsedBody()['YEAR'];
+		$month = $request->getParsedBody()['MONTH'];
+
+		$info['OUT'] = $year."-".$month."-01";
+		$info['BACK'] = $year."-".$month."-31";
+		$info['USN'] = $request->getParsedBody()['USN'];
+
+		$myout = $this->UserManagementModel->getOutingEach($info);
+
+		for($i = 0; $i<count($myout); $i++){
+			$temp = $myout[$i]['OUTING_OUT'];
+			$slide = explode("-", $temp);
+			$slide1 = explode(" ", $slide[2]);
+			$day = $slide[1]."-".$slide1[0];
+			
+			$result[$i]['DATE'] = $day;
+			$result[$i]['NO'] = $myout[$i]['OUTING_NO'];
+			$result[$i]['OUT'] = $myout[$i]['OUTING_OUT'];
+			$result[$i]['BACK'] = $myout[$i]['OUTING_BACK'];
+
+			$tt = explode(" ", $myout[$i]['OUTING_BACK']);
+
+			if($tt[1] == "00:00:00"){
+				$result[$i]['STATE'] = "미복귀";
+				$result[$i]['REASON'] = "불가";
+			}else{
+				$result[$i]['STATE'] = "-";
+				$result[$i]['REASON'] = $myout[$i]['OUTING_REASON'];
+			}
+			
+			
+		}
+
+		
+		return $response->withStatus(200)
+		->withHeader('Content-Type', 'application/json')
+		->write(json_encode($result, JSON_NUMERIC_CHECK));
+	}
+
+	/*************************************
+	 * 외출 사유 입력
+	 * 
+	 * return	 * 
+	 ************************************/
+	public function setReasonOuting(Request $request, Response $response, $args)
+	{	
+		$info['REASON'] = $request->getParsedBody()['REASON'];
+		$info['NO'] = $request->getParsedBody()['NO'];
+		$info['USN'] = $request->getParsedBody()['USN'];
+
+		$result = $this->UserManagementModel->setReasonOuting($info);
+		
+		return $response->withStatus(200)
+		->withHeader('Content-Type', 'application/json')
+		->write(json_encode($result, JSON_NUMERIC_CHECK));
+	}
 }

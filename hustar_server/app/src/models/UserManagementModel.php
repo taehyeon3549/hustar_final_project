@@ -671,4 +671,37 @@ public function checkAttendanceEach($info){
 	return $result;
 }
 
+/*****************************
+ * 유저별 외출 복귀 정보 가져오기
+ ******************************/
+public function getOutingEach($info){
+	$sql = "SELECT * 
+			FROM OUTING
+			WHERE OUTING_USN = ?
+			AND OUTING_OUT >= ?
+			AND OUTING_BACK <= ?;";
+			
+	$sth = $this->db->prepare($sql);
+	$sth->execute(array($info['USN'], $info['OUT'], $info['BACK']));
+	$result = $sth->fetchAll();	
+	
+	return $result;
+}
+
+/*****************************
+ * 외출 사유서 작성
+ ******************************/
+public function setReasonOuting($info){
+	$sql = "UPDATE `hustar_final`.`OUTING` SET `OUTING_REASON` = ? 
+			WHERE (`OUTING_NO` = ?) 
+			and (`OUTING_USN` = ?);";
+			
+	$sth = $this->db->prepare($sql);
+	if($sth->execute(array($info['REASON'], $info['NO'], $info['USN']))){
+		return 0;
+	}else{
+		return 1;
+	}	
+}
+
 }

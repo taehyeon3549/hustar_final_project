@@ -382,5 +382,14 @@ final class WebController extends BaseController
         $this->view->render($response, 'AttendanceUserCalendar.html');
         return $response;
     }
+
+     /************************************
+    * 내 외출 복귀 보기
+    **************************************/
+	public function myouting(Request $request, Response $response, $args)
+    {
+        $this->view->render($response, 'hustarUserOuting.html');
+        return $response;
+    }
       
 }

@@ -113,6 +113,10 @@ $app->get('/admin/user/attendance/search/', 'App\Controller\WebController:userat
 // 내 출결 정보 보기
 $app->get('/user/attendance/', 'App\Controller\WebController:myattendance')
     ->setName('myattendance'); 
+
+// 내 외출 복귀 정보 보기
+$app->get('/user/outing/', 'App\Controller\WebController:myouting')
+    ->setName('myouting'); 
     
 
 /****************************************/
@@ -209,8 +213,15 @@ $app->get('/user/attendance/', 'App\Controller\WebController:myattendance')
 
     // 내 출석 현황 월별 가져오기   
     $app->post('/attendance/monthmyattend/', 'App\Controller\AdminController:getAttendanceMy')
-        ->setName('monthmyattend');
+        ->setName('monthmyattend');   
 
+    // 내 외출복귀 현황 월별 가져오기   
+    $app->post('/outting/monthmyoutting/', 'App\Controller\UserManagementController:getMyOuting')
+        ->setName('getMyOuting');  
+
+    // 내 외출복귀 사유 작성   
+    $app->post('/outting/monthmyoutting/setreason/', 'App\Controller\UserManagementController:setReasonOuting')
+        ->setName('setReasonOuting');  
 
 
         
