@@ -19,8 +19,8 @@ td.fc-today {
 }
 .fc-event-inner {
   font-family: 'Open Sans', sans-serif;
-  background: #03a9f3 ;
-  color: #fff !important;
+  /* background: #03a9f3 ; */
+  /* color: #fff !important; */
   font-size: 12px !important;
   font-weight: 400 !important;
   padding: 5px 4px !important;
@@ -691,7 +691,7 @@ table.fc-header {
 -----------------------------------------------------*/
 
 .fc-event {
-  background: #fff !important;
+  /* background: #fff !important; */
   color: #000 !important;
 }
 
