@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="kr">
 
-    <head>       
+    <head>
         <!-- 로그인 SESSION이 없으면 로그인 페이지로 이동 -->
         <script>
             if (sessionStorage.getItem('usn') == null) {
                 location.href = "/";
-            }        
-        </script>              
+            }
+        </script>
 
         <link
             rel="stylesheet"
@@ -22,20 +22,23 @@
         <meta name="author" content="">
 
         <title>교육생 현황</title>
-        
+
         <!-- Custom fonts for this template-->
-        <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-        
+        <link
+            href="/vendor/fontawesome-free/css/all.min.css"
+            rel="stylesheet"
+            type="text/css">
+
         <!-- Page level plugin CSS-->
         <link href="/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
 
         <!-- Custom styles for this template-->
         <link href="/css/sb-admin.css" rel="stylesheet">
 
-        <!-- <link href="/css/bootstrap/bootstrap.css" rel="stylesheet"> -->        
+        <!-- <link href="/css/bootstrap/bootstrap.css" rel="stylesheet"> -->
 
         <!-- Tab 왼쪽 아이콘-->
-        <link rel="shortcut icon" href="/icon/hustar.ico" type="image/x-icon"/>       
+        <link rel="shortcut icon" href="/icon/hustar.ico" type="image/x-icon"/>
 
         <!-- 팝업 테이블 css -->
         <style>
@@ -47,322 +50,305 @@
             .mytable th {
                 border: 1px solid black;
             }
-        </style>        
-    
+        </style>
+
     </head>
 
     <body id="page-top" style="margin-top: 0px;margin-bottom: 0px;">
-            <!-- 최상단 바 -->
-            <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
-                <!-- 왼쪽 상단 마크 -->
-                <a class="navbar-brand mr-1" href="/notification/">
-                    <img src="/icon/hustar_icon.ico" class="LogoPNG" style="width: 25px;">
-                    HUSTAR                    
-                </a>
-                <!-- 메뉴 숨김/보이기 버튼-->
-                <button
-                    class="btn btn-link btn-sm text-white order-1 order-sm-0"
-                    id="sidebarToggle"
-                    href="#">
-                    <i class="fas fa-bars"></i>
-                </button>
+        <!-- 최상단 바 -->
+        <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
+            <!-- 왼쪽 상단 마크 -->
+            <a class="navbar-brand mr-1" href="/notification/">
+                <img src="/icon/hustar_icon.ico" class="LogoPNG" style="width: 25px;">
+                HUSTAR
+            </a>
+            <!-- 메뉴 숨김/보이기 버튼-->
+            <button
+                class="btn btn-link btn-sm text-white order-1 order-sm-0"
+                id="sidebarToggle"
+                href="#">
+                <i class="fas fa-bars"></i>
+            </button>
 
-                <!-- Navbar 검색바 - 현재 검색기능 삭제 -->
-                <form
-                    class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
-                    <div class="input-group">
-                        <div class="input-group-append">
-                            <i>
-                                <!-- 삭제부분 -->
-                            </i>
-                        </div>
+            <!-- Navbar 검색바 - 현재 검색기능 삭제 -->
+            <form
+                class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
+                <div class="input-group">
+                    <div class="input-group-append">
+                        <i>
+                            <!-- 삭제부분 -->
+                        </i>
                     </div>
-                </form>
+                </div>
+            </form>
 
-                <!-- 우측 상단 user 아이콘 메뉴 -->
-                <ul class="navbar-nav ml-auto ml-md-0">
-                    <!-- 회원 아이콘 -->
-                    <li class="nav-item dropdown no-arrow">
+            <!-- 우측 상단 user 아이콘 메뉴 -->
+            <ul class="navbar-nav ml-auto ml-md-0">
+                <!-- 회원 아이콘 -->
+                <li class="nav-item dropdown no-arrow">
+                    <a
+                        class="nav-link dropdown-toggle"
+                        href="#"
+                        id="userDropdown"
+                        role="button"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false">
+                        <i class="fas fa-user-circle fa-fw"></i>
+                    </a>
+
+                    <!-- 메뉴 박스 -->
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                        <!-- 1번 메뉴-->
+                        <a class="dropdown-name">
+                            <script>
+                                var name = sessionStorage.getItem('name');
+                                document.write(name);
+                            </script>
+                        </a>
+                        <!-- 경계선 -->
+                        <div class="dropdown-divider"></div>
+                        <!-- 2번 선택 메뉴 -->
                         <a
-                            class="nav-link dropdown-toggle"
+                            class="dropdown-item"
+                            id="signoutb"
                             href="#"
-                            id="userDropdown"
-                            role="button"
-                            data-toggle="dropdown"
-                            aria-haspopup="true"
-                            aria-expanded="false">
-                            <i class="fas fa-user-circle fa-fw"></i>
+                            data-toggle="modal"
+                            data-target="#logoutModal">로그아웃
                         </a>
+                    </div>
 
-                        <!-- 메뉴 박스 -->
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
-                            <!-- 1번 메뉴-->
-                            <a class="dropdown-name">
-                                <script>
-                                    var name = sessionStorage.getItem('name');
-                                    document.write(name);
-                                </script>
-                            </a>
-                            <!-- 경계선 -->
-                            <div class="dropdown-divider"></div>
-                            <!-- 2번 선택 메뉴 -->
-                            <a
-                                class="dropdown-item"
-                                id="signoutb"
-                                href="#"
-                                data-toggle="modal"
-                                data-target="#logoutModal">로그아웃
-                            </a>
-                        </div>
+                </li>
+            </ul>
+        </nav>
 
-                    </li>
-                </ul>
-            </nav>
+        <div id="wrapper">
 
-            <div id="wrapper">
+            <!-- 왼쪽 사이드바 -->
+            <ul class="sidebar navbar-nav">
+                <!-- 메인 메뉴 -->
+                <!-- 공지사항 -->
+                <li class="nav-item">
+                    <a class="nav-link" href="/notification/">
+                        <i class="fas fa-fw fas fa-bell"></i>
+                        <span>공지사항</span>
+                    </a>
+                </li>
 
-                <!-- 왼쪽 사이드바 -->
-                <ul class="sidebar navbar-nav">
-                    <!-- 메인 메뉴 -->
-                    <!-- 공지사항 -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="/notification/">
-                            <i class="fas fa-fw fas fa-bell"></i>                            
-                            <span>공지사항</span>
-                        </a>                        
-                    </li>
+                <!-- 출결 -->
+                <li class="nav-item dropdown">
+                    <a
+                        class="nav-link dropdown-toggle"
+                        href="#"
+                        id="pagesDropdown"
+                        role="button"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false">
+                        <i class="fas fa-fw fa-chart-area"></i>
+                        <span>출결</span>
+                    </a>
 
-                    <!-- 출결 -->
-                    <li class="nav-item dropdown">
-                        <a
-                            class="nav-link dropdown-toggle"
-                            href="#"
-                            id="pagesDropdown"
-                            role="button"
-                            data-toggle="dropdown"
-                            aria-haspopup="true"
-                            aria-expanded="false">
-                            <i class="fas fa-fw fa-chart-area"></i>
-                            <span>출결</span>
-                        </a>
+                    <!-- 서브 메뉴-->
+                    <div class="dropdown-menu" aria-labelledby="pagesDropdown">
+                        <h6 class="dropdown-header">출결</h6>
+                        <a class="dropdown-item" id="myAttend" href="/user/attendance/">내 출결 상황</a>
+                        <h6 class="dropdown-header">사유서</h6>
+                        <a class="dropdown-item" id="myWhyWrite" href="/user/outing/">사유서 작성</a>
+                    </div>
+                </li>
 
-                        <!-- 서브 메뉴-->
-                        <div class="dropdown-menu" aria-labelledby="pagesDropdown">
-                            <h6 class="dropdown-header">출결</h6>
-                            <a class="dropdown-item" id="myAttend" href="/user/attendance/">내 출결 상황</a>         
-                            <h6 class="dropdown-header">사유서</h6>               
-                            <a class="dropdown-item" id="myWhyWrite" href="/user/outing/">사유서 작성</a>                            
-                        </div>
-                    </li>
+                <!-- 개인 신상 수정 -->
+                <li class="nav-item">
+                    <a class="nav-link" href="/maps">
 
-        
+                        <i class="fas fa-fw fa-file"></i>
+                        <span>내 신상 기록 카드</span>
+                    </a>
+                </li>
 
-                    <!-- 개인 신상 수정  -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="/maps">
+                <!-- 관리자 기능 -->
+                <li class="nav-item dropdown active">
+                    <a
+                        class="nav-link dropdown-toggle active"
+                        href="#"
+                        id="pagesDropdown"
+                        role="button"
+                        data-toggle="dropdown"
+                        aria-expanded="false">
+                        <i class="fas fa-fw fa-tools"></i>
+                        <span>관리자 기능</span>
+                    </a>
 
-                            <i class="fas fa-fw fa-file"></i>
-                            <span>내 신상 기록 카드</span>
-                        </a>
-                    </li>
-
-                     <!-- 관리자 기능 -->
-                     <li class="nav-item dropdown active">
-                        <a
-                            class="nav-link dropdown-toggle active"
-                            href="#"
-                            id="pagesDropdown"
-                            role="button"
-                            data-toggle="dropdown"
-                            
-                            aria-expanded="false">
-                            <i class="fas fa-fw fa-tools"></i>
-                            <span>관리자 기능</span>
-                        </a>
-
-                       <!-- 서브 메뉴-->
-                       <div class="dropdown-menu" aria-labelledby="pagesDropdown">
+                    <!-- 서브 메뉴-->
+                    <div class="dropdown-menu" aria-labelledby="pagesDropdown">
                         <a class="dropdown-item active" id="adminStudent" href="/admin/user/">교육생 현황</a>
                         <a class="dropdown-item" id="adminNotifi" href="/notification/wirte/">공지사항 입력</a>
-                        <h6 class="dropdown-header">출결</h6> 
+                        <h6 class="dropdown-header">출결</h6>
                         <a class="dropdown-item" id="adminAttend" href="/admin/user/attendance/page/">출결 상황보기</a>
-                        <a class="dropdown-item " id="adminAttend" href="/admin/user/attendance/search/">교육생 출결 검색</a>
-                        <a class="dropdown-item" id="adminOuting" href="/admin/outing/">교육생 외출/복귀 검색</a>                            
-                         
-                        <h6 class="dropdown-header">등록 관리</h6>                    
+                        <a
+                            class="dropdown-item "
+                            id="adminAttend"
+                            href="/admin/user/attendance/search/">교육생 출결 검색</a>
+                        <a class="dropdown-item" id="adminOuting" href="/admin/outing/">교육생 외출/복귀 검색</a>
+
+                        <h6 class="dropdown-header">등록 관리</h6>
                         <a class="dropdown-item" id="adminDevice" href="/admin/device/">기기등록 현황</a>
                         <a class="dropdown-item" id="adminFingerprint" href="/admin/fingerprint/">지문등록 현황</a>
                     </div>
 
-                    </li>
+                </li>
 
-                    <!-- 내 계정관리 -->
-                    <li class="nav-item dropdown">
+                <!-- 내 계정관리 -->
+                <li class="nav-item dropdown">
+                    <a
+                        class="nav-link dropdown-toggle"
+                        href="#"
+                        id="pagesDropdown"
+                        role="button"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false">
+                        <i class="fas fa-fw fa-folder"></i>
+                        <span>내 계정관리</span>
+                    </a>
+
+                    <!-- 서브 메뉴-->
+                    <div class="dropdown-menu" aria-labelledby="pagesDropdown">
+                        <a class="dropdown-item" id="myaccountb" href="/myaccount">내 계정</a>
+                        <a class="dropdown-item" href="/change_password">비밀번호 변경</a>
                         <a
-                            class="nav-link dropdown-toggle"
+                            class="dropdown-item"
+                            id="signoutb"
                             href="#"
-                            id="pagesDropdown"
-                            role="button"
-                            data-toggle="dropdown"
-                            aria-haspopup="true"
-                            aria-expanded="false">
-                            <i class="fas fa-fw fa-folder"></i>
-                            <span>내 계정관리</span>
-                        </a>
+                            data-toggle="modal"
+                            data-target="#logoutModal">로그아웃</a>
+                        <a class="dropdown-item" href="/change_idcancellation">회원 탈퇴</a>
+                    </div>
+                </li>
 
-                        <!-- 서브 메뉴-->   
-                        <div class="dropdown-menu" aria-labelledby="pagesDropdown">
-                            <a class="dropdown-item" id="myaccountb" href="/myaccount">내 계정</a>
-                            <a class="dropdown-item" href="/change_password">비밀번호 변경</a>
-                            <a
-                                class="dropdown-item"
-                                id="signoutb"
-                                href="#"
-                                data-toggle="modal"
-                                data-target="#logoutModal">로그아웃</a>
-                            <a class="dropdown-item" href="/change_idcancellation">회원 탈퇴</a>
+            </ul>
+
+            <!-- 우측 메인 화면 -->
+            <div id="content-wrapper" style="padding-bottom: 0px;">
+
+                <div class="container-fluid">
+                    <!-- 흰 소제목 바 -->
+                    <ol class="breadcrumb mb-4">
+                        <li class="breadcrumb-item">
+                            <a href="/admin/user/">교육생 현황</a>
+                        </li>
+                        <!-- <li class="breadcrumb-item active">목록</li> -->
+                    </ol>
+
+                    <!-- 페이지 내용 -->
+                    <div id="layoutSidenav_content" style="padding-bottom: 50px;">
+                        <div class="card mb-4">
+                            <!-- <div class="card-header"><i class="fas fa-table mr-1"></i>DataTable
+                            Example</div> -->
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>No</th>
+                                                <th>이름</th>
+                                                <th>성별</th>
+                                                <th>생년월일</th>
+                                                <th>학교</th>
+                                                <th>전공</th>
+                                                <th>부전공</th>
+                                                <th>학위</th>
+                                                <th>전화번호</th>
+                                                <th>이메일</th>
+                                                <th>소속</th>
+                                                <th>분반</th>
+                                                <th>교육생 카드</th>
+                                            </tr>
+                                        </thead>
+                                        <!-- <tfoot> <tr> <th>No</th> <th>이름</th> <th>성별</th> <th>생년월일</th> <th>학교</th>
+                                        <th>전공</th> <th>부전공</th> <th>학위</th> <th>전화번호</th> <th>이메일</th> <th>소속</th>
+                                        <th>분반</th> <th>교육생 카드</th> </tr> </tfoot> -->
+                                        <tbody id="userList"></tbody>
+                                    </table>
+                                    <a class="btn btn-primary pull-right" href="/admin/user/list">엑셀 다운로드</a>
+                                </div>
+                            </div>
                         </div>
-                    </li>
 
-                    
-                </ul>
+                        <!-- <div id='paging' style="position: relative; width: 80%; margin: 0 auto;
+                        text-align: center; margin-top: 250px;"> <ul class="pagination "> <li
+                        class="left-etc"><a href="#">&laquo;</a></li> <li class="active"><a
+                        href="#">1</a></li> <li ><a href="#">2</a></li> <li><a href="#">3</a></li>
+                        <li><a href="#">4</a></li> <li class="right-etc"><a href="#">&raquo;</a></li>
+                        </ul> </div> -->
+                    </div>
+                </div>
+                <!-- /.container-fluid -->
 
-                <!-- 우측 메인 화면 -->
-                <div id="content-wrapper" style="padding-bottom: 0px;">
-                    
+                <!-- 맨 밑 하다 copyright 부분-->
+                <footer class="footer py-4 bg-light mt-auto">
                     <div class="container-fluid">
-                        <!-- 흰 소제목 바 -->
-                        <ol class="breadcrumb mb-4">
-                            <li class="breadcrumb-item">
-                                <a href="/admin/user/">교육생 현황</a>
-                            </li>
-                            <!-- <li class="breadcrumb-item active">목록</li> -->
-                        </ol>
-
-                        <!-- 페이지 내용 -->
-                        <div id="layoutSidenav_content" style="padding-bottom: 50px;">                            
-                            <div class="card mb-4">
-                                <!-- <div class="card-header"><i class="fas fa-table mr-1"></i>DataTable Example</div> -->
-                                <div class="card-body">
-                                    <div class="table-responsive">                                        
-                                        <table class ="table table-bordered">
-                                            <thead>
-                                                <tr>
-                                                    <th>No</th>
-                                                    <th>이름</th>
-                                                    <th>성별</th>
-                                                    <th>생년월일</th>
-                                                    <th>학교</th>
-                                                    <th>전공</th>
-                                                    <th>부전공</th>
-                                                    <th>학위</th>
-                                                    <th>전화번호</th>
-                                                    <th>이메일</th>
-                                                    <th>소속</th>
-                                                    <th>분반</th>
-                                                    <th>교육생 카드</th>
-                                                </tr>
-                                            </thead>
-                                            <!-- <tfoot>
-                                                <tr>
-                                                    <th>No</th>
-                                                    <th>이름</th>
-                                                    <th>성별</th>
-                                                    <th>생년월일</th>
-                                                    <th>학교</th>
-                                                    <th>전공</th>
-                                                    <th>부전공</th>
-                                                    <th>학위</th>
-                                                    <th>전화번호</th>
-                                                    <th>이메일</th>
-                                                    <th>소속</th>
-                                                    <th>분반</th>    
-                                                    <th>교육생 카드</th>                                                
-                                                </tr>
-                                            </tfoot> -->
-                                            <tbody id = "userList">                                                                            
-                                            </tbody>
-                                        </table>
-                                        <a class="btn btn-primary pull-right" href="/admin/user/list">엑셀 다운로드</a>
-                                    </div>
-                                </div>
-                            </div>                            
-
-                            <!-- <div id='paging' style="position: relative; width: 80%; margin: 0 auto; text-align: center; margin-top: 250px;">
-                                <ul class="pagination ">
-                                    <li class="left-etc"><a href="#">&laquo;</a></li>
-                                    <li class="active"><a href="#">1</a></li>
-                                    <li ><a href="#">2</a></li>
-                                    <li><a href="#">3</a></li>
-                                    <li><a href="#">4</a></li>                                   
-                                    <li class="right-etc"><a href="#">&raquo;</a></li>
-                                </ul>
-                            </div> -->
-                        </div>
-                    </div>
-                    <!-- /.container-fluid -->
-
-                    <!-- 맨 밑 하다 copyright 부분-->
-                    <footer class="footer py-4 bg-light mt-auto">
-                        <div class="container-fluid">
-                            <div class="d-flex align-items-center justify-content-between small">                                
-                                <div class="copyright text-center my-auto">
-                                    <span>Copyright © HUSTAR 2020 &nbsp 첨단정보통신융합산업기술원 동내로 70 &nbsp 010-5737-0114</span>        
-                                </div>
+                        <div class="d-flex align-items-center justify-content-between small">
+                            <div class="copyright text-center my-auto">
+                                <span>Copyright © HUSTAR 2020 &nbsp 첨단정보통신융합산업기술원 동내로 70 &nbsp 010-5737-0114</span>
                             </div>
                         </div>
-                    </footer>
+                    </div>
+                </footer>
 
-                </div>
-                <!-- /content-wrapper -->
             </div>
-            <!-- /#wrapper -->
+            <!-- /content-wrapper -->
+        </div>
+        <!-- /#wrapper -->
 
-            <!-- 최상단으로 이동하는 버튼 -->
-            <a class="scroll-to-top rounded" href="#page-top">
-                <i class="fas fa-angle-up"></i>
-            </a>
+        <!-- 최상단으로 이동하는 버튼 -->
+        <a class="scroll-to-top rounded" href="#page-top">
+            <i class="fas fa-angle-up"></i>
+        </a>
 
-                <!-- 로그아웃 모달 -->
-                <div
-                    class="modal fade"
-                    id="logoutModal"
-                    tabindex="-1"
-                    role="dialog"
-                    aria-labelledby="exampleModalLabel"
-                    aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">로그아웃</h5>
-                                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">×</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">로그아웃 하실래요?</div>
-                            <div class="modal-footer">
-                                <button class="btn btn-secondary" type="button" data-dismiss="modal">닫기</button>
-                                <a class="btn btn-primary" id="logoutb">로그아웃</a>                                
-                            </div>
-                        </div>
+        <!-- 로그아웃 모달 -->
+        <div
+            class="modal fade"
+            id="logoutModal"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">로그아웃</h5>
+                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">로그아웃 하실래요?</div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">닫기</button>
+                        <a class="btn btn-primary" id="logoutb">로그아웃</a>
                     </div>
                 </div>
+            </div>
+        </div>
 
-                
-                
-            <!-- 로그아웃 버튼 동작 -->
-            <script type="text/javascript">
-                document.getElementById("logoutb").addEventListener('click', function () {
+        <!-- 로그아웃 버튼 동작 -->
+        <script type="text/javascript">
+            document
+                .getElementById("logoutb")
+                .addEventListener('click', function () {
                     // Check the value are all filled
                     var usn = sessionStorage.getItem('usn');
                     //send json
-                    $.ajax({
-                        method: "POST",
-                        url: "/signout",
-                        data: {
+                    $
+                        .ajax({
+                            method: "POST",
+                            url: "/signout",
+                            data: {
                                 "USN": usn
                             }
-                        }).done(function (msg) {
+                        })
+                        .done(function (msg) {
                             if (msg.message == 0) {
                                 //logout success sessionStorage clear
                                 sessionStorage.clear();
@@ -372,58 +358,69 @@
                                 alert("로그아웃 다시해주세요");
                             }
                         });
-                    });
-            </script>            
+                });
+        </script>
 
-            <!-- Core plugin JavaScript-->
-            <script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
+        <!-- Core plugin JavaScript-->
+        <script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
 
-            <!-- 필수 js-->
-            <!-- Bootstrap core JavaScript-->
-            <script src="/vendor/jquery/jquery.min.js"></script>
-            <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <!-- 필수 js-->
+        <!-- Bootstrap core JavaScript-->
+        <script src="/vendor/jquery/jquery.min.js"></script>
+        <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-            <!-- Core plugin JavaScript-->
-            <script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
+        <!-- Core plugin JavaScript-->
+        <script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
 
-            <!-- Custom scripts for all pages-->
-            <script src="/js/sb-admin.min.js"></script>
+        <!-- Custom scripts for all pages-->
+        <script src="/js/sb-admin.min.js"></script>
 
-            <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
-            <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
-            <script src="/assets/demo/datatables-demo.js"></script>
-            <!-- /. 필수 js -->    
+        <script
+            src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"
+            crossorigin="anonymous"></script>
+        <script
+            src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"
+            crossorigin="anonymous"></script>
+        <script src="/assets/demo/datatables-demo.js"></script>
+        <!-- /. 필수 js -->
 
-            <script>
-                $.ajax({
-                    method: "post",
-                    url: "/admin/user/list/",
-                    dataType: 'json',
-                    data: {                               
-                        }
-                    }).done(function (msg) {                        
-                        var html = '';
-                        var index = msg[i]
-                        for(var i = 0; i<msg.length; i++){   
-                            html += "<tr>";
-                            html += "<td id = 'no' >"+msg[i]['NO']+"</td>";
-                            html += "<td id = 'name' >"+msg[i]['NAME']+"</td>";
-                            html += "<td id = 'gender' >"+msg[i]['GENDER']+"</td>";
-                            html += "<td id = 'birth' >"+msg[i]['BIRTH']+"</td>";
-                            html += "<td id = 'univ' >"+msg[i]['UNIV']+"</td>";
-                            html += "<td id = 'major' >"+msg[i]['MAJOR']+"</td>";
-                            html += "<td id = 'submajor' >"+msg[i]['SUB_MAJOR']+"</td>";
-                            html += "<td id = 'degree' >"+msg[i]['DEGREE']+"</td>";
-                            html += "<td id = 'phone' >"+msg[i]['PHONE']+"</td>";
-                            html += "<td id = 'email' >"+msg[i]['EMAIL']+"</td>";
-                            html += "<td id = 'hustar' >"+msg[i]['HUSTAR']+"</td>";
-                            html += "<td id = 'class' >"+msg[i]['CLASS']+"</td>";    
-                            html += "<td id = 'file' >"+"<input type='button' style='width: 100%; 'value='신상카드'/>"+"</td>";                               
+        <script>
+            $
+                .ajax({method: "post", url: "/admin/user/list/", dataType: 'json', data: {}})
+                .done(function (msg) {
+                    var html = '';
+                    var index = msg[i]
+                    for (var i = 0; i < msg.length; i++) {
+                        html += "<tr>";
+                        html += "<td id = 'no' >" + msg[i]['NO'] + "</td>";
+                        html += "<td id = 'name' >" + msg[i]['NAME'] + "</td>";
+                        html += "<td id = 'gender' >" + msg[i]['GENDER'] + "</td>";
+                        html += "<td id = 'birth' >" + msg[i]['BIRTH'] + "</td>";
+                        html += "<td id = 'univ' >" + msg[i]['UNIV'] + "</td>";
+                        html += "<td id = 'major' >" + msg[i]['MAJOR'] + "</td>";
+                        html += "<td id = 'submajor' >" + msg[i]['SUB_MAJOR'] + "</td>";
+                        html += "<td id = 'degree' >" + msg[i]['DEGREE'] + "</td>";
+                        html += "<td id = 'phone' >" + msg[i]['PHONE'] + "</td>";
+                        html += "<td id = 'email' >" + msg[i]['EMAIL'] + "</td>";
+                        html += "<td id = 'hustar' >" + msg[i]['HUSTAR'] + "</td>";
+                        html += "<td id = 'class' >" + msg[i]['CLASS'] + "</td>";
+                        html += "<td id = 'file' ><input type='button' style='width: 100%; 'value='신상카드'/></td>";
 
-                            $("#userList").html(html);
-                            //$("#dataTable").DataTable();                           
-                        }                             
-                    });
-                </script> 
-            </body>
-        </html>
+                        $("#userList").html(html);
+                        //$("#dataTable").DataTable();
+                    }
+                });
+        </script>
+
+        <footer class="sticky-footer" style="width: 100%;">
+            <div class="container my-auto">
+
+                <div class="copyright text-center my-auto">
+
+                    <span>Copyright © HUSTAR 2020 &nbsp 첨단정보통신융합산업기술원 동내로 70 &nbsp 010-5737-0114</span>
+
+                </div>
+            </div>
+        </footer>
+    </body>
+</html>
