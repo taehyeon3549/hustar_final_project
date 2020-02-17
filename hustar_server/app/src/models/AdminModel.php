@@ -203,6 +203,19 @@ public function noticeList(){
 	}
 
 	/*****************************
+	 * 내 출결 정보 가져오기
+	 *****************************/
+	public function getAttendanceMy($DATE) {  
+		$sql = "select * from hustar_final.ATTENDANCE
+		where  ATTENDANCE_GTW >= ? AND ATTENDANCE_GTH <= ?";
+		$sth = $this->db->prepare($sql);		
+		$sth->execute(array($DATE['DAYFRONT'], $DATE['DAYEND']));
+		$result = $sth->fetchAll();
+
+		return $result[0];
+	}
+
+	/*****************************
 	 * 교육생 수 가져오기
 	 *****************************/
 	public function userCount() {  

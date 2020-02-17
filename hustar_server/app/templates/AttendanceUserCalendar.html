@@ -21,7 +21,7 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>교육생 출결 상황</title>
+        <title>내 출결 상황</title>
 
         <!-- Custom fonts for this template-->
         <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -207,9 +207,9 @@
                     </li>
 
                     <!-- 출결 -->
-                    <li class="nav-item dropdown">
+                    <li class="nav-item dropdown active">
                         <a
-                            class="nav-link dropdown-toggle"
+                            class="nav-link dropdown-toggle active"
                             href="#"
                             id="pagesDropdown"
                             role="button"
@@ -223,7 +223,7 @@
                         <!-- 서브 메뉴-->
                         <div class="dropdown-menu" aria-labelledby="pagesDropdown">
                             <h6 class="dropdown-header">출결</h6>
-                            <a class="dropdown-item" id="myAttend" href="/PI">내 출결 상황</a>         
+                            <a class="dropdown-item active" id="myAttend" href="/user/attendance/">내 출결 상황</a>         
                             <h6 class="dropdown-header">사유서</h6>               
                             <a class="dropdown-item" id="myWhyWrite" href="/PI">사유서 작성</a>
                             <a class="dropdown-item" id="myWhy" href="/PI">내 사유서</a>
@@ -231,20 +231,20 @@
                     </li>
 
                     <!-- 도서대출  -->
-                    <li class="nav-item ">
+                    <!-- <li class="nav-item ">
                         <a class="nav-link" href="/charts">
                             <i class="fas fa-fw fa-book-open"></i>
                             <span>도서 대출</span>
                         </a>
-                    </li>
+                    </li> -->
 
                     <!-- 기자재 대출  -->
-                    <li class="nav-item">
+                    <!-- <li class="nav-item">
                         <a class="nav-link" href="/maps">
                             <i class="fas fa-fw fa-box-open"></i>
                             <span>기자재 대출</span>
                         </a>
-                    </li>
+                    </li> -->
 
                     <!-- 개인 신상 수정  -->
                     <li class="nav-item">
@@ -255,9 +255,9 @@
                     </li>
 
                      <!-- 관리자 기능 -->
-                     <li class="nav-item dropdown active">
+                     <li class="nav-item dropdown">
                         <a
-                            class="nav-link dropdown-toggle active"
+                            class="nav-link dropdown-toggle"
                             href="#"
                             id="pagesDropdown"
                             role="button"
@@ -273,11 +273,8 @@
                             <a class="dropdown-item" id="adminStudent" href="/admin/user/">교육생 현황</a>
                             <a class="dropdown-item" id="adminNotifi" href="/notification/wirte/">공지사항 입력</a>
                             <h6 class="dropdown-header">출결</h6> 
-                            <a class="dropdown-item active" id="adminAttend" href="/admin/user/attendance/page/">출결 상황보기</a>
-                            <a class="dropdown-item" id="adminAttend" href="/admin/user/attendance/search/">교육생 출결 검색</a>
-                            <h6 class="dropdown-header">대출</h6>                             
-                            <a class="dropdown-item" id="adminBook" href="/change_password">도서 대출 보기</a>
-                            <a class="dropdown-item" id="adminTool" href="/change_password">기자재 대출 보기</a>        
+                            <a class="dropdown-item" id="adminAttend" href="/admin/user/attendance/page/">출결 상황보기</a>
+                            <a class="dropdown-item" id="adminAttend" href="/admin/user/attendance/search/">교육생 출결 검색</a>                            
                             <h6 class="dropdown-header">등록 관리</h6>                    
                             <a class="dropdown-item" id="adminDevice" href="/admin/device/">기기등록 현황</a>
                             <a class="dropdown-item" id="adminFingerprint" href="/admin/fingerprint/">지문등록 현황</a>
@@ -323,20 +320,75 @@
                         <!-- 흰 소제목 바 -->
                         <ol class="breadcrumb mb-4">
                             <li class="breadcrumb-item">
-                                <a href="index.html">관리자 기능</a>
+                                <a href="/user/attendance/">출결</a>
                             </li>
-                            <li class="breadcrumb-item active">교육생 출결 상황</li>
+                            <li class="breadcrumb-item active">내 출결 상황</li>
                         </ol>
 
                         <!-- 페이지 내용 -->
-                        <div>
-                            <div id="layoutSidenav_content" style="height: 50%; padding-bottom: 50px; padding-left: 50px;">                            
-                                <!-- 달력 출력-->   
-                                <div id='calendar' style="height: 50%; width: 60%;"></div>
-                                <div style='clear:both'></div>                            
+                        <!-- <div id="layoutSidenav_content" style="padding-bottom: 50px;">                             -->
+                            <!-- 달력 출력-->   
+                            <!-- <div id='calendar' style="width: 60%;"></div>
+                            <div style='clear:both'></div>                            
+                        </div> -->
+
+                        <div class="row">
+                            <div class="card-body" style="width: 50%;">
+                                <div class="card mb-4" style="height: 100%;">
+                                    <div class="card-header"><i class="fas fa-calendar mr-1" style="float: left;"> 월별 기록</i></div>
+                                    <div id="layoutSidenav_content" >                            
+                                        <!-- 페이지 내용 -->
+                                        <div id="layoutSidenav_content" style="width : 100%; padding-bottom: 50px;">                            
+                                            <!-- 달력 출력-->   
+                                            <div id='calendar' style="width: 95%; margin-top: 70px;"></div>
+                                            <div style='clear:both'></div>                            
+                                        </div>                           
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body" style="width: 50%;">
+                                <div class="card mb-4" style="height: 100%;">
+                                    <div class="card-header"><i class="fas fa-chart-bar mr-1" style="float: left;"> 월별 세부 기록</i></div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">                                        
+                                            <table class ="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>날짜</th>
+                                                        <th>출근 시간</th>
+                                                        <th>퇴근 시간</th>
+                                                        <th>상태</th>
+                                                        <th>사유서</th>                                                    
+                                                    </tr>
+                                                </thead>
+                                                <!-- <tfoot>
+                                                    <tr>
+                                                        <th>No</th>
+                                                        <th>이름</th>
+                                                        <th>성별</th>
+                                                        <th>생년월일</th>
+                                                        <th>학교</th>
+                                                        <th>전공</th>
+                                                        <th>부전공</th>
+                                                        <th>학위</th>
+                                                        <th>전화번호</th>
+                                                        <th>이메일</th>
+                                                        <th>소속</th>
+                                                        <th>분반</th>    
+                                                        <th>교육생 카드</th>                                                
+                                                    </tr>
+                                                </tfoot> -->
+                                                <tbody id = "userAttendList">                                                                            
+                                                </tbody>
+                                            </table>                                        
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
+
+                    
                     <!-- /.container-fluid -->
 
                     <!-- 맨 밑 하다 copyright 부분-->
@@ -493,41 +545,7 @@
                             }
                         });
                     });
-            </script>
-
-            <!-- 엑셀 다운 버튼 동작 -->
-            <script type="text/javascript">
-                document.getElementById("downb").addEventListener('click', function () {
-                    // Check the value are all filled
-                    var usn = sessionStorage.getItem('usn');
-                    var s = document.getElementById("sel1");
-                    var selectedMonth = s.options[s.selectedIndex].value;
-                    console.log(selectedMonth);        
-                    window.location = "/admin/user/attendance/excel/"+selectedMonth;
-                    // var _url = '/admin/user/attendance/excel';
-                    // var _jsonData = {
-                    //     "MONTH": selectedMonth
-                    // };
-
-                    // var xhr = new XMLHttpRequest();
-                    // xhr.onreadystatechange = function() {
-                    // if (this.readyState == 4 && this.status == 200) {
-                    //     var _data = this.response;
-                    //     var _blob = new Blob([_data], {type : 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
-
-                    //     var link = document.createElement('a');
-                    //     link.href = window.URL.createObjectURL(_blob);
-                    //     link.download = 'text.xlsx';
-                    //     link.click();
-                    // };
-                    // };
-
-                    // xhr.open('POST', _url);
-                    // xhr.responseType = 'blob';
-                    // xhr.setRequestHeader('Content-type', 'application/json');
-                    // xhr.send(_jsonData);
-                });
-            </script>
+            </script>            
 
             <!-- 필수 js-->
             <!-- Bootstrap core JavaScript-->
@@ -577,7 +595,7 @@
                   -----------------------------------------------------------------*/                  
                   var calendar = $('#calendar').fullCalendar({
                     header: {
-                      left: 'action',
+                      left: ' ',
                       center: 'title',
                       right: 'prev,next today'
                     },
@@ -614,76 +632,8 @@
                     //   calendar.fullCalendar('unselect');
                         // alert("Hu");
                      },
-                     dayClick: function(date, allDay, jsEvent, view) {                        
-                        var date1 = jQuery("#calendar").fullCalendar("getDate");                        
-                        var conDate = date.yyyymmdd();
-                        var strDate = conDate.split('-');                                                          
-                        console.log(strDate[0]);
-                        $("#attendModal").modal({
-                            // fadeDuration:250
-                        });
-                        document.getElementById("attendDate").innerHTML = strDate[1] + "월" + strDate[2] + "일";
-
-                        $.ajax({
-                            method: "POST",
-                            url: "/admin/user/attendance/attendedList/",
-                            dataType: 'json',
-                            data: {
-                                "MONTH" : strDate[1],
-                                "DAY" : strDate[2]
-                                }
-                            }).done(function (msg) {                               
-                                 console.log(msg);
-                                 var result = msg;
-                                 var html = '';     
-                                 
-                                 for(var i = 0; i<msg['MAX']; i++){   
-                                    html += "<tr>";
-                                    html += "<td id = 'no' >"+(i+1)+"</td>";
-                                    if(msg['LATE']==null){
-                                        html += "<td id = 'late' >"+"  "+"</td>";
-                                    }else{
-                                        if(msg['LATE'][i] == null){
-                                            html += "<td id = 'late' >"+"  "+"</td>";
-                                        }else
-                                            html += "<td id = 'late' >"+msg['LATE'][i]+"</td>";    
-                                    }
-                               
-
-                                    if(msg['ABSENT']==null){
-                                        html += "<td id = 'absent' >"+" "+"</td>";
-                                    }else{
-                                        if(msg['ABSENT'][i] == null){
-                                            html += "<td id = 'absent' >"+"  "+"</td>";
-                                        }else
-                                            html += "<td id = 'absent' >"+msg['ABSENT'][i]+"</td>";    
-                                    }
-
-                                    if(msg['OK']==null){
-                                        html += "<td id = 'ok' >"+"  "+"</td>";
-                                    }else{
-                                        if(msg['OK'][i] == null){
-                                            html += "<td id = 'ok' >"+"  "+"</td>";
-                                        }else
-                                            html += "<td id = 'ok' >"+msg['OK'][i]+"</td>";    
-                                    }
-                                    
-                                    if(msg['ERROR']==null){
-                                        html += "<td id = 'error' >"+" "+"</td>";
-                                    }else{
-                                        if(msg['ERROR'][i] == null){
-                                            html += "<td id = 'error' >"+" "+"</td>";
-                                        }else
-                                            html += "<td id = 'error' >"+msg['ERROR'][i]+"</td>";    
-                                    }
-
-                                    html += "</tr>";                                                                                               
-                                }
-
-                                $("#attendList").html(html);
-
-                                //console.log(msg['MAX']);
-                            }); 
+                     dayClick: function(date, allDay, jsEvent, view) {                                             
+                      
                     },
                     droppable: false, // this allows things to be dropped onto the calendar !!!
                     // drop: function(date, allDay) { // this function is called when something is dropped
@@ -710,11 +660,12 @@
                         var strDate = conDate.split('-');                        
                         $.ajax({
                             method: "POST",
-                            url: "/admin/user/attendance/page/count/",
+                            url: "/attendance/monthmyattend/",                            
                             dataType: 'json',
                             data: {
                                 "YEAR" : strDate[0],
-                                "MONTH" : strDate[1]
+                                "MONTH" : strDate[1],
+                                "USN" : sessionStorage.getItem('usn')
                                 }
                             }).done(function (msg) {
                                  //console.log(msg);
@@ -725,26 +676,58 @@
                                             start: result[i]['start'],
                                             title: result[i]['title'][0]
                                         };
-                                        //console.log(t1);
-                                        var t2 = {
-                                            start: result[i]['start'],
-                                            title: result[i]['title'][1]
-                                        };
-                                        var t3 = {
-                                            start: result[i]['start'],
-                                            title: result[i]['title'][2]
-                                        };
-                                        //$("#calendar").fullCalendar('renderEvent', t1);
-                                        $("#calendar").fullCalendar('renderEvent', t2);
-                                        $("#calendar").fullCalendar('renderEvent', t3);
+                                        
+                                        $("#calendar").fullCalendar('renderEvent', t1);                                        
                                      
                                  }
-                                //  var t1 = {
-                                //             start: "2020-02-21",
-                                //             title: "테스트입니다."
-                                //         };
-                                // $("#calendar").fullCalendar('renderEvent', t1);
                             });       
+
+
+
+                            // 전체 월출석 일정 들고 오기
+                            var date1 = jQuery("#calendar").fullCalendar("getDate");                        
+                            var conDate = date1.yyyymmdd();
+                            var strDate = conDate.split('-');                        
+                            $.ajax({
+                            method: "post",
+                            url: "/attendance/myattend/",
+                            dataType: 'json',
+                            data: {                  
+                                "YEAR" : strDate[0],
+                                "MONTH" : strDate[1],
+                                "USN" : sessionStorage.getItem('usn')
+                            }
+                            }).done(function (msg) {
+                                console.log(msg);
+                                
+                                var html = '';                        
+                                for(var i = 0; i<msg.length; i++){   
+                                    html += "<tr>";
+                                    html += "<td id = 'date' >"+msg[i]['DATE']+"</td>";
+                                    if(msg[i]['GTW'] == null){
+                                        html += "<td id = 'gtw' >"+ " - "+"</td>";
+                                    }else{
+                                        html += "<td id = 'gtw' >"+msg[i]['GTW']+"</td>";
+                                    }
+                                    
+                                    if(msg[i]['GTH'] == null){
+                                        html += "<td id = 'gth' >"+ " - " +"</td>";
+                                    }else{
+                                        html += "<td id = 'gth' >"+msg[i]['GTH']+"</td>";
+                                    }
+                                    
+                                    html += "<td id = 'state' >"+msg[i]['STATE']+"</td>";
+
+                                    if(msg[i]['REASON'] == null){
+                                        html += "<td id = 'reason' >"+ " 미등록 " +"</td>";
+                                    }else{
+                                        html += "<td id = 'reason' >"+msg[i]['REASON']+"</td>";
+                                    }
+                                    
+                                    //$("#dataTable").DataTable();                           
+                                }          
+                            $("#userAttendList").html(html);                        
+                            });                       
                     },
                     });
 
@@ -759,7 +742,6 @@
                 }
 
               </script>
-              <!-- /. Bootstrap 달력-->
-
+              <!-- /. Bootstrap 달력-->            
             </body>
         </html>
