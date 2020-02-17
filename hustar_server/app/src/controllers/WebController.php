@@ -400,5 +400,14 @@ final class WebController extends BaseController
         $this->view->render($response, 'hustarUserOutingAdmin.html');
         return $response;
     }
+
+    /************************************
+    * 내 신상기록 카드 보기
+    **************************************/
+	public function resume(Request $request, Response $response, $args)
+    {
+        $this->view->render($response, 'myResume.html');
+        return $response;
+    }
       
 }

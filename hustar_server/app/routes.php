@@ -121,6 +121,11 @@ $app->get('/user/outing/', 'App\Controller\WebController:myouting')
 // 교육생 전체 외출 복귀 정보 보기
 $app->get('/admin/outing/', 'App\Controller\WebController:hustarOuting')
     ->setName('hustarOuting'); 
+
+// 내 교육생 관리 카드 보기
+$app->get('/user/myresume/', 'App\Controller\WebController:resume')
+    ->setName('resume'); 
+    
     
 
 /****************************************/

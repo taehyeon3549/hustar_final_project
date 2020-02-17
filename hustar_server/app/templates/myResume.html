@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="kr">
+<html lang="en">
 
     <head>       
         <!-- 로그인 SESSION이 없으면 로그인 페이지로 이동 -->
@@ -21,18 +21,31 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>공지 사항</title>
-        
+        <title>내 신상 기록 카드</title>
+
         <!-- Custom fonts for this template-->
         <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-        
+
         <!-- Page level plugin CSS-->
         <link href="/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
-      
-        <!-- <link href="/css/bootstrap/bootstrap.css" rel="stylesheet"> -->        
+
+        <!-- Custom styles for this template-->
+        <link href="/css/sb-admin.css" rel="stylesheet">
 
         <!-- Tab 왼쪽 아이콘-->
-        <link rel="shortcut icon" href="/icon/hustar.ico" type="image/x-icon"/>       
+        <link rel="shortcut icon" href="/icon/hustar.ico" type="image/x-icon"/>
+
+        <!-- Custom fonts for this template-->
+        <link
+            href="/vendor/fontawesome-free/css/all.min.css"
+            rel="stylesheet"
+            type="text/css">
+
+        <!-- Page level plugin CSS-->
+        <link href="/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
+
+        <!-- Custom styles for this template-->
+        <link href="/css/sb-admin.css" rel="stylesheet">
 
         <!-- 팝업 테이블 css -->
         <style>
@@ -44,39 +57,10 @@
             .mytable th {
                 border: 1px solid black;
             }
-        </style>       
-
-        <!-- include jquery -->
-        <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js"></script>
-
-        <!-- include libs stylesheets -->
-        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.css" />
-        <script src="http://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.js"></script>
-        <script src="http://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.js"></script>
-
-        <!--  summernote 추가-->
-        <link rel="stylesheet" href="/js/dist/summernote-bs4.css">
-        <script type="text/javascript" src="/js/dist/summernote-bs4.js"></script>
-
-        <link rel="stylesheet" href="/js/dist/example.css">
-        
-        <script type="text/javascript">
-            $(document).ready(function() {
-              $('.summernote').summernote({
-                height: 700,
-                minHeight: 500,
-                maxHeight: 1000,
-                lang : 'ko-KR'
-              });
-            });
-          </script>       
-
-          <!-- Custom styles for this template-->
-        <link href="/css/sb-admin.css" rel="stylesheet">
-    
+        </style>
     </head>
 
-    <body id="page-top" style="margin-top: 0px;margin-bottom: 0px;">
+    <body id="page-top">
             <!-- 최상단 바 -->
             <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
                 <!-- 왼쪽 상단 마크 -->
@@ -150,7 +134,7 @@
                 <ul class="sidebar navbar-nav">
                     <!-- 메인 메뉴 -->
                     <!-- 공지사항 -->
-                    <li class="nav-item active">
+                    <li class="nav-item">
                         <a class="nav-link" href="/notification/">
                             <i class="fas fa-fw fas fa-bell"></i>                            
                             <span>공지사항</span>
@@ -178,10 +162,12 @@
                             <h6 class="dropdown-header">사유서</h6>               
                             <a class="dropdown-item" id="myWhyWrite" href="/user/outing/">사유서 작성</a>                            
                         </div>
-                    </li>                  
+                    </li>
+
+                 
 
                     <!-- 개인 신상 수정  -->
-                    <li class="nav-item ">
+                    <li class="nav-item active">
                         <a class="nav-link" href="/user/myresume/">
                             <i class="fas fa-fw fa-file"></i>
                             <span>내 신상 기록 카드</span>
@@ -202,19 +188,19 @@
                             <span>관리자 기능</span>
                         </a>
 
-                        <!-- 서브 메뉴-->
-                        <div class="dropdown-menu" aria-labelledby="pagesDropdown">
-                            <a class="dropdown-item" id="adminStudent" href="/admin/user/">교육생 현황</a>
-                            <a class="dropdown-item" id="adminNotifi" href="/notification/wirte/">공지사항 입력</a>
-                            <h6 class="dropdown-header">출결</h6> 
-                            <a class="dropdown-item" id="adminAttend" href="/admin/user/attendance/page/">출결 상황보기</a>
-                            <a class="dropdown-item " id="adminAttend" href="/admin/user/attendance/search/">교육생 출결 검색</a>
-                            <a class="dropdown-item" id="adminOuting" href="/admin/outing/">교육생 외출/복귀 검색</a>                            
-                             
-                            <h6 class="dropdown-header">등록 관리</h6>                    
-                            <a class="dropdown-item" id="adminDevice" href="/admin/device/">기기등록 현황</a>
-                            <a class="dropdown-item" id="adminFingerprint" href="/admin/fingerprint/">지문등록 현황</a>
-                        </div>
+                       <!-- 서브 메뉴-->
+                       <div class="dropdown-menu" aria-labelledby="pagesDropdown">
+                        <a class="dropdown-item" id="adminStudent" href="/admin/user/">교육생 현황</a>
+                        <a class="dropdown-item" id="adminNotifi" href="/notification/wirte/">공지사항 입력</a>
+                        <h6 class="dropdown-header">출결</h6> 
+                        <a class="dropdown-item" id="adminAttend" href="/admin/user/attendance/page/">출결 상황보기</a>
+                        <a class="dropdown-item " id="adminAttend" href="/admin/user/attendance/search/">교육생 출결 검색</a>
+                        <a class="dropdown-item " id="adminOuting" href="/admin/outing/">교육생 외출/복귀 검색</a>                            
+                         
+                        <h6 class="dropdown-header">등록 관리</h6>                    
+                        <a class="dropdown-item" id="adminDevice" href="/admin/device/">기기등록 현황</a>
+                        <a class="dropdown-item" id="adminFingerprint" href="/admin/fingerprint/">지문등록 현황</a>
+                    </div>
 
                     </li>
 
@@ -250,54 +236,28 @@
                 </ul>
 
                 <!-- 우측 메인 화면 -->
-                <div id="content-wrapper" style="padding-bottom: 0px;">
+                <div id="content-wrapper">
                     
-                    <div class="container-fluid">
+                    <div class="container-fluid" style="height: 100%;">
                         <!-- 흰 소제목 바 -->
                         <ol class="breadcrumb mb-4">
                             <li class="breadcrumb-item">
-                                <a href="index.html">공지사항</a>
+                                <a href="/user/myresume/">내 신상 기록 카드</a>
                             </li>
-                            <li class="breadcrumb-item active">게시글 보기</li>
+                            <!-- <li class="breadcrumb-item active">소제목-소제목</li> -->
                         </ol>
 
                         <!-- 페이지 내용 -->
-                        <div id="layoutSidenav_content" style="padding-bottom: 50px;">
-                            <table class="table table-striped table-bordered"> 
-                                <tr>
-                                    <th>index</th>
-                                    <td id="notiNo" value={{index}}>{{index}}</td>
-                                </tr>                               
-                                <tr>
-                                    <th>제목</th>                                     <!-- 제목 입력 -->
-                                    <td><input id="title" type="text" class="form-control" name="title" value="{{title}}"></td>                                    
-                                </tr>
-                                <tr>
-                                    <th>작성자</th>                                    <!-- 작성자 입력 -->
-                                    <td>{{ name }}</td>
-                                </tr>
-                                <tr>
-                                    <th>작성일</th>
-                                    <td>{{ date }}</td>
-                                </tr>
-                                <tr>
-                                    <th>내용</th>                                     <!-- 내용 입력 -->
-                                    <td>
-                                        <textarea name="notibody" id = "notibody" class="summernote"><p>{{body}}</p></textarea>
-                                    </td>
-                                </tr>
-                            </table>
-
-                            <a class="btn btn-primary pull-right" id="rewriteb">수정</a> 
-                            <a class="btn btn-primary pull-right" data-target="#deleteModal" data-toggle="modal">삭제</a> 
-                            <a class="btn btn-primary pull-right" href="/notification/">뒤로가기</a> 
-                            
+                        <div id="layoutSidenav_content" style="height: 100%;">                           
+                            <iframe style="width:100%;height:100%;" 
+                                src="http://54.180.159.207/doc/교육생 관리카드_ICT_김태현.pdf">
+                            </iframe>                   
                         </div>
                     </div>
                     <!-- /.container-fluid -->
 
                     <!-- 맨 밑 하다 copyright 부분-->
-                    <footer class="footer py-4 bg-light mt-auto">
+                    <footer class="py-4 bg-light mt-auto">
                         <div class="container-fluid">
                             <div class="d-flex align-items-center justify-content-between small">
                                 <div class="text-muted">Copyright &copy; Your Website 2019</div>
@@ -344,31 +304,6 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- 삭제 모달 -->
-                <div
-                    class="modal fade"
-                    id="deleteModal"
-                    tabindex="-1"
-                    role="dialog"
-                    aria-labelledby="exampleModalLabel"
-                    aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="notiDeleteModalLabel">공지사항 삭제</h5>
-                                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">×</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">삭제 하시겠습니까?</div>
-                            <div class="modal-footer">
-                                <button class="btn btn-secondary" type="button" data-dismiss="modal">닫기</button>
-                                <a class="btn btn-primary" id="deleteb">삭제</a>                                
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 
             <!-- 로그아웃 버튼 동작 -->
             <script type="text/javascript">
@@ -395,80 +330,17 @@
                     });
             </script>
 
-            <!-- 삭제 버튼 동작 -->
-            <script type="text/javascript">
-                document.getElementById("deleteb").addEventListener('click', function () {
-                    // Check the value are all filled
-                    var usn = sessionStorage.getItem('usn');
-                    var no = document.getElementsByTagName('td')[0].childNodes[0].nodeValue;
-                    //send json
-                    $.ajax({
-                        method: "POST",
-                        url: "/admin/notice/delete",
-                        data: {
-                                "USN": usn,
-                                "NO": no
-                            }
-                        }).done(function (msg) {
-                            if (msg.message == 0) {                                                                
-                                location.href = "/notification/";
-                            }
-                            if (msg.message == 1) {
-                                alert("삭제 실패하셨습니다.\n"+msg.message);
-                            }
-                        });
-                    });
-            </script>
-
-            <!-- 수정 버튼 동작 -->
-            <script type="text/javascript">
-                document.getElementById("rewriteb").addEventListener('click', function () {
-                    // Check the value are all filled
-                    var usn = sessionStorage.getItem('usn');
-                    var no = document.getElementsByTagName('td')[0].childNodes[0].nodeValue;
-                    var title = document.getElementById("title").value;
-                    //var body = document.getElementById("notibody").value;
-                    var body = $('textarea[name="notibody"]').summernote('code');
-                    
-                    //send json
-                    $.ajax({
-                        method: "POST",
-                        url: "/admin/notice/update",
-                        data: {
-                                "USN": usn,
-                                "NO": no,
-                                "TITLE": title,
-                                "BODY": body,
-                            }
-                        }).done(function (msg) {                                                        
-                            if (msg.message == 0) {
-                                alert("수정 성공");
-                                location.href = "/notification/";
-                            }else if (msg.message == 1) {
-                                console.log(msg);
-                                alert("수정 실패");
-                            }else{
-                                console.log(msg);
-                            }
-                        });
-                    });
-            </script>
-           
             <!-- 필수 js-->
             <!-- Bootstrap core JavaScript-->
-            <!-- <script src="/vendor/jquery/jquery.min.js"></script> -->
-            <!-- <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script> -->
+            <script src="/vendor/jquery/jquery.min.js"></script>
+            <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
             <!-- Core plugin JavaScript-->
-            <!-- <script src="/vendor/jquery-easing/jquery.easing.min.js"></script> -->
+            <script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
 
             <!-- Custom scripts for all pages-->
             <script src="/js/sb-admin.min.js"></script>
+            <!-- /. 필수 js -->
 
-            <!-- /. 필수 js -->    
-
-            
-            
-           
             </body>
         </html>
