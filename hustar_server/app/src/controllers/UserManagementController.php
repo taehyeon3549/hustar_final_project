@@ -862,18 +862,23 @@ public function change_certification_app(Request $request, Response $response, $
 								$result['message'] = "1";
 							}
 							
-							if($decode[3] == '10' && (int)$decode[4] <= 10){		//시간 체크					
-								if($attendInfo == 0){
-									$result['header'] = "Go to work";
-									$result['message'] = "0";
-								}else{
-									$result['header'] = "DB error";
-									$result['message'] = "1";
-								}				
+							if((int)$decode[3] < 10){
+								$result['header'] = "Go to work";
+								$result['message'] = "0";
 							}else{
-								$result['header'] = "Be late for work";
-								$result['message'] = "2";
-							}				
+								if($decode[3] == '10' && (int)$decode[4] <= 10){		//시간 체크					
+									if($attendInfo == 0){
+										$result['header'] = "Go to work";
+										$result['message'] = "0";
+									}else{
+										$result['header'] = "DB error";
+										$result['message'] = "1";
+									}				
+								}else{
+									$result['header'] = "Be late for work";
+									$result['message'] = "2";
+								}
+							}											
 						}else if($flag == 1){	// 퇴근		
 							if((int)$decode[3] >= 18){		//시간 체크
 								// DB 수정
@@ -1056,17 +1061,22 @@ public function change_certification_app(Request $request, Response $response, $
 									$result['message'] = "1";
 								}
 											
-								if($decode[3] == '10' && (int)$decode[4] <= 10){		//시간 체크					
-									if($attendInfo == 0){
-										$result['header'] = "Go to work";
-										$result['message'] = "0";
-									}else{
-										$result['header'] = "DB error";
-										$result['message'] = "1";
-									}				
+								if((int)$decode[3] < 10){
+									$result['header'] = "Go to work";
+									$result['message'] = "0";
 								}else{
-									$result['header'] = "Be late for work";
-									$result['message'] = "2";
+									if($decode[3] == '10' && (int)$decode[4] <= 10){		//시간 체크					
+										if($attendInfo == 0){
+											$result['header'] = "Go to work";
+											$result['message'] = "0";
+										}else{
+											$result['header'] = "DB error";
+											$result['message'] = "1";
+										}				
+									}else{
+										$result['header'] = "Be late for work";
+										$result['message'] = "2";
+									}
 								}	
 							}else{
 								$result['header'] = "Already attend the class";
@@ -1349,6 +1359,13 @@ public function change_certification_app(Request $request, Response $response, $
        
 		$result = array();
 		
+		// $info['START'] = "2020-02-17 0:0:0";
+        // $info['END'] = "2020-02-17 23:59:59";
+				
+		// $userAttendace = $this->UserManagementModel->checkAttendanceEach($info);
+		// print_r($userAttendace);
+
+
         // 해당하는 달 전체 주말 빼고 탐색
         while($month == date('m', $time)){
             if(date('w', $time) != 6 && date('w', $time) != 0){
@@ -1356,7 +1373,7 @@ public function change_certification_app(Request $request, Response $response, $
 
                 $info['START'] = "2020-".date("m-d",$time)." 0:0:0";
                 $info['END'] = "2020-".date("m-d",$time)." 23:59:59";
-
+				
 				$userAttendace = $this->UserManagementModel->checkAttendanceEach($info);
 
 				if(count($userAttendace) != 0){

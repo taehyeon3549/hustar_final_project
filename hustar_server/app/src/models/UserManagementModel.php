@@ -666,7 +666,7 @@ public function checkAttendanceEach($info){
 			
 	$sth = $this->db->prepare($sql);
 	$sth->execute(array($info['USN'], $info['START'], $info['END']));
-	$result = $sth->fetchAll();
+	$result = $sth->fetchAll();	
 	
 	return $result;
 }

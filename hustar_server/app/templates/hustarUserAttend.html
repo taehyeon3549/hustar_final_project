@@ -447,6 +447,8 @@
                             "USN" : $("#studentList option:selected").val()
                         }
                     }).done(function (msg) {
+                        console.log(msg);
+                        
                         var html = '';                        
                         for(var i = 0; i<msg.length; i++){   
                             html += "<tr>";
@@ -474,7 +476,7 @@
                             //$("#dataTable").DataTable();                           
                         }     
                                        
-                        $("#userAttendList").html(html);
+                        $("#userAttendList").html(html);                        
                         });
                     });
             </script> 
