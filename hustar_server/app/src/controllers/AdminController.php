@@ -847,6 +847,83 @@ public function getAttendanceDate(Request $request, Response $response, $args)
 		->write(json_encode($result, JSON_NUMERIC_CHECK));
     }
 
+    /******************************************************
+     * 내 출결 정보 가져오기
+     *******************************************************/
+    public function getAttendanceMy(Request $request, Response $response, $args)
+    {
+         // 년, 월, 일별 수업시간 입력 받음
+         $year = $request->getParsedBody()['YEAR'];
+         $month = $request->getParsedBody()['MONTH'];
+         $usn = $request->getParsedBody()['USN'];
+
+        //  $ctime = $request->getParsedBody()['CLASSTIME'];
+        // $year = "2020";
+        // $month = "2";
+
+        $time = mktime(0,0,0,$month, 1, $year);
+
+        $yoil = array("일","월","화","수","목","금","토");        
+        // 셀 인덱스 배열
+        $cellborder = array("D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","AA","AB","AC","AD","AE","AF","AG","AH");
+        $index = 0;
+
+        // 날짜 배열
+        $day = array();
+
+        // 결과
+        $result = array();      
+
+        // 날짜 부분 입력
+        while($month == date('m', $time)){
+            if(date('w', $time) != 6 && date('w', $time) != 0){           
+                $result[$index]['start'] = date("yy-m-d",$time);
+
+                $DATE['DAYFRONT'] = "2020-".date("m-d",$time)." 0:0:0";
+                $DATE['DAYEND'] = "2020-".date("m-d",$time)." 23:59:59";
+
+                $userAttendace = $this->AdminModel->getAttendanceMy($DATE);
+
+                // print_r($userAttendace);
+
+                $GTW_time = date("H:i:s", strtotime( $userAttendace['ATTENDANCE_GTW'] ) );
+                $cutTime_GTW = explode(':', $GTW_time);
+                
+                $GTH_time = date("H:i:s", strtotime( $userAttendace['ATTENDANCE_GTH'] ) );
+				$cutTime_GTH = explode(':', $GTH_time);
+
+                if($userAttendace['ATTENDANCE_GTW'] == null){
+                    $result[$index]['title'][0] = "결석";
+                }else{
+                    if((int)$cutTime_GTW[0] < 10){
+                        $result[$index]['title'][0] = "출석";
+                    }else{
+                        if((int)$cutTime_GTW[0] == 10 && (int)$cutTime_GTW[1] <= 10){
+                            $result[$index]['title'][0] = "출석";
+                        }else{
+                            $result[$index]['title'][0] = "지각";
+                        }
+                    }
+
+                    if( ((int)$cutTime_GTH[0]) <= 17 && ((int)$cutTime_GTH[1]) <= 59 ){
+                        if($result[$index]['title'][0] == "출석")
+                            $result[$index]['title'][0] = "조기퇴근";							
+                        else
+                            $result[$index]['title'][0] = "지각,조기퇴근";
+                    }
+                }
+                $index +=1;
+            }            
+            
+            //하루씩 증가
+            $time = strtotime("+1 days",$time);                     
+        }  
+
+        return $response->withStatus(200)
+		->withHeader('Content-Type', 'application/json')
+		->write(json_encode($result, JSON_NUMERIC_CHECK));
+    }
+
     /***************************************
      * 출석 인원 이름 가져오기
      * return 

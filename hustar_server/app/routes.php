@@ -109,6 +109,10 @@ $app->get('/admin/fingerprint/', 'App\Controller\WebController:fingerprintList')
 // 교육생별 출결 정보 검색
 $app->get('/admin/user/attendance/search/', 'App\Controller\WebController:userattendancesearch')
     ->setName('userattendancesearch');    
+
+// 내 출결 정보 보기
+$app->get('/user/attendance/', 'App\Controller\WebController:myattendance')
+    ->setName('myattendance'); 
     
 
 /****************************************/
@@ -202,6 +206,14 @@ $app->get('/admin/user/attendance/search/', 'App\Controller\WebController:userat
     // 내 출석 현황 가져오기    
     $app->post('/attendance/myattend/', 'App\Controller\UserManagementController:getAttendanceUser')
         ->setName('myattend');
+
+    // 내 출석 현황 월별 가져오기   
+    $app->post('/attendance/monthmyattend/', 'App\Controller\AdminController:getAttendanceMy')
+        ->setName('monthmyattend');
+
+
+
+        
 
     /****************************************/
     /*          certification page          */
