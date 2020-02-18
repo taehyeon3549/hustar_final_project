@@ -128,9 +128,9 @@
                 </div>
               </div>            
               <div class="col-md-6">
-                <div class="form-label-group" style="padding-bottom: 5px; padding-top: 8px;">
-                  <input type="radio" name ="gender" value ='0'>전문학사
-						      <input type="radio" name ="gender" value ='1'>학사				
+                <div class="form-label1-group" style="padding-bottom: 5px; padding-top: 8px;">
+                  <input type="radio" name ="degree" value ='0'>전문학사
+						      <input type="radio" name ="degree" value ='1'>학사				
                 </div>
               </div>
             </div>
@@ -156,12 +156,16 @@
             <div class="form-row">
               <div class="col-md-6">
                 <div class="form-label-group">
-                  <select id="studentList" class="form-control"> </select> 
+                  <select id="hustarList" class="form-control" onchange="change(this.options[this.selectedIndex].value)">
+                    <option value ="대구 ICT">대구 ICT</option>
+                    <option value ="경북 ICT">경북 ICT</option>
+                  </select> 
                 </div>
               </div>
               <div class="col-md-6">
                 <div class="form-label-group">
-                  <select id="studentList" class="form-control"> </select> 
+                  <select id="subList" class="form-control">
+                  </select> 
                 </div>
               </div>
             </div>
@@ -230,7 +234,22 @@
             </script> 
 
 
-            
+        <script>
+          function change($val){
+            var html ='';
+            if($val == "대구 ICT"){              
+              html += "<option value = '0'>미정</option>";
+              html += "<option value = '1'>소프트웨어</option>";
+              html += "<option value = '2'>하드웨어</option>";
+            }else{
+              html += "<option value = '3'>미정</option>";
+              html += "<option value = '4'>영상처리</option>";
+              html += "<option value = '5'>머신러닝</option>";
+            }
+            $("#subList").html(html);
+          }
+        </script>
+
         <!-- Button Action -->
         <script type="text/javascript">
           document.getElementById("registerb").addEventListener('click', function(){
@@ -242,6 +261,11 @@
             var Birth = $('input[name = Birth]').val();
             var gender = $('input[name=gender]:checked').val();
             var phone = $('input[name = phone]').val();
+            var univ = $('input[name = univ]').val();
+            var degree = $('input[name = degree]').val();
+            var major = $('input[name = major]').val();            
+            var minior = $('input[name = minior]').val();
+            var subclass = $("#subList option:selected").val();   
 
             if(firstName == ""){
               alert("성을 입력해주세요");
@@ -255,6 +279,20 @@
               alert("생일을 입력해주세요");
             }else if(inputPassword != confirmPassword){
               alert("비밀번호를 재 확인해주세요");
+            }else if(gender == ""){
+              alert("성별을 입력해주세요");
+            }else if(phone == ""){
+              alert("전화번호를 입력해주세요");
+            }else if(univ == ""){
+              alert("대학을 입력해주세요");
+            }else if(degree == ""){
+              alert("학위를 선택해주세요");
+            }else if(major == ""){
+              alert("전공을 입력해주세요");
+            }else if(minior == ""){
+              alert("부전공을 입력해주세요");
+            }else if(subclass == ""){
+              alert("Hustar 분반을 선택해주세요");
             }else{
               var name = firstName.concat("", lastName);
               
@@ -268,7 +306,12 @@
                 "PASSWORD": inputPassword,
                 "BRITH": Birth,
                 "GENDER": gender,
-                "PHONE": phone               
+                "PHONE": phone,
+                "UNIV" : univ,
+                "MAJOR" : major,
+                "SUBMAJOR" : minior,
+                "DEGREE" : degree,
+                "CLASS" : subclass
               }
               }).done(function( msg ) {
                   //If sign_up success, show up the sign in page
