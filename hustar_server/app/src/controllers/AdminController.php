@@ -898,7 +898,7 @@ public function getAttendanceDate(Request $request, Response $response, $args)
                     if((int)$cutTime_GTW[0] < 10){
                         $result[$index]['title'][0] = "출석";
                     }else{
-                        if((int)$cutTime_GTW[0] == 10 && (int)$cutTime_GTW[1] <= 10){
+                        if((int)$cutTime_GTW[0] == 10 || (int)$cutTime_GTW[1] < 10){
                             $result[$index]['title'][0] = "출석";
                         }else{
                             $result[$index]['title'][0] = "지각";
